@@ -97,10 +97,8 @@ const AddPurchaseBill = () => {
   const [barcode, setBarcode] = useState("");
   const [netRate, setNetRate] = useState("");
   const [IsDelete, setIsDelete] = useState(false);
-
   const [ItemId, setItemId] = useState(0);
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
-
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedEditItemId, setSelectedEditItemId] = useState(0);
@@ -125,57 +123,30 @@ const AddPurchaseBill = () => {
   const [isOpenBox, setIsOpenBox] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [unsavedItems, setUnsavedItems] = useState(false);
-
   const [selectedOption, setSelectedOption] = useState(null);
-
   const [addItemName, setAddItemName] = useState("");
   const [addBarcode, setAddBarcode] = useState("");
   const [addUnit, setAddUnit] = useState("");
   const [barcodeBatch, setBarcodeBatch] = useState("");
-
   const selectedDistributorRef = useRef(null);
-
   const [addDistributorName, setAddDistributorName] = useState("");
   const [addDistributorNo, setAddDistributorNo] = useState("");
   const [addDistributorMobile, setAddDistributorMobile] = useState("");
   const [addDistributorAddress, setAddDistributorAddress] = useState("");
-
   const [highlightedRowId, setHighlightedRowId] = useState(null);
   const [isVisible, setIsVisible] = useState(true);
-
   const [autocompleteKey, setAutocompleteKey] = useState(0);
   const [focusedField, setFocusedField] = useState("distributor");
-
   const [openFile, setOpenFile] = useState(false);
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const [billSaveDraft, setBillSaveDraft] = useState("1");
   const [isOpen, setIsOpen] = useState(false);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [dialogMode, setDialogMode] = useState(""); // "csv" | "stock"
-
-
-  const paymentOptions = [
-    { id: 1, label: "Cash" },
-    { id: 2, label: "Credit" },
-    { id: 3, label: "UPI" },
-    { id: 4, label: "Cheque" },
-    { id: 5, label: "Paytm" },
-    { id: 6, label: "CC/DC" },
-    { id: 7, label: "RTGS/NEFT" },
-  ];
-
-  const options = {
-    "Visual": "visual-item-purchase-import",
-    "Skyway": "purchase-item-import",
-    "Pharma Byte": "pharmabyte-item-import",
-    "Marg ERP": "mahalaxmi-item-import",
-    "Techno Max": "techno-item-import",
-  };
+  const [dialogMode, setDialogMode] = useState("");
 
   const optionForCsv = {
     "Skyway": "purchase-item-import",
@@ -206,14 +177,14 @@ const AddPurchaseBill = () => {
   const [itemHistoryData, setItemHistoryData] = useState(null);
   const [openItemHistory, setOpenItemHistory] = useState(false);
 
-  /*<=============================================================================== Input ref on keydown enter ======================================================================> */
+  /*<================================================================== Input ref on keydown enter =========================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
   const inputRefs = useRef([]);
   const submitButtonRef = useRef(null);
   const addButtonref = useRef(null);
-  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
+  /*<=================================================== disable autocomplete to focus when tableref is focused  ==========================================> */
 
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
@@ -232,7 +203,7 @@ const AddPurchaseBill = () => {
     };
   }, []);
 
-  /*<================================================================ disable autocomplete to focus when tableref is focused  =======================================================> */
+  /*<=================================================== disable autocomplete to focus when tableref is focused  ==========================================> */
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -284,7 +255,7 @@ const AddPurchaseBill = () => {
     };
   }, [selectedIndex, ItemPurchaseList]);
 
-  /*<================================================================================== handle shortcut  =========================================================================> */
+  /*<=================================================================== handle shortcut  ==========================================================> */
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -354,7 +325,7 @@ const AddPurchaseBill = () => {
       }
     };
   }, [submitTimeout]);
-  /*<================================================================================ PTR and MRP validation =======================================================================> */
+  /*<================================================================= PTR and MRP validation ========================================================> */
 
   useEffect(() => {
     const newErrors = {};
@@ -376,7 +347,7 @@ const AddPurchaseBill = () => {
     setError(newErrors);
   }, [ptr, mrp]);
 
-  /*<================================================================= Clear old purchase item if user leave the browswer =========================================================> */
+  /*<================================================== Clear old purchase item if user leave the browswer ==========================================> */
 
   useEffect(() => {
     generateRandomNumber();
@@ -390,7 +361,7 @@ const AddPurchaseBill = () => {
     initialize();
   }, []);
 
-  /*<===================================================== handle add item using barcode function if add value in barcode field =================================================> */
+  /*<====================================== handle add item using barcode function if add value in barcode field ==================================> */
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -401,7 +372,7 @@ const AddPurchaseBill = () => {
     return () => clearTimeout(timeoutId);
   }, [barcode]);
 
-  /*<=========================================================================== get essential details intially =================================================================> */
+  /*<============================================================ get essential details intially ==================================================> */
 
   useEffect(() => {
     if (id) {
@@ -440,7 +411,7 @@ const AddPurchaseBill = () => {
     return () => clearTimeout(delay);
   }, [addDistributorMobile]);
 
-  /*<============================================================================ Clear old purchase item data ====================================================================> */
+  /*<============================================================= Clear old purchase item data =====================================================> */
 
   useEffect(() => {
     if (localStorage.getItem("RandomNumber") !== null) {
@@ -494,7 +465,7 @@ const AddPurchaseBill = () => {
     setMargin(Margin);
   }, [qty, ptr, disc, mrp, gst, free, ItemTotalAmount, barcodeBatch]);
 
-  /*<============================================================================== CN calculation realtime ========================================================================> */
+  /*<=============================================================== CN calculation realtime =========================================================> */
 
   useEffect(() => {
     const total = Object.values(cnTotalAmount)
@@ -503,7 +474,7 @@ const AddPurchaseBill = () => {
     setCnAmount(total);
   }, [cnTotalAmount]);
 
-  /*<================================================================================ get bank list =============================================================================> */
+  /*<================================================================= get bank list ==============================================================> */
 
   const BankList = async () => {
     let data = new FormData();
@@ -529,7 +500,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================ expiry date validation =========================================================================> */
+  /*<============================================================= expiry date validation ==========================================================> */
 
   const handleExpiryDate = (event) => {
     let inputValue = event.target.value;
@@ -549,7 +520,7 @@ const AddPurchaseBill = () => {
     setExpiryDate(inputValue);
   };
 
-  /*<=============================================================================== select file to upload =======================================================================> */
+  /*<================================================================ select file to upload ========================================================> */
 
   const handleFileSelect = (e) => {
     const selectedFile = e.target.files[0];
@@ -571,55 +542,44 @@ const AddPurchaseBill = () => {
     }
   };
 
+  /*<========================================================================== upload selected file ==============================================================> */
 
-  /*<================================================================================== upload selected file ======================================================================> */
   const handleFileUpload = async () => {
     generateRandomNumber();
     if (!file) {
       toast.error("No file selected");
       return;
     }
-
-    // Pick endpoint based on dialogMode
     let apiEndpoint = "";
     if (dialogMode === "csv") {
       apiEndpoint = optionForCsv[importConpany];
     } else if (dialogMode === "stock") {
       apiEndpoint = optionForStock[importConpany];
     }
-
     if (!apiEndpoint) {
       toast.error("Invalid option selected");
       return;
     }
-
     let data = new FormData();
     data.append("file", file);
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("distributor_id", distributor ? distributor.id : "");
-
     setIsLoading(true);
     setOpenFile(false);
     try {
       const response = await axios.post(apiEndpoint, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-
-
       if (response?.data?.status === 200) {
         toast.success(response?.data?.message);
         setUnsavedItems(true);
       }
-
       itemPurchaseList();
       setTimeout(() => {
         inputRefs.current[2]?.focus();
       }, 100);
-
     } catch (error) {
       console.error("API error:", error);
-
       if (error.response?.data?.status === 400) {
         toast.error(error.response.data.message);
       } else {
@@ -630,8 +590,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-
-  /*<============================================================================ download selected file =========================================================================> */
+  /*<============================================================= download selected file ==========================================================> */
 
   const handleDownload = () => {
     let fileName = "";
@@ -672,7 +631,7 @@ const AddPurchaseBill = () => {
     document.body.removeChild(link);
   };
 
-  /*<============================================================================ barcode functionality =========================================================================> */
+  /*<============================================================= barcode functionality ==========================================================> */
 
   const handleBarcode = async () => {
     setIsEditMode(false);
@@ -871,7 +830,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<========================================================================== delete purchase item data   ===================================================================> */
+  /*<=========================================================== delete purchase item data   ====================================================> */
 
   const handlePopState = () => {
     let data = new FormData();
@@ -900,7 +859,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================ Generate random number   ====================================================================> */
+  /*<============================================================= Generate random number   =====================================================> */
 
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
@@ -912,7 +871,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================= Get GST List   ==============================================================================> */
+  /*<=================================================================== Get GST List   ====================================================================> */
 
   let listOfGst = () => {
     axios
@@ -932,7 +891,7 @@ const AddPurchaseBill = () => {
       });
   };
 
-  /*<========================================================================== Get Distributor List   ===========================================================================> */
+  /*<================================================================ Get Distributor List   =================================================================> */
 
   const listDistributor = (searchPayload = {}) => {
     const headers = {
@@ -966,7 +925,7 @@ const AddPurchaseBill = () => {
   };
 
 
-  /*<========================================================================= Get Item purchase List   ==========================================================================> */
+  /*<=============================================================== Get Item purchase List   ================================================================> */
 
   const itemPurchaseList = async () => {
     let data = new FormData();
@@ -1001,7 +960,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<======================================================================= disable to select date of past  ==================================================================> */
+  /*<============================================================= disable to select date of past  ========================================================> */
 
   const isDateDisabled = (date) => {
     const today = new Date();
@@ -1011,7 +970,7 @@ const AddPurchaseBill = () => {
     return date > today;
   };
 
-  /*<============================================================================= delete added  item  ========================================================================> */
+  /*<=================================================================== delete added  item  ==============================================================> */
 
   const deleteOpen = (Id) => {
     removeItem();
@@ -1163,7 +1122,7 @@ const AddPurchaseBill = () => {
     return false;
   };
 
-  /*<========================================================================= Add and Edit item function  ====================================================================> */
+  /*<================================================================= Add and Edit item function  ============================================================> */
 
   const handleAddItem = async () => {
     if (isSubmitting) return false; // Prevent double submissions
@@ -1280,7 +1239,7 @@ const AddPurchaseBill = () => {
 
     }
   };
-  /*<========================================================================= Add new disrtibutor to item master  ====================================================================> */
+  /*<================================================================= Add new disrtibutor to item master  ============================================================> */
 
   const handleAddNewDistributor = async () => {
     if (
@@ -1394,7 +1353,7 @@ const AddPurchaseBill = () => {
   };
 
 
-  /*<=============================================================================== search item name  ==========================================================================> */
+  /*<======================================================================= search item name  ==================================================================> */
 
   const handleSearch = async () => {
     let data = new FormData();
@@ -1420,7 +1379,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<======================================================================== select row using up down arrow  ===================================================================> */
+  /*<================================================================ select row using up down arrow  ===========================================================> */
 
   const handleRowSelect = (id, totalAmount) => {
     const newSelectedRows = selectedRows.includes(id)
@@ -1442,7 +1401,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=============================================================================== delete added item  ==========================================================================> */
+  /*<============================================================================ delete added item  =======================================================================> */
 
   const handleDeleteItem = async (ItemId) => {
     if (!ItemId) return;
@@ -1470,7 +1429,6 @@ const AddPurchaseBill = () => {
     }
   };
 
-
   /*<========================================================================= Fetch customer history   ====================================================================> */
 
   const fetchItemHistory = async (selectedOption) => {
@@ -1494,7 +1452,7 @@ const AddPurchaseBill = () => {
       toast.error("Failed to fetch customer history");
     }
   };
-  /*<============================================================================== submit purchase bill  ==========================================================================> */
+  /*<========================================================================= submit purchase bill  =====================================================================> */
 
   const submitPurchaseData = async (draft) => {
     if (isSubmitting) {
@@ -1562,7 +1520,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<=========================================================================== validation  purchase bill  =======================================================================> */
+  /*<====================================================================== validation  purchase bill  ==================================================================> */
 
   const handleSubmit = (draft) => {
     if (isSubmitting) {
@@ -1649,7 +1607,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================== open CN Adjust popup  ==========================================================================> */
+  /*<===================================================================== open CN Adjust popup  =================================================================> */
 
   const handelAddOpen = () => {
     setUnsavedItems(true);
@@ -1657,7 +1615,7 @@ const AddPurchaseBill = () => {
     purchaseReturnData();
   };
 
-  /*<============================================================================== open item master popup  ==========================================================================> */
+  /*<===================================================================== open item master popup  =================================================================> */
 
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
@@ -1665,7 +1623,7 @@ const AddPurchaseBill = () => {
     setFocusedField("add item");
   };
 
-  /*<============================================================================== close CN Adjust popup  ==========================================================================> */
+  /*<===================================================================== close CN Adjust popup  =================================================================> */
 
   const resetAddDialog = () => {
     setOpenAddPopUp(false);
@@ -1675,7 +1633,6 @@ const AddPurchaseBill = () => {
     // setCnTotalAmount("")
     // setCnAmount(0);
   };
-
 
   /*<============================================================================== Select Item  ==========================================================================> */
 
@@ -1697,7 +1654,7 @@ const AddPurchaseBill = () => {
     handleSearch(itemName);
   };
 
-  /*<============================================================================== Discount calculation  ==========================================================================> */
+  /*<====================================================================== Discount calculation  ==================================================================> */
 
   const handleSchAmt = (e) => {
     const valueStr = String(e.target.value); // ensure string
@@ -1754,7 +1711,7 @@ const AddPurchaseBill = () => {
     setLoc("");
   };
 
-  /*<============================================================================== select all CN Bill ==========================================================================> */
+  /*<======================================================================== select all CN Bill ====================================================================> */
 
   const handleSelectAll = (e) => {
     if (e.target.checked) {
@@ -1777,7 +1734,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<============================================================================= CN Amount Calculation =========================================================================> */
+  /*<======================================================================= CN Amount Calculation ===================================================================> */
 
   const handleCnAmountChange = (id, value, totalAmount) => {
     const numericValue = parseFloat(value) || 0;
@@ -1890,7 +1847,7 @@ const AddPurchaseBill = () => {
     // setPendingNavigation(null);
   };
 
-  /*<============================================================================== CN Amount Calculation ==========================================================================> */
+  /*<===================================================================== CN Amount Calculation =================================================================> */
 
   const handleLeavePage = async () => {
     let data = new FormData();
@@ -1948,969 +1905,960 @@ const AddPurchaseBill = () => {
         pauseOnHover
       />
 
-      <div className="p-6"
-        style={{
-          height: "calc(-125px + 100vh)",
-          overflow: "auto",
-
-        }}>
-        <div >
-          {/*<====================================================================== Top header & buttons   =====================================================================> */}
-
-          <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
-
-            <div className="flex items-center gap-2">
-              <span
-                className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                onClick={() => history.push("/purchase/purchasebill")}
-              >
-                Purchase
-              </span>
-
-              <span className="w-6 h-6">
-                <ArrowForwardIosIcon
-                  fontSize="small"
-                  className="text-[var(--color1)]"
+      <>
+        <div className="p-6"
+          style={{
+            height: "calc(-125px + 100vh)",
+            overflow: "auto",
+          }}>
+          <div >
+            {/*<======================================================== Top header & buttons   =======================================================> */}
+            <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
+              <div className="flex items-center gap-2">
+                <span
+                  className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+                  onClick={() => history.push("/purchase/purchasebill")}
+                >
+                  Purchase
+                </span>
+                <span className="w-6 h-6">
+                  <ArrowForwardIosIcon
+                    fontSize="small"
+                    className="text-[var(--color1)]"
+                  />
+                </span>
+                <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
+                <BsLightbulbFill
+                  className="w-6 h-6 text-[var(--color2)] hover-yellow"
+                  onClick={() => setShowModal(true)}
                 />
-              </span>
-
-              <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
-
-              <BsLightbulbFill
-                className="w-6 h-6 text-[var(--color2)] hover-yellow"
-                onClick={() => setShowModal(true)}
-              />
-
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Select
-                labelId="dropdown-label"
-                id="dropdown"
-                value={paymentType}
-                onChange={(e) => setPaymentType(e.target.value)}
-                size="small"
-                className="min-w-[150px] rounded-md"
-              >
-                <MenuItem value="cash" className="hover:bg-[var(--color2)]">Cash</MenuItem>
-                <MenuItem value="credit" className="hover:bg-[var(--color2)]">Credit</MenuItem>
-                {bankData?.map((option) => (
-                  <MenuItem
-                    key={option.id}
-                    value={option.id}
-                    className="hover:bg-[var(--color2)]"
-                  >
-                    {option.bank_name}
-                  </MenuItem>
-                ))}
-              </Select>
-
-              <button
-                type="button"
-                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
-                onClick={() => {
-                  setDialogMode("csv");
-                  setOpenFile(true);
-                }}
-              >
-                <CloudUploadIcon className="mr-2" />
-                Import CSV
-              </button>
-
-              {/* Import Stock button (directly set Visual) */}
-              {distributor?.name === "OPENING DISTRIBUTOR" && (
+              </div>
+              <div className="flex items-center gap-2">
+                <Select
+                  labelId="dropdown-label"
+                  id="dropdown"
+                  value={paymentType}
+                  onChange={(e) => setPaymentType(e.target.value)}
+                  size="small"
+                  className="min-w-[150px] rounded-md"
+                >
+                  <MenuItem value="cash" className="hover:bg-[var(--color2)]">Cash</MenuItem>
+                  <MenuItem value="credit" className="hover:bg-[var(--color2)]">Credit</MenuItem>
+                  {bankData?.map((option) => (
+                    <MenuItem
+                      key={option.id}
+                      value={option.id}
+                      className="hover:bg-[var(--color2)]"
+                    >
+                      {option.bank_name}
+                    </MenuItem>
+                  ))}
+                </Select>
                 <button
                   type="button"
+                  className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
                   onClick={() => {
-                    setDialogMode("stock");
-                    setImportConpany("Visual"); // auto select Visual
+                    setDialogMode("csv");
                     setOpenFile(true);
                   }}
-                  disabled={distributor?.name !== "OPENING DISTRIBUTOR"}
-                  className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  <CloudUploadIcon className="mr-2" />
-                  Opening Stock
-                </button>
-              )}
-
-
-              {distributor && (
-                <button
-                  type="button"
-                  onClick={handelAddOpen}
-                  disabled={!distributor}
-                  className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  <AddIcon className="mr-2" />
-                  CN Adjust
-                </button>
-              )}
-
-              <button
-                type="button"
-                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
-                onClick={handelAddItemOpen}
-              >
-                <ControlPointIcon className="mr-2" />
-                Add Item
-              </button>
-
-              <div
-                className="relative inline-block"
-                onMouseEnter={() => {
-                  clearTimeout(timeoutRef.current);
-                  setIsOpen(true);
-                }}
-                onMouseLeave={() => {
-                  timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
-                }}
-              >
-                <button
-                  type="button"
-                  className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
-                  onClick={() => {
-                    setBillSaveDraft("1");
-                    handleSubmit("1");
-                  }}
-                >
-                  Save
+                ><CloudUploadIcon className="mr-2" />
+                  Import CSV
                 </button>
 
-                <button
-                  type="button"
-                  className="h-10 rounded-r-[4px] bg-[var(--color1)] px-2 text-white hover:bg-[var(--color2)] transition align-middle"
-                  onClick={() => setIsOpen((v) => !v)}
-                  ref={submitButtonRef}
-                  aria-haspopup="menu"
-                  aria-expanded={isOpen}
-                >
-                  <IoCaretDown className="text-white" />
-                </button>
-
-                {isOpen && (
-                  <div className="absolute right-1 top-14 w-36 bg-white shadow-lg  overflow-hidden ring-1 ring-[var(--color1)]">
-                    <ul className="text-slate-800">
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("1");
-                          handleSubmit("1");
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white"
-                        role="menuitem"
-                      >
-                        <SaveIcon />
-                        Save
-                      </li>
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("0");
-                          handleSubmit("0");
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white border-t border-[var(--color1)]"
-                        role="menuitem"
-                      >
-                        <SaveAsIcon />
-                        Draft
-                      </li>
-                    </ul>
-                  </div>
+                {/* Import Stock button (directly set Visual) */}
+                {distributor?.name === "OPENING DISTRIBUTOR" && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDialogMode("stock");
+                      setImportConpany("Visual"); // auto select Visual
+                      setOpenFile(true);
+                    }}
+                    disabled={distributor?.name !== "OPENING DISTRIBUTOR"}
+                    className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    <CloudUploadIcon className="mr-2" />
+                    Opening Stock
+                  </button>
                 )}
 
-              </div>
-            </div>
-          </div>
+                {distributor && (
+                  <button
+                    type="button"
+                    onClick={handelAddOpen}
+                    disabled={!distributor}
+                    className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white transition hover:bg-[var(--color2)] disabled:bg-[var(--color3)] disabled:text-[var(--color1)] disabled:opacity-70 disabled:cursor-not-allowed"
+                  >
+                    <AddIcon className="mr-2" />
+                    CN Adjust
+                  </button>
+                )}
 
-          {/*<============================================================================ Top details   ===========================================================================> */}
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+                  onClick={handelAddItemOpen}
+                >
+                  <ControlPointIcon className="mr-2" />
+                  Add Item
+                </button>
 
-          <div className=" flex gap-4  mt-4">
-            <div className="flex flex-row gap-4 overflow-x-auto w-full">
-              <div>
-                <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
-                  className="primary cursor-pointer"
-                  onClick={() => {
-                    setOpenAddDistributorPopUp(true);
+                <div
+                  className="relative inline-block"
+                  onMouseEnter={() => {
+                    clearTimeout(timeoutRef.current);
+                    setIsOpen(true);
                   }}
-                /></span>
-
-                <Autocomplete
-                  value={distributor ?? ""}
-                  sx={{
-                    width: "100%",
-                    minWidth: "350px",
-                    "@media (max-width:600px)": { minWidth: "250px" },
+                  onMouseLeave={() => {
+                    timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
                   }}
-                  freeSolo
-                  size="small"
-                  options={distributorList}
-                  onChange={(e, newValue) => {
-                    let finalValue = null;
+                >
+                  <button
+                    type="button"
+                    className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
+                    onClick={() => {
+                      setBillSaveDraft("1");
+                      handleSubmit("1");
+                    }}
+                  >
+                    Save
+                  </button>
 
-                    if (typeof newValue === "string") {
-                      finalValue = { id: null, name: newValue.toUpperCase() };
-                    } else if (newValue && typeof newValue === "object") {
-                      finalValue = {
-                        id: newValue.id ?? null,
-                        name: newValue.name?.toUpperCase() || "",
-                      };
-                    }
-
-                    selectedDistributorRef.current = finalValue;
-                    setDistributor(finalValue);
-                    setbillNo("");
-                  }}
-                  onInputChange={(event, newInputValue, reason) => {
-                    if (reason === "input") {
-                      // User typing: keep ID only if still matches list
-                      setDistributor((prev) => ({
-                        id: null,
-                        name: newInputValue.toUpperCase(),
-                      }));
-                      setbillNo("");
-                    }
-                  }}
-                  getOptionLabel={(option) =>
-                    typeof option === "string" ? option : option?.name ?? ""
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      autoFocus={focusedField === "distributor"}
-                      autoComplete="off"
-                      variant="outlined"
-                      error={!!error.distributor}
-                      {...params}
-                      inputRef={(el) => (inputRefs.current[0] = el)}
-                      inputProps={{
-                        ...params.inputProps,
-                        style: { textTransform: "uppercase" },
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          const prevent = !selectedDistributorRef.current?.id;
-
-                          setTimeout(() => {
-                            if (selectedDistributorRef.current?.id) {
-                              handleKeyDown(e, 0);
-                            }
-                          }, 100);
-
-                          if (prevent) {
-                            e.preventDefault();
-                          }
-                        }
-                      }}
-                    />
-                  )}
-                />
-              </div>
-
-              <div>
-                <span className="title mb-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
-                <TextField
-                  autoComplete="off"
-                  id="outlined-number"
-                  size="small"
-                  variant="outlined"
-                  error={!!error.billNo}
-                  value={billNo}
-                  onChange={(e) => {
-                    setbillNo(e.target.value.toUpperCase());
-                  }}
-                  inputRef={(el) => (inputRefs.current[1] = el)}
-                  onKeyDown={(e) => {
-                    if (billNo) {
-                      handleKeyDown(e, 1);
-                    } else {
-                      const isTab = e.key === 'Tab' && !e.shiftKey;
-                      const isEnter = e.key === 'Enter';
-
-                      if (isEnter || isTab) {
-                        e.preventDefault();
-                        toast.error("Bill NO is Required");
-                      }
-                      // Shift + Tab is allowed by default; do not prevent it
-                    }
-                  }}
-
-                />
-              </div>
-
-              <div>
-                <span className="title mb-2">Bill Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker "
-                    selected={selectedDate}
-                    variant="outlined"
-                    onChange={(newDate) => setSelectedDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    filterDate={(date) => !isDateDisabled(date)}
-                    inputRef={(el) => (inputRefs.current[2] = el)}
-                    onKeyDown={(e) => handleKeyDown(e, 2)}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <span className="title mb-2">Due Date</span>
-                <div>
-                  <DatePicker
-                    className="custom-datepicker"
-                    selected={dueDate}
-                    variant="outlined"
-                    onChange={(newDate) => setDueDate(newDate)}
-                    dateFormat="dd/MM/yyyy"
-                    minDate={new Date()}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <span className="title mb-2">Scan Barcode</span>
-
-                <TextField
-                  autoComplete="off"
-                  id="outlined-number"
-                  type="number"
-                  size="small"
-                  variant="outlined"
-                  value={barcode}
-                  placeholder="scan barcode"
-                  // inputRef={inputRef10}
-                  // onKeyDown={handleKeyDown}
-                  sx={{ width: "250px" }}
-                  onChange={(e) => {
-                    generateRandomNumber();
-
-                    setBarcode(e.target.value);
-
-                  }}
-                />
-              </div>
-
-            </div>
-          </div>
-          {/*<======================================================================Item Table =====================================================================> */}
-
-          <div className="table-container">
-            <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
-              <thead>
-                <tr>
-                  <th>
-                    <div className="flex justify-center items-center gap-2">
-                      Search Item Name <span className="text-red-600 ">*</span>
-                      <FaPlusCircle
-                        className="primary cursor-pointer"
-                        onClick={() => { setOpenAddItemPopUp(true) }}
-                      />
-                    </div>
-                  </th>
-                  <th>Unit <span className="text-red-600 ">*</span></th>
-                  <th>Batch <span className="text-red-600 ">*</span> </th>
-                  <th>Expiry <span className="text-red-600 ">*</span></th>
-                  <th>MRP <span className="text-red-600 ">*</span></th>
-                  <th>Qty. </th>
-                  <th>Free</th>
-                  <th>PTR <span className="text-red-600 ">*</span></th>
-                  <th>CD%</th>
-                  <th>Base</th>
-                  <th>GST% <span className="text-red-600 ">*</span></th>
-                  <th>Loc.</th>
-                  <th>Net Rate</th>
-                  <th>Margin%</th>
-                  <th>Amount</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {/* Input Row */}
-                <tr className="input-row">
-                  <td className="p-0">
-                    {isEditMode ? (
-                      <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left', }}>
-                        <DeleteIcon
-                          className="delete-icon mr-2"
+                  <button
+                    type="button"
+                    className="h-10 rounded-r-[4px] bg-[var(--color1)] px-2 text-white hover:bg-[var(--color2)] transition align-middle"
+                    onClick={() => setIsOpen((v) => !v)}
+                    ref={submitButtonRef}
+                    aria-haspopup="menu"
+                    aria-expanded={isOpen}
+                  >
+                    <IoCaretDown className="text-white" />
+                  </button>
+                  {isOpen && (
+                    <div className="absolute right-1 top-14 w-36 bg-white shadow-lg  overflow-hidden ring-1 ring-[var(--color1)]">
+                      <ul className="text-slate-800">
+                        <li
                           onClick={() => {
-                            setIsEditMode(false);
-                            setTimeout(() => {
-                              removeItem();
-                              inputRefs.current[2]?.focus();
-                            }, 0);
+                            setBillSaveDraft("1");
+                            handleSubmit("1");
                           }}
-                        />
-                        {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
-                        {error.item && (
-                          <span style={{ color: "red", fontSize: "16px" }}>
-                            {error.item}
-                          </span>
-                        )}
-                      </div>
-                    ) : (
-                      <Autocomplete
-                        key={autocompleteKey}
-                        value={selectedOption}
-                        size="small"
-                        onChange={handleOptionChange}
-                        onInputChange={handleInputChange}
-                        open={autoCompleteOpen}
-                        onOpen={() => setAutoCompleteOpen(true)}
-                        onClose={() => setAutoCompleteOpen(false)}
-                        getOptionLabel={(option) =>
-                          `${option.iteam_name} `
-                        }
-                        options={itemList}
-                        renderOption={(props, option) => (
-                          <ListItem {...props}>
-                            <ListItemText
-                              primary={`${option.iteam_name}`}
-                              secondary={` ${option.stock === 0
-                                ? `Unit: ${option.weightage}`
-                                : `Pack: ${option.pack}`
-                                } | MRP: ${option.mrp}  | Location: ${option.location
-                                }  | Current Stock: ${option.stock}`}
-                            />
-                          </ListItem>
-                        )}
-                        renderInput={(params) => (
-                          <TextField
-                            tabIndex={0}
-                            variant="outlined"
-                            autoComplete="off"
-                            {...params}
-                            value={searchItem?.iteam_name}
-                            inputRef={(el) => (inputRefs.current[2] = el)}
-                            onFocus={() => setSelectedIndex(-1)}
-                            fullWidth
-                            sx={{
-                              minWidth: 400,
-                              width: "100%",
-                            }}
+                          className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white"
+                          role="menuitem"
+                        >
+                          <SaveIcon />
+                          Save
+                        </li>
+                        <li
+                          onClick={() => {
+                            setBillSaveDraft("0");
+                            handleSubmit("0");
+                          }}
+                          className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white border-t border-[var(--color1)]"
+                          role="menuitem"
+                        >
+                          <SaveAsIcon />
+                          Draft
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
 
-                            InputProps={{
-                              ...params.InputProps,
-                              style: { textTransform: 'uppercase' },
-                              endAdornment: (
-                                <>
-                                  {selectedOption && (
-                                    <Tooltip
-                                      title="Item Purchase History"
-                                      arrow
-                                      componentsProps={{
-                                        tooltip: {
-                                          sx: {
-                                            backgroundColor: "#3f6212",
-                                            color: 'white',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                            padding: '8px 12px',
-                                            '& .MuiTooltip-arrow': {
-                                              color: '#3f6212',
+            {/*<================================================================= Top details   ================================================================> */}
+
+            <div className=" flex gap-4  mt-4">
+              <div className="flex flex-row gap-4 overflow-x-auto w-full">
+                <div>
+                  <span className="title mb-2 flex  items-center gap-2">Distributor <span className="text-red-600">*</span>    <FaPlusCircle
+                    className="primary cursor-pointer"
+                    onClick={() => {
+                      setOpenAddDistributorPopUp(true);
+                    }}
+                  /></span>
+
+                  <Autocomplete
+                    value={distributor ?? ""}
+                    sx={{
+                      width: "100%",
+                      minWidth: "350px",
+                      "@media (max-width:600px)": { minWidth: "250px" },
+                    }}
+                    freeSolo
+                    size="small"
+                    options={distributorList}
+                    onChange={(e, newValue) => {
+                      let finalValue = null;
+
+                      if (typeof newValue === "string") {
+                        finalValue = { id: null, name: newValue.toUpperCase() };
+                      } else if (newValue && typeof newValue === "object") {
+                        finalValue = {
+                          id: newValue.id ?? null,
+                          name: newValue.name?.toUpperCase() || "",
+                        };
+                      }
+
+                      selectedDistributorRef.current = finalValue;
+                      setDistributor(finalValue);
+                      setbillNo("");
+                    }}
+                    onInputChange={(event, newInputValue, reason) => {
+                      if (reason === "input") {
+                        // User typing: keep ID only if still matches list
+                        setDistributor((prev) => ({
+                          id: null,
+                          name: newInputValue.toUpperCase(),
+                        }));
+                        setbillNo("");
+                      }
+                    }}
+                    getOptionLabel={(option) =>
+                      typeof option === "string" ? option : option?.name ?? ""
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        autoFocus={focusedField === "distributor"}
+                        autoComplete="off"
+                        variant="outlined"
+                        error={!!error.distributor}
+                        {...params}
+                        inputRef={(el) => (inputRefs.current[0] = el)}
+                        inputProps={{
+                          ...params.inputProps,
+                          style: { textTransform: "uppercase" },
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === "Tab") {
+                            const prevent = !selectedDistributorRef.current?.id;
+
+                            setTimeout(() => {
+                              if (selectedDistributorRef.current?.id) {
+                                handleKeyDown(e, 0);
+                              }
+                            }, 100);
+
+                            if (prevent) {
+                              e.preventDefault();
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                  />
+                </div>
+
+                <div>
+                  <span className="title mb-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    size="small"
+                    variant="outlined"
+                    error={!!error.billNo}
+                    value={billNo}
+                    onChange={(e) => {
+                      setbillNo(e.target.value.toUpperCase());
+                    }}
+                    inputRef={(el) => (inputRefs.current[1] = el)}
+                    onKeyDown={(e) => {
+                      if (billNo) {
+                        handleKeyDown(e, 1);
+                      } else {
+                        const isTab = e.key === 'Tab' && !e.shiftKey;
+                        const isEnter = e.key === 'Enter';
+
+                        if (isEnter || isTab) {
+                          e.preventDefault();
+                          toast.error("Bill NO is Required");
+                        }
+                        // Shift + Tab is allowed by default; do not prevent it
+                      }
+                    }}
+
+                  />
+                </div>
+
+                <div>
+                  <span className="title mb-2">Bill Date</span>
+                  <div>
+                    <DatePicker
+                      className="custom-datepicker "
+                      selected={selectedDate}
+                      variant="outlined"
+                      onChange={(newDate) => setSelectedDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      filterDate={(date) => !isDateDisabled(date)}
+                      inputRef={(el) => (inputRefs.current[2] = el)}
+                      onKeyDown={(e) => handleKeyDown(e, 2)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <span className="title mb-2">Due Date</span>
+                  <div>
+                    <DatePicker
+                      className="custom-datepicker"
+                      selected={dueDate}
+                      variant="outlined"
+                      onChange={(newDate) => setDueDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                      minDate={new Date()}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <span className="title mb-2">Scan Barcode</span>
+
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    size="small"
+                    variant="outlined"
+                    value={barcode}
+                    placeholder="scan barcode"
+                    // inputRef={inputRef10}
+                    // onKeyDown={handleKeyDown}
+                    sx={{ width: "250px" }}
+                    onChange={(e) => {
+                      generateRandomNumber();
+
+                      setBarcode(e.target.value);
+
+                    }}
+                  />
+                </div>
+
+              </div>
+            </div>
+            {/*<======================================================================Item Table =====================================================================> */}
+
+            <div className="table-container">
+              <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
+                <thead>
+                  <tr>
+                    <th>
+                      <div className="flex justify-center items-center gap-2">
+                        Search Item Name <span className="text-red-600 ">*</span>
+                        <FaPlusCircle
+                          className="primary cursor-pointer"
+                          onClick={() => { setOpenAddItemPopUp(true) }}
+                        />
+                      </div>
+                    </th>
+                    <th>Unit <span className="text-red-600 ">*</span></th>
+                    <th>Batch <span className="text-red-600 ">*</span> </th>
+                    <th>Expiry <span className="text-red-600 ">*</span></th>
+                    <th>MRP <span className="text-red-600 ">*</span></th>
+                    <th>Qty. </th>
+                    <th>Free</th>
+                    <th>PTR <span className="text-red-600 ">*</span></th>
+                    <th>CD%</th>
+                    <th>Base</th>
+                    <th>GST% <span className="text-red-600 ">*</span></th>
+                    <th>Loc.</th>
+                    <th>Net Rate</th>
+                    <th>Margin%</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {/* Input Row */}
+                  <tr className="input-row">
+                    <td className="p-0">
+                      {isEditMode ? (
+                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left', }}>
+                          <DeleteIcon
+                            className="delete-icon mr-2"
+                            onClick={() => {
+                              setIsEditMode(false);
+                              setTimeout(() => {
+                                removeItem();
+                                inputRefs.current[2]?.focus();
+                              }, 0);
+                            }}
+                          />
+                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
+                          {error.item && (
+                            <span style={{ color: "red", fontSize: "16px" }}>
+                              {error.item}
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        <Autocomplete
+                          key={autocompleteKey}
+                          value={selectedOption}
+                          size="small"
+                          onChange={handleOptionChange}
+                          onInputChange={handleInputChange}
+                          open={autoCompleteOpen}
+                          onOpen={() => setAutoCompleteOpen(true)}
+                          onClose={() => setAutoCompleteOpen(false)}
+                          getOptionLabel={(option) =>
+                            `${option.iteam_name} `
+                          }
+                          options={itemList}
+                          renderOption={(props, option) => (
+                            <ListItem {...props}>
+                              <ListItemText
+                                primary={`${option.iteam_name}`}
+                                secondary={` ${option.stock === 0
+                                  ? `Unit: ${option.weightage}`
+                                  : `Pack: ${option.pack}`
+                                  } | MRP: ${option.mrp}  | Location: ${option.location
+                                  }  | Current Stock: ${option.stock}`}
+                              />
+                            </ListItem>
+                          )}
+                          renderInput={(params) => (
+                            <TextField
+                              tabIndex={0}
+                              variant="outlined"
+                              autoComplete="off"
+                              {...params}
+                              value={searchItem?.iteam_name}
+                              inputRef={(el) => (inputRefs.current[2] = el)}
+                              onFocus={() => setSelectedIndex(-1)}
+                              fullWidth
+                              sx={{
+                                minWidth: 400,
+                                width: "100%",
+                              }}
+
+                              InputProps={{
+                                ...params.InputProps,
+                                style: { textTransform: 'uppercase' },
+                                endAdornment: (
+                                  <>
+                                    {selectedOption && (
+                                      <Tooltip
+                                        title="Item Purchase History"
+                                        arrow
+                                        componentsProps={{
+                                          tooltip: {
+                                            sx: {
+                                              backgroundColor: "#3f6212",
+                                              color: 'white',
+                                              fontSize: '14px',
+                                              fontWeight: '500',
+                                              padding: '8px 12px',
+                                              '& .MuiTooltip-arrow': {
+                                                color: '#3f6212',
+                                              }
                                             }
-                                          }
-                                        }
-                                      }}
-                                    >
-                                      <IconButton
-                                        size="small"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          fetchItemHistory(selectedOption);
-                                        }}
-                                        sx={{
-                                          marginRight: '-8px',
-                                          zIndex: 1,
-                                          width: '28px',
-                                          height: '28px',
-                                          border: '2px solid var(--color1)',
-                                          borderRadius: '50%',
-                                          transition: 'all 0.3s ease',
-                                          '&:hover': {
-                                            backgroundColor: 'var(--color1) !important',
-                                            borderColor: 'var(--color1)',
-                                          },
-                                          '&:hover .sales-history-text': {
-                                            color: 'white !important'
                                           }
                                         }}
                                       >
-                                        <span
-                                          className="sales-history-text"
-                                          style={{
-                                            color: 'var(--color1)',
-                                            fontWeight: 'bold',
-                                            fontSize: '14px',
-                                            transition: 'color 0.3s ease'
+                                        <IconButton
+                                          size="small"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            fetchItemHistory(selectedOption);
+                                          }}
+                                          sx={{
+                                            marginRight: '-8px',
+                                            zIndex: 1,
+                                            width: '28px',
+                                            height: '28px',
+                                            border: '2px solid var(--color1)',
+                                            borderRadius: '50%',
+                                            transition: 'all 0.3s ease',
+                                            '&:hover': {
+                                              backgroundColor: 'var(--color1) !important',
+                                              borderColor: 'var(--color1)',
+                                            },
+                                            '&:hover .sales-history-text': {
+                                              color: 'white !important'
+                                            }
                                           }}
                                         >
-                                          P
-                                        </span>
-                                      </IconButton>
-                                    </Tooltip>
-                                  )}
-                                  {params.InputProps.endAdornment}
-                                </>
-                              ),
-                            }}
+                                          <span
+                                            className="sales-history-text"
+                                            style={{
+                                              color: 'var(--color1)',
+                                              fontWeight: 'bold',
+                                              fontSize: '14px',
+                                              transition: 'color 0.3s ease'
+                                            }}
+                                          >
+                                            P
+                                          </span>
+                                        </IconButton>
+                                      </Tooltip>
+                                    )}
+                                    {params.InputProps.endAdornment}
+                                  </>
+                                ),
+                              }}
 
-                            onKeyDown={(e) => {
-                              const { key, shiftKey } = e;
-                              const isTab = key === "Tab";
-                              const isShiftTab = isTab && shiftKey;
-                              const isEnter = key === "Enter";
-                              const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                              onKeyDown={(e) => {
+                                const { key, shiftKey } = e;
+                                const isTab = key === "Tab";
+                                const isShiftTab = isTab && shiftKey;
+                                const isEnter = key === "Enter";
+                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                              if (isShiftTab) return;
+                                if (isShiftTab) return;
 
-                              if (!searchItem && isArrowKey) {
-                                tableRef.current.focus();
-                                setTimeout(() => document.activeElement.blur(), 0);
-                                return;
-                              }
-
-                              if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                              if (isEnter || isTab) {
-                                e.preventDefault();
-
-                                if (!selectedOption) {
-                                  e.preventDefault();
-                                  setTimeout(() => toast.error("Please select an Item"), 100);
-                                } else {
-                                  setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                if (!searchItem && isArrowKey) {
+                                  tableRef.current.focus();
+                                  setTimeout(() => document.activeElement.blur(), 0);
+                                  return;
                                 }
-                                return;
-                              }
-                            }}
-                          />
-                        )}
+
+                                if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                                if (isEnter || isTab) {
+                                  e.preventDefault();
+
+                                  if (!selectedOption) {
+                                    e.preventDefault();
+                                    setTimeout(() => toast.error("Please select an Item"), 100);
+                                  } else {
+                                    setTimeout(() => inputRefs?.current[3].focus(), 100);
+                                  }
+                                  return;
+                                }
+                              }}
+                            />
+                          )}
+                        />
+                      )}
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="text"
+                        size="small"
+                        error={!!error.unit}
+                        value={unit}
+                        sx={{ width: "80px" }}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setUnit(value ? Number(value) : "");
+                        }}
+                        onKeyDown={(e) => {
+                          const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
+                          const isTab = e.key === "Tab";
+                          const isShiftTab = isTab && e.shiftKey;
+                          const isEnter = e.key === "Enter";
+
+                          if (isInvalidKey) {
+                            e.preventDefault();
+                            return;
+                          }
+
+                          if (isShiftTab) return;
+
+                          if (unit) {
+                            handleKeyDown(e, 3);
+                          } else if (isTab || isEnter) {
+                            e.preventDefault();
+                            toast.error("Unit is Required");
+                          }
+                        }}
+                        inputRef={(el) => (inputRefs.current[3] = el)}
                       />
-                    )}
-                  </td>
+                    </td>
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="text"
-                      size="small"
-                      error={!!error.unit}
-                      value={unit}
-                      sx={{ width: "80px" }}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, "");
-                        setUnit(value ? Number(value) : "");
-                      }}
-                      onKeyDown={(e) => {
-                        const isInvalidKey = ["e", "E", ".", "+", "-", ","].includes(e.key);
-                        const isTab = e.key === "Tab";
-                        const isShiftTab = isTab && e.shiftKey;
-                        const isEnter = e.key === "Enter";
-
-                        if (isInvalidKey) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (isShiftTab) return;
-
-                        if (unit) {
-                          handleKeyDown(e, 3);
-                        } else if (isTab || isEnter) {
-                          e.preventDefault();
-                          toast.error("Unit is Required");
-                        }
-                      }}
-                      inputRef={(el) => (inputRefs.current[3] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      error={!!error.batch}
-                      value={batch}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setBatch((e.target.value).toUpperCase());
-                      }}
-                      inputRef={(el) => (inputRefs.current[4] = el)}
-                      onKeyDown={(e) => {
-                        if (batch) {
-                          handleKeyDown(e, 4);
-                        } else if (e.key === 'Tab' || e.key === 'Enter') {
-                          e.preventDefault();
-                          toast.error("Batch is Required");
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      sx={{ width: "100px" }}
-                      error={!!error.expiryDate}
-                      value={expiryDate}
-                      onChange={handleExpiryDate}
-                      placeholder="MM/YY"
-                      inputRef={(el) => (inputRefs.current[5] = el)}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === 'Tab';
-                        const isEnter = e.key === 'Enter';
-                        const isShiftTab = isTab && e.shiftKey;
-                        const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-
-                        if (isShiftTab) return;
-
-                        if (isTab || isEnter) {
-                          if (!expiryDate) {
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        error={!!error.batch}
+                        value={batch}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setBatch((e.target.value).toUpperCase());
+                        }}
+                        inputRef={(el) => (inputRefs.current[4] = el)}
+                        onKeyDown={(e) => {
+                          if (batch) {
+                            handleKeyDown(e, 4);
+                          } else if (e.key === 'Tab' || e.key === 'Enter') {
                             e.preventDefault();
-                            toast.error("Expiry is required");
+                            toast.error("Batch is Required");
+                          }
+                        }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        sx={{ width: "100px" }}
+                        error={!!error.expiryDate}
+                        value={expiryDate}
+                        onChange={handleExpiryDate}
+                        placeholder="MM/YY"
+                        inputRef={(el) => (inputRefs.current[5] = el)}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === 'Tab';
+                          const isEnter = e.key === 'Enter';
+                          const isShiftTab = isTab && e.shiftKey;
+                          const expiryDateRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+
+                          if (isShiftTab) return;
+
+                          if (isTab || isEnter) {
+                            if (!expiryDate) {
+                              e.preventDefault();
+                              toast.error("Expiry is required");
+                              return;
+                            }
+
+                            if (!expiryDateRegex.test(expiryDate)) {
+                              e.preventDefault();
+                              toast.error("Expiry must be in MM/YY format");
+                              return;
+                            }
+
+                            const [month, year] = expiryDate.split('/').map(Number);
+                            const expiry = new Date(`20${year}`, month - 1, 1);
+                            const now = new Date();
+                            const sixMonthsLater = new Date();
+                            sixMonthsLater.setMonth(now.getMonth() + 6);
+
+                            if (expiry < now) {
+                              e.preventDefault();
+                              toast.error("Product has expired");
+                            } else if (expiry < sixMonthsLater) {
+
+                              toast.warning("Product will expire within 6 months");
+                              handleKeyDown(e, 5);
+                            } else {
+                              handleKeyDown(e, 5);
+                            }
+                          }
+                        }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "90px" }}
+                        size="small"
+                        error={!!error.mrp}
+                        value={mrp}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*\.?\d*$/.test(value)) {
+                            setMRP(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isShiftTab = isTab && e.shiftKey;
+
+                          if (isShiftTab) return;
+
+                          if (
+                            ["e", "E", "+", "-", ","].includes(e.key) ||
+                            (e.key === "." && e.target.value.includes("."))
+                          ) {
+                            e.preventDefault();
+                          }
+
+                          if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
+                            e.preventDefault();
+                            toast.error("MRP is required and must be greater than 0");
                             return;
                           }
 
-                          if (!expiryDateRegex.test(expiryDate)) {
+                          handleKeyDown(e, 6);
+                        }}
+                        inputRef={(el) => (inputRefs.current[6] = el)}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "80px" }}
+                        size="small"
+                        error={!!error.qty}
+                        value={qty}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g, "");
+                          setQty(value ? Number(value) : "");
+                        }}
+                        inputRef={(el) => (inputRefs.current[7] = el)}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          const isEnter = e.key === "Enter";
+
+                          if (invalidKeys.includes(e.key)) {
                             e.preventDefault();
-                            toast.error("Expiry must be in MM/YY format");
                             return;
                           }
 
-                          const [month, year] = expiryDate.split('/').map(Number);
-                          const expiry = new Date(`20${year}`, month - 1, 1);
-                          const now = new Date();
-                          const sixMonthsLater = new Date();
-                          sixMonthsLater.setMonth(now.getMonth() + 6);
-
-                          if (expiry < now) {
+                          if (isEnter) {
                             e.preventDefault();
-                            toast.error("Product has expired");
-                          } else if (expiry < sixMonthsLater) {
-
-                            toast.warning("Product will expire within 6 months");
-                            handleKeyDown(e, 5);
-                          } else {
-                            handleKeyDown(e, 5);
+                            handleKeyDown(e, 7);
                           }
-                        }
-                      }}
-                    />
-                  </td>
+                        }}
+                      />
+                    </td>
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "90px" }}
-                      size="small"
-                      error={!!error.mrp}
-                      value={mrp}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*\.?\d*$/.test(value)) {
-                          setMRP(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isShiftTab = isTab && e.shiftKey;
-
-                        if (isShiftTab) return;
-
-                        if (
-                          ["e", "E", "+", "-", ","].includes(e.key) ||
-                          (e.key === "." && e.target.value.includes("."))
-                        ) {
-                          e.preventDefault();
-                        }
-
-                        if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
-                          e.preventDefault();
-                          toast.error("MRP is required and must be greater than 0");
-                          return;
-                        }
-
-                        handleKeyDown(e, 6);
-                      }}
-                      inputRef={(el) => (inputRefs.current[6] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "80px" }}
-                      size="small"
-                      error={!!error.qty}
-                      value={qty}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g, "");
-                        setQty(value ? Number(value) : "");
-                      }}
-                      inputRef={(el) => (inputRefs.current[7] = el)}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                        const isEnter = e.key === "Enter";
-
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (isEnter) {
-                          e.preventDefault();
-                          handleKeyDown(e, 7);
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      type="number"
-                      sx={{ width: "60px" }}
-                      value={free}
-                      error={!!error.free}
-                      onChange={(e) => {
-                        const value = e.target.value.replace(/[^0-9]/g);
-                        setFree(value ? Number(value) : "");
-                      }}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", ".", "+", "-", ","];
-                        if (invalidKeys.includes(e.key)) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (e.key === "Enter") {
-                          e.preventDefault();
-                          handleKeyDown(e, 8);
-                        }
-                      }}
-                      inputRef={(el) => (inputRefs.current[8] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "90px" }}
-                      size="small"
-                      value={ptr}
-                      error={!!error.ptr}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*\.?\d*$/.test(value)) {
-                          setPTR(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isEnter = e.key === "Enter";
-                        const isShiftTab = isTab && e.shiftKey;
-                        const invalidKeys = ["e", "E", "+", "-", ","];
-
-                        if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
-                          e.preventDefault();
-                          return;
-                        }
-
-                        if (isShiftTab) return;
-
-                        if (isEnter || isTab) {
-                          // if (!ptr || ptr === 0) {
-                          //   e.preventDefault();
-                          //   toast.error("PTR is required and must be greater than 0");
-                          //   return;
-                          // }
-
-                          if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        type="number"
+                        sx={{ width: "60px" }}
+                        value={free}
+                        error={!!error.free}
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/[^0-9]/g);
+                          setFree(value ? Number(value) : "");
+                        }}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", ".", "+", "-", ","];
+                          if (invalidKeys.includes(e.key)) {
                             e.preventDefault();
-                            toast.error("PTR must be less than MRP");
-                            return;
-                          }
-                        }
-
-                        handleKeyDown(e, 9);
-                      }}
-                      inputRef={(el) => (inputRefs.current[9] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      sx={{ width: "65px" }}
-                      size="small"
-                      type="text"
-                      value={disc}
-                      onKeyDown={(e) => {
-                        const invalidKeys = ["e", "E", "+", "-", ","];
-                        if (
-                          invalidKeys.includes(e.key) ||
-                          (e.key === "." && e.target.value.includes("."))
-                        ) {
-                          e.preventDefault();
-                        }
-
-                        handleKeyDown(e, 10);
-                      }}
-                      onChange={(e) => {
-                        let value = Number(e.target.value);
-                        if (value > 99) {
-                          value = 99;
-                          e.target.value = 99;
-                        }
-                        handleSchAmt({ ...e, target: { ...e.target, value } });
-                      }}
-                      inputRef={(el) => (inputRefs.current[10] = el)}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      size="small"
-                      value={base === 0 ? "" : base}
-                      disabled
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setBase(e.target.value);
-                      }}
-                    />
-                  </td>
-
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      value={gst}
-                      sx={{ width: "65px" }}
-                      error={!!error.gst}
-                      inputRef={(el) => (inputRefs.current[11] = el)}
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                          setGst(value ? Number(value) : "");
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        const isTab = e.key === "Tab";
-                        const isEnter = e.key === "Enter";
-                        const isShiftTab = isTab && e.shiftKey;
-
-                        if (isShiftTab) return;
-
-                        if (isEnter || isTab) {
-                          const allowedGST = [0, 5, 18];
-
-                          if (gst === "" || gst === null || gst === undefined) {
-                            e.preventDefault();
-                            toast.error("GST is required");
                             return;
                           }
 
-                          if (!allowedGST.includes(Number(gst))) {
+                          if (e.key === "Enter") {
                             e.preventDefault();
-                            toast.error("Only 0%, 5%, 18% GST is allowed");
+                            handleKeyDown(e, 8);
+                          }
+                        }}
+                        inputRef={(el) => (inputRefs.current[8] = el)}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        sx={{ width: "90px" }}
+                        size="small"
+                        value={ptr}
+                        error={!!error.ptr}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*\.?\d*$/.test(value)) {
+                            setPTR(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isEnter = e.key === "Enter";
+                          const isShiftTab = isTab && e.shiftKey;
+                          const invalidKeys = ["e", "E", "+", "-", ","];
+
+                          if (invalidKeys.includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
+                            e.preventDefault();
                             return;
                           }
-                        }
 
-                        handleKeyDown(e, 11);
-                      }}
-                    />
-                  </td>
+                          if (isShiftTab) return;
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      value={loc?.toUpperCase()}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setLoc(e.target.value);
-                      }}
-                      inputRef={(el) => (inputRefs.current[12] = el)}
-                      onKeyDown={async (e) => {
-                        if (e.key === "Enter") {
-                          e.preventDefault();
+                          if (isEnter || isTab) {
+                            // if (!ptr || ptr === 0) {
+                            //   e.preventDefault();
+                            //   toast.error("PTR is required and must be greater than 0");
+                            //   return;
+                            // }
 
-                          handleAddButtonClick();
-                        }
-                      }}
-                    />
-                  </td>
+                            if (Number(mrp) && Number(ptr) >= Number(mrp)) {
+                              e.preventDefault();
+                              toast.error("PTR must be less than MRP");
+                              return;
+                            }
+                          }
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={netRate === 0 ? "" : netRate}
-                      sx={{ width: "100px" }}
-                    />
-                  </td>
+                          handleKeyDown(e, 9);
+                        }}
+                        inputRef={(el) => (inputRefs.current[9] = el)}
+                      />
+                    </td>
 
-                  <td>
-                    <TextField
-                      variant="outlined"
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      disabled
-                      size="small"
-                      value={margin === 0 ? "" : margin}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setMargin(e.target.value);
-                      }}
-                    />
-                  </td>
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        sx={{ width: "65px" }}
+                        size="small"
+                        type="text"
+                        value={disc}
+                        onKeyDown={(e) => {
+                          const invalidKeys = ["e", "E", "+", "-", ","];
+                          if (
+                            invalidKeys.includes(e.key) ||
+                            (e.key === "." && e.target.value.includes("."))
+                          ) {
+                            e.preventDefault();
+                          }
 
-                  <td className="total">
-                    <span className="font-bold">
-                      {ItemTotalAmount.toFixed(2)}
-                    </span>
-                  </td>
-                </tr>
+                          handleKeyDown(e, 10);
+                        }}
+                        onChange={(e) => {
+                          let value = Number(e.target.value);
+                          if (value > 99) {
+                            value = 99;
+                            e.target.value = 99;
+                          }
+                          handleSchAmt({ ...e, target: { ...e.target, value } });
+                        }}
+                        inputRef={(el) => (inputRefs.current[10] = el)}
+                      />
+                    </td>
 
-                {/* Added Items Rows */}
-                {ItemPurchaseList?.item?.map((item, index) => (
-                  <>
-                    {isLoading ? (
-                      <div className="loader-container ">
-                        <Loader />
-                      </div>
-                    ) : (
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        size="small"
+                        value={base === 0 ? "" : base}
+                        disabled
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setBase(e.target.value);
+                        }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        size="small"
+                        value={gst}
+                        sx={{ width: "65px" }}
+                        error={!!error.gst}
+                        inputRef={(el) => (inputRefs.current[11] = el)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (/^\d*$/.test(value)) {
+                            setGst(value ? Number(value) : "");
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          const isTab = e.key === "Tab";
+                          const isEnter = e.key === "Enter";
+                          const isShiftTab = isTab && e.shiftKey;
+
+                          if (isShiftTab) return;
+
+                          if (isEnter || isTab) {
+                            const allowedGST = [0, 5, 18];
+
+                            if (gst === "" || gst === null || gst === undefined) {
+                              e.preventDefault();
+                              toast.error("GST is required");
+                              return;
+                            }
+
+                            if (!allowedGST.includes(Number(gst))) {
+                              e.preventDefault();
+                              toast.error("Only 0%, 5%, 18% GST is allowed");
+                              return;
+                            }
+                          }
+
+                          handleKeyDown(e, 11);
+                        }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        size="small"
+                        value={loc?.toUpperCase()}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setLoc(e.target.value);
+                        }}
+                        inputRef={(el) => (inputRefs.current[12] = el)}
+                        onKeyDown={async (e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+
+                            handleAddButtonClick();
+                          }
+                        }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        value={netRate === 0 ? "" : netRate}
+                        sx={{ width: "100px" }}
+                      />
+                    </td>
+
+                    <td>
+                      <TextField
+                        variant="outlined"
+                        autoComplete="off"
+                        id="outlined-number"
+                        type="number"
+                        disabled
+                        size="small"
+                        value={margin === 0 ? "" : margin}
+                        sx={{ width: "100px" }}
+                        onChange={(e) => {
+                          setMargin(e.target.value);
+                        }}
+                      />
+                    </td>
+
+                    <td className="total">
+                      <span className="font-bold">
+                        {ItemTotalAmount.toFixed(2)}
+                      </span>
+                    </td>
+                  </tr>
+
+                  {/* ITEM LIST OR LOADER */}
+                  {isLoading && (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) ? (
+                    <tr>
+                      <td colSpan={15} style={{ padding: "20px" }}>
+                        <div className="loader-container">
+                          <Loader />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (
+                    ItemPurchaseList?.item?.map((item, index) => (
                       <tr
                         key={item.id}
                         onClick={() => {
@@ -2982,1087 +2930,1085 @@ const AddPurchaseBill = () => {
                         <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
                           {item.total_amount ? item.total_amount : "-----"}
                         </td>
-                      </tr>)}
-                  </>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-                ))}
-              </tbody>
-            </table>
-          </div>
+            {/*<============================================================= total and other details  ============================================================> */}
 
-          {/*<====================================================================== total and other details  =====================================================================> */}
-
-          <div
-            className=""
-            style={{
-              background: "var(--color1)",
-              color: "white",
-              display: "flex",
-              justifyContent: "space-between",
-              position: "fixed",
-              width: "100%",
-              bottom: "0",
-              overflow: "auto",
-              left: "0",
-            }}
-          >
             <div
               className=""
               style={{
+                background: "var(--color1)",
+                color: "white",
                 display: "flex",
-                gap: "40px",
-                whiteSpace: "nowrap",
+                justifyContent: "space-between",
+                position: "fixed",
+                width: "100%",
+                bottom: "0",
+                overflow: "auto",
                 left: "0",
-                padding: "20px",
               }}
             >
               <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total GST : </label>
-
-                <span style={{ fontWeight: 600 }}>
-                  {totalGst ? totalGst : 0}{" "}
-                </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total Qty : </label>
-                <span style={{ fontWeight: 600 }}>
-                  {" "}
-                  {totalQty ? totalQty : 0} +&nbsp;
-                  <span className="">{totalFree ? totalFree : 0} Free</span>
-                </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total Base : </label>
-                <span style={{ fontWeight: 600 }}>
-                  {" "}
-                  {totalBase ? totalBase : 0}
-                </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total Net Rate : </label>
-                <span style={{ fontWeight: 600 }}>
-                  ₹ {totalNetRate ? totalNetRate : 0}
-                </span>
-              </div>
-            </div>
-
-            <div
-              style={{
-                display: "flex",
-                padding: "0 20px",
-                whiteSpace: "noWrap",
-              }}
-            >
-              <div
-                className="gap-2 "
-                onClick={toggleModal}
+                className=""
                 style={{
                   display: "flex",
-                  alignItems: "center",
-                  cursor: "pointer",
+                  gap: "40px",
+                  whiteSpace: "nowrap",
+                  left: "0",
+                  padding: "20px",
                 }}
               >
-                <label className="font-bold">Net Amount : </label>
-                <span
-                  className="gap-1"
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Total GST : </label>
+
+                  <span style={{ fontWeight: 600 }}>
+                    {totalGst ? totalGst : 0}{" "}
+                  </span>
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Total Qty : </label>
+                  <span style={{ fontWeight: 600 }}>
+                    {" "}
+                    {totalQty ? totalQty : 0} +&nbsp;
+                    <span className="">{totalFree ? totalFree : 0} Free</span>
+                  </span>
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Total Base : </label>
+                  <span style={{ fontWeight: 600 }}>
+                    {" "}
+                    {totalBase ? totalBase : 0}
+                  </span>
+                </div>
+                <div
+                  className="gap-2 invoice_total_fld"
+                  style={{ display: "flex" }}
+                >
+                  <label className="font-bold">Total Net Rate : </label>
+                  <span style={{ fontWeight: 600 }}>
+                    ₹ {totalNetRate ? totalNetRate : 0}
+                  </span>
+                </div>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  padding: "0 20px",
+                  whiteSpace: "noWrap",
+                }}
+              >
+                <div
+                  className="gap-2 "
+                  onClick={toggleModal}
                   style={{
-                    fontWeight: 800,
-                    fontSize: "22px",
-                    whiteSpace: "nowrap",
                     display: "flex",
                     alignItems: "center",
+                    cursor: "pointer",
                   }}
                 >
-                  {netAmount.toFixed(2)}
-                  <FaCaretUp />
-                </span>
-              </div>
-
-              <Modal
-                show={isModalOpen}
-                onClose={toggleModal}
-                size="lg"
-                position="bottom-center"
-                className="modal_amount"
-              // style={{ width: "50%" }}
-              >
-                <div
-                  style={{
-                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                    padding: "20px",
-                    fontSize: "larger",
-                    display: "flex",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                  <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
-                </div>
-                <div
-                  style={{
-                    background: "white",
-                    padding: "20px",
-                    width: "100%",
-                    maxWidth: "600px",
-                    margin: "0 auto",
-                    lineHeight: "2.5rem",
-                  }}
-                >
-                  <div
-                    className=""
+                  <label className="font-bold">Net Amount : </label>
+                  <span
+                    className="gap-1"
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <label className="font-bold">Total Amount : </label>
-                    <span style={{ fontWeight: 600 }}>
-                      {finalTotalAmount?.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div
-                    className=""
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <label className="font-bold">Other Amount : </label>
-                    <span style={{ fontWeight: 600 }}>
-                      <Input
-                        type="text"
-                        value={otherAmt}
-
-                        onChange={(e) => {
-                          const val = e.target.value;
-                          if (/^-?\d*\.?\d*$/.test(val)) {
-                            setOtherAmt(val);
-                          }
-                        }} size="small"
-                        style={{
-                          width: "70px",
-                          background: "none",
-                          // borderBottom: "1px solid gray",
-                          justifyItems: "end",
-                          outline: "none",
-                        }}
-                        sx={{
-                          "& .MuiInputBase-root": {
-                            height: "35px",
-                          },
-                          "& .MuiInputBase-input": { textAlign: "end" },
-                        }}
-                      />
-                    </span>
-                  </div>
-
-
-                  <div
-                    className=""
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      paddingBottom: "5px",
-                    }}
-                  >
-                    <label className="font-bold">CN Amount : </label>
-                    <span
-                      style={{
-                        fontWeight: 600,
-                        color: "#F31C1C",
-                      }}
-                    >
-                      -{finalCnAmount?.toFixed(2)}
-                    </span>
-                  </div>
-
-                  <div
-                    className="font-bold"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      paddingBottom: "5px",
-                      borderTop:
-                        "1px solid var(--toastify-spinner-color-empty-area)",
-                      paddingTop: "5px",
-                    }}
-                  >
-                    <label className="font-bold">Round Off : </label>
-                    <span>
-                      {" "}
-                      {roundOffAmount === "0.00"
-                        ? roundOffAmount
-                        : roundOffAmount < 0
-                          ? `-${Math.abs(roundOffAmount.toFixed(2))}`
-                          : `${Math.abs(roundOffAmount.toFixed(2))}`}
-                    </span>
-                  </div>
-
-                  <div
-                    className=""
-                    style={{
+                      fontWeight: 800,
+                      fontSize: "22px",
+                      whiteSpace: "nowrap",
                       display: "flex",
                       alignItems: "center",
-                      cursor: "pointer",
-                      justifyContent: "space-between",
-                      borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                      paddingTop: "5px",
                     }}
                   >
-                    <label className="font-bold">Net Amount: </label>
-                    <span
-                      style={{
-                        fontWeight: 800,
-                        fontSize: "22px",
-                        color: "var(--COLOR_UI_PHARMACY)",
-                      }}
-                    >
-                      {netAmount.toFixed(2)}
-                    </span>
-                  </div>
+                    {netAmount.toFixed(2)}
+                    <FaCaretUp />
+                  </span>
                 </div>
-              </Modal>
-            </div>
-          </div>
 
-        </div>
-
-        {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
-
-        <Dialog open={openAddPopUp} className="custom-dialog max-991">
-          <DialogTitle id="alert-dialog-title" className="secondary">
-            Add Amount
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={resetAddDialog}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div className="bg-white">
-                <div className="bg-white">
-                  <table className="custom-table">
-                    <thead>
-                      <tr>
-                        <th>
-                          <input
-                            type="checkbox"
-                            onChange={handleSelectAll}
-                            checked={
-                              selectedRows.length ===
-                              purchaseReturnPending.length &&
-                              purchaseReturnPending.length > 0
-                            }
-                          />
-                        </th>
-                        <th>Bill No</th>
-                        <th>Bill Date</th>
-                        <th>Amount</th>
-                        <th>Adjust CN Amount</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {purchaseReturnPending.length === 0 ? (
-                        <tr>
-                          <td colSpan={5}>No data found</td>
-                        </tr>
-                      ) : (
-                        purchaseReturnPending.map((row, index) => (
-                          <tr key={index}>
-                            <td>
-                              <input
-                                type="checkbox"
-                                onChange={(e) =>
-                                  handleRowSelect(row.id, row.total_amount || 0)
-                                }
-                                checked={selectedRows.includes(row.id)}
-                              />
-                            </td>
-                            <td>{row.bill_no}</td>
-                            <td>{row.bill_date}</td>
-                            <td>{row.total_amount}</td>
-                            <td>
-                              <OutlinedInput
-                                type="number"
-                                value={cnTotalAmount[row.id] || ""}
-                                onChange={(e) =>
-                                  handleCnAmountChange(
-                                    row.id,
-                                    e.target.value,
-                                    row.total_amount
-                                  )
-                                }
-                                startAdornment={
-                                  <InputAdornment position="start">
-                                    Rs.
-                                  </InputAdornment>
-                                }
-                                sx={{ width: 130, m: 1 }}
-                                size="small"
-                                disabled={!selectedRows.includes(row.id)}
-                              />
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                      <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>Selected Bills Amount</td>
-                        <td>
-                          <span
-                            style={{
-                              fontSize: "14px",
-                              fontWeight: 800,
-                              color: "black",
-                            }}
-                          >
-                            Rs.{(parseFloat(cnAmount) || 0).toFixed(2)}
-                          </span>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button
-              autoFocus
-              variant="contained"
-              style={{ backgroundColor: "#3f6212", color: "white" }}
-              onClick={handleCnAmount}
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-        {/*<========================================================================= Bulk Import csv ========================================================================> */}
-
-        <Dialog open={openFile} className="custom-dialog">
-          <DialogTitle className="primary">Import Item</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={() => {
-              setOpenFile(false);
-            }}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div
-                className="bg-white"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "15px",
-                  marginBlock: "20px",
-                }}
-              >
-                {/* Different dropdowns for each mode */}
-                {dialogMode === "csv" && (
-                  <FormControl size="small" sx={{ width: 200 }}>
-                    <InputLabel>Select Software (CSV)</InputLabel>
-                    <Select
-                      value={importConpany}
-                      onChange={(event) => setImportConpany(event.target.value)}
-                      label="Select Software (CSV)"
-                      autoFocus
-                    >
-                      {Object.keys(optionForCsv).map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-
-                {dialogMode === "stock" && (
-                  <FormControl size="small" sx={{ width: 200 }}>
-                    <InputLabel>Select Software (Stock)</InputLabel>
-                    <Select
-                      value={importConpany}
-                      onChange={(event) => setImportConpany(event.target.value)}
-                      label="Select Software (Stock)"
-                      autoFocus
-                    >
-                      {Object.keys(optionForStock).map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                )}
-
-                {/* File Upload */}
-                <div>
-                  <input
-                    className="File-upload"
-                    type="file"
-                    accept=".csv, .xls, .xlsx"
-                    id="file-upload"
-                    onChange={handleFileSelect}
-                  />
-
-                </div>
-              </div>
-
-              <Button
-                onClick={handleDownload}
-                style={{ backgroundColor: "#3f6212", color: "white" }}
-              >
-                <CloudDownloadIcon className="mr-2 " />
-                Download Sample
-              </Button>
-            </DialogContentText>
-          </DialogContent>
-
-          <DialogActions>
-            <Button
-              autoFocus
-              style={{ backgroundColor: "#3f6212", color: "white" }}
-              type="success"
-              onClick={handleFileUpload}
-            >
-              Save
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/*<======================================================================== add Distributor PopUp Box  =======================================================================> */}
-
-        <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
-          <DialogTitle id="alert-dialog-title" className="primary">
-            Add Distributor
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={() => {
-              setOpenAddDistributorPopUp(false);
-              setAddDistributorAddress("");
-              setAddDistributorMobile("");
-              setAddDistributorName("");
-              setAddDistributorNo("");
-            }}
-
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div className="bg-white" style={{
-                alignItems: "center",
-                gap: "15px",
-                overflow: "hidden"
-              }}>
-                <div className="mainform bg-white rounded-lg">
-
-                  {/* Row 1: Distributor Name + GST */}
-                  <div className="row gap-5">
-
-                    {/* Distributor Name */}
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor Name<span className="text-red-600  ">*</span></label>
-                      <Autocomplete
-                        freeSolo
-                        options={distributorList.map(d => d.name)}
-                        value={addDistributorName}
-                        onInputChange={(e, newValue) => {
-                          setAddDistributorName(newValue.toUpperCase());
-                        }}
-                        onChange={(e, selectedValue) => {
-                          const found = distributorList.find(d => d.name === selectedValue);
-                          if (found) {
-                            setAddDistributorName(found.name);
-                            setAddDistributorMobile(found.phone_number);
-                            setAddDistributorNo(found.gst);
-                            setAddDistributorAddress(found.area || "");
-                          }
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-
-                            size="small"
-                            inputRef={(el) => (inputRefs.current[16] = el)}
-                            onKeyDown={(e) => handleKeyDown(e, 16)}
-                            inputProps={{
-                              ...params.inputProps,
-                              style: { textTransform: "uppercase" },
-                              autoComplete: "off",
-                            }}
-                          />
-                        )}
-                      />
-                    </div>
-
-
-
-                  </div>
-                  <div className="row gap-5">
-
-                    {/* Mobile Number */}
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Mobile Number<span className="text-red-600  ">*</span></label>
-                      <Autocomplete
-                        freeSolo
-                        options={distributorList.map(d => d.phone_number)}
-                        value={addDistributorMobile}
-                        onInputChange={(e, newValue) => {
-                          const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
-
-                          // Check if number already exists
-                          const exists = distributorList.some(d => d.phone_number === numericValue);
-                          if (exists) {
-                            // Optional: show alert or set error state
-                            console.warn("This number already exists!");
-                          }
-
-                          setAddDistributorMobile(numericValue);
-                        }}
-                        onChange={(e, selectedValue) => {
-                          const found = distributorList.find(d => d.phone_number === selectedValue);
-                          if (found) {
-                            setAddDistributorName(found.name);
-                            setAddDistributorMobile(found.phone_number);
-                            setAddDistributorNo(found.gst);
-                            setAddDistributorAddress(found.area || "");
-                          }
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            size="small"
-                            inputRef={(el) => (inputRefs.current[17] = el)}
-                            onKeyDown={(e) => handleKeyDown(e, 17)}
-                            inputProps={{
-                              ...params.inputProps,
-                              autoComplete: "off",
-                              inputMode: "numeric",
-                              maxLength: 10,
-                              pattern: "[0-9]{10}",
-                              onInput: (e) => {
-                                e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
-                              }
-                            }}
-                            error={distributorList.some(d => d.phone_number === addDistributorMobile)}
-                            helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
-                          />
-                        )}
-                      />
-                    </div>
-                    {/* GST Number */}
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Distributor GSTIN Number<span className="text-red-600  ">*</span></label>
-                      <Autocomplete
-                        freeSolo
-                        options={distributorList.map(d => d.gst)}
-                        getOptionLabel={(option) => (typeof option === "string" ? option : "")}
-                        value={addDistributorNo}
-                        onInputChange={(e, newValue) => {
-                          setAddDistributorNo(newValue.toUpperCase());
-                        }}
-                        onChange={(e, selectedValue) => {
-                          const found = distributorList.find(d => d.gst === selectedValue);
-                          if (found) {
-                            setAddDistributorName(found.name);
-                            setAddDistributorMobile(found.phone_number);
-                            setAddDistributorNo(found.gst);
-                            setAddDistributorAddress(found.area || "");
-                          }
-                        }}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-
-                            size="small"
-                            inputRef={(el) => (inputRefs.current[18] = el)}
-                            onKeyDown={(e) => handleKeyDown(e, 18)}
-                            inputProps={{
-                              ...params.inputProps,
-                              style: { textTransform: "uppercase" },
-                              autoComplete: "off",
-                              maxLength: 15,
-                              onInput: (e) => {
-                                e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
-                              }
-                            }}
-
-                          />
-                        )}
-                      />
-
-                    </div>
-                  </div>
-
-                  {/* Row 3: Mobile + Address */}
-                  <div className="row gap-5">
-
-
-                    {/* Address */}
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Address</label>
-                      <TextField
-                        autoComplete="off"
-                        size="small"
-                        value={addDistributorAddress}
-                        onChange={(e) => setAddDistributorAddress(e.target.value)}
-                        inputRef={(el) => (inputRefs.current[19] = el)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault();
-                            handleAddNewDistributor();
-                          }
-                        }}
-                      />
-                    </div>
-
-                  </div>
-
-                  {/* Add Button */}
-                  <div className="row" style={{
-                    justifyContent: "flex-end",
-                    paddingRight: "4px",
-                    paddingTop: "8%",
-                  }}>
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#3f6212",
-                        "&:hover": { backgroundColor: "#3f6212" },
-                      }}
-                      onClick={handleAddNewDistributor}
-                      ref={addButtonref}
-                    >
-                      <ControlPointIcon className="mr-2" />
-                      Add Distributor
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
-
-        {/*<======================================================================== add item PopUp Box  =======================================================================> */}
-
-        <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
-          <DialogTitle id="alert-dialog-title" className="primary">
-            Add New Item
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={resetAddDialog}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <div className="bg-white">
-                <div className="mainform bg-white rounded-lg">
-                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Item Name <span className="text-red-600  ">*</span></label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        size="small"
-                        value={addItemName}
-                        autoFocus
-                        onChange={(e) =>
-                          setAddItemName(e.target.value.toUpperCase())
-                        }
-                        inputRef={(el) => (inputRefs.current[13] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 13)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="row gap-3 sm:flex-nowrap flex-wrap">
-
-                    <div className="fields add_new_item_divv">
-                      <label className="label  secondary">Barcode</label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        type="number"
-                        size="small"
-                        value={addBarcode}
-                        onChange={(e) => setAddBarcode(Number(e.target.value))}
-                        inputRef={(el) => (inputRefs.current[14] = el)}
-                        onKeyDown={(e) => handleKeyDown(e, 14)}
-                      />
-                    </div>
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Unit <span className="text-red-600  ">*</span></label>
-                      <TextField
-                        autoComplete="off"
-                        id="outlined-number"
-                        type="number"
-                        size="small"
-                        value={addUnit}
-                        onChange={(e) => setAddUnit(e.target.value)}
-                        inputRef={(el) => (inputRefs.current[15] = el)}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") {
-                            e.preventDefault(); // Prevent form submission
-                            handleAddNewItem();
-                          }
-                        }}
-                      />
-                    </div>
-                    <div className="fields add_new_item_divv">
-                      <label className="label secondary">Pack</label>
-                      <TextField
-                        autoComplete="off"
-                        disabled
-                        id="outlined-number"
-                        size="small"
-                        value={`1 * ${addUnit} `}
-                      />
-                    </div>
+                <Modal
+                  show={isModalOpen}
+                  onClose={toggleModal}
+                  size="lg"
+                  position="bottom-center"
+                  className="modal_amount"
+                // style={{ width: "50%" }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                      color: "white",
+                      padding: "20px",
+                      fontSize: "larger",
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                    <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
                   </div>
                   <div
-                    className="row mt-3"
                     style={{
-                      justifyContent: "flex-end",
-                      paddingRight: "4px",
+                      background: "white",
+                      padding: "20px",
+                      width: "100%",
+                      maxWidth: "600px",
+                      margin: "0 auto",
+                      lineHeight: "2.5rem",
                     }}
                   >
-                    <Button
-                      variant="contained"
-                      sx={{
-                        backgroundColor: "#3f6212",
-                        "&:hover": {
-                          backgroundColor: "#3f6212",
-                        },
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
                       }}
-                      onClick={handleAddNewItem}
-                      ref={addButtonref}
                     >
-                      <ControlPointIcon className="mr-2" />
-                      Add New Item
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
+                      <label className="font-bold">Total Amount : </label>
+                      <span style={{ fontWeight: 600 }}>
+                        {finalTotalAmount?.toFixed(2)}
+                      </span>
+                    </div>
 
-        {/*<====================================================================== Item History Modal  =====================================================================> */}
-        <Dialog
-          open={openItemHistory}
-          onClose={() => setOpenItemHistory(false)}
-          className="custom-dialog"
-          sx={{
-            "& .MuiDialog-container": {
-              "& .MuiPaper-root": {
-                width: "80%",
-                maxWidth: "1200px",
-              },
-            },
-          }}
-        >
-          <DialogTitle id="alert-dialog-title" className="secondary">
-            Item Purchase History
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={() => setOpenItemHistory(false)}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: "#ffffff",
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent sx={{ padding: 0 }}>
-            <DialogContentText id="alert-dialog-description" sx={{ margin: 0 }}>
-              {isLoading ? (
-                <div className="flex justify-center items-center p-8">
-                  <CircularProgress />
-                </div>
-              ) : (
-                <div
-                  className="flex"
-                  style={{ flexDirection: "column", gap: "0" }}
-                >
-                  <div className="custom-scroll-sale" style={{ width: "100%" }}>
-                    <table className="custom-table" style={{ background: "none", margin: 0 }}>
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <label className="font-bold">Other Amount : </label>
+                      <span style={{ fontWeight: 600 }}>
+                        <Input
+                          type="text"
+                          value={otherAmt}
+
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            if (/^-?\d*\.?\d*$/.test(val)) {
+                              setOtherAmt(val);
+                            }
+                          }} size="small"
+                          style={{
+                            width: "70px",
+                            background: "none",
+                            // borderBottom: "1px solid gray",
+                            justifyItems: "end",
+                            outline: "none",
+                          }}
+                          sx={{
+                            "& .MuiInputBase-root": {
+                              height: "35px",
+                            },
+                            "& .MuiInputBase-input": { textAlign: "end" },
+                          }}
+                        />
+                      </span>
+                    </div>
+
+
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                      }}
+                    >
+                      <label className="font-bold">CN Amount : </label>
+                      <span
+                        style={{
+                          fontWeight: 600,
+                          color: "#F31C1C",
+                        }}
+                      >
+                        -{finalCnAmount?.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <div
+                      className="font-bold"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        paddingBottom: "5px",
+                        borderTop:
+                          "1px solid var(--toastify-spinner-color-empty-area)",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Round Off : </label>
+                      <span>
+                        {" "}
+                        {roundOffAmount === "0.00"
+                          ? roundOffAmount
+                          : roundOffAmount < 0
+                            ? `-${Math.abs(roundOffAmount.toFixed(2))}`
+                            : `${Math.abs(roundOffAmount.toFixed(2))}`}
+                      </span>
+                    </div>
+
+                    <div
+                      className=""
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                        justifyContent: "space-between",
+                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                        paddingTop: "5px",
+                      }}
+                    >
+                      <label className="font-bold">Net Amount: </label>
+                      <span
+                        style={{
+                          fontWeight: 800,
+                          fontSize: "22px",
+                          color: "var(--COLOR_UI_PHARMACY)",
+                        }}
+                      >
+                        {netAmount.toFixed(2)}
+                      </span>
+                    </div>
+                  </div>
+                </Modal>
+              </div>
+            </div>
+
+          </div>
+
+          {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
+
+          <Dialog open={openAddPopUp} className="custom-dialog max-991">
+            <DialogTitle id="alert-dialog-title" className="secondary">
+              Add Amount
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={resetAddDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="bg-white">
+                  <div className="bg-white">
+                    <table className="custom-table">
                       <thead>
-                        <tr className="customtable">
+                        <tr>
                           <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Distributor</span>
-                            </div>
+                            <input
+                              type="checkbox"
+                              onChange={handleSelectAll}
+                              checked={
+                                selectedRows.length ===
+                                purchaseReturnPending.length &&
+                                purchaseReturnPending.length > 0
+                              }
+                            />
                           </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Bill No</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Bill Date</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Unit</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Batch</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Expiry Date</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Qty</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Free Qty</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Discount</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Rate</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>MRP</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Margin</span>
-                            </div>
-                          </th>
+                          <th>Bill No</th>
+                          <th>Bill Date</th>
+                          <th>Amount</th>
+                          <th>Adjust CN Amount</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {itemHistoryData && itemHistoryData.length > 0 ? (
-                          itemHistoryData.map((item) => (
-                            <tr
-                              hover
-                              tabIndex={-1}
-                              key={item.id}
-                              onClick={() => { history.push(`/purchase/view/${item.id}`) }}
-                            >
-                              <td>{item.party_name}</td>
-                              <td>{item.bill_no}</td>
-                              <td>{item.bill_date}</td>
-                              <td>{item.unit}</td>
-                              <td>{item.batch_name}</td>
-                              <td>{item.expiry_date}</td>
-                              <td>{item.qty}</td>
-                              <td>{item.free_qty}</td>
-                              <td>{item.sch}</td>
-                              <td>{item.rate}</td>
-                              <td>{item.mrp}</td>
-                              <td>{item.margin}</td>
+                        {purchaseReturnPending.length === 0 ? (
+                          <tr>
+                            <td colSpan={5}>No data found</td>
+                          </tr>
+                        ) : (
+                          purchaseReturnPending.map((row, index) => (
+                            <tr key={index}>
+                              <td>
+                                <input
+                                  type="checkbox"
+                                  onChange={(e) =>
+                                    handleRowSelect(row.id, row.total_amount || 0)
+                                  }
+                                  checked={selectedRows.includes(row.id)}
+                                />
+                              </td>
+                              <td>{row.bill_no}</td>
+                              <td>{row.bill_date}</td>
+                              <td>{row.total_amount}</td>
+                              <td>
+                                <OutlinedInput
+                                  type="number"
+                                  value={cnTotalAmount[row.id] || ""}
+                                  onChange={(e) =>
+                                    handleCnAmountChange(
+                                      row.id,
+                                      e.target.value,
+                                      row.total_amount
+                                    )
+                                  }
+                                  startAdornment={
+                                    <InputAdornment position="start">
+                                      Rs.
+                                    </InputAdornment>
+                                  }
+                                  sx={{ width: 130, m: 1 }}
+                                  size="small"
+                                  disabled={!selectedRows.includes(row.id)}
+                                />
+                              </td>
                             </tr>
                           ))
-                        ) : (
-                          <tr>
-                            <td
-                              colSpan={12}
+                        )}
+                        <tr>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>Selected Bills Amount</td>
+                          <td>
+                            <span
                               style={{
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: 600,
-                                padding: "20px"
+                                fontSize: "14px",
+                                fontWeight: 800,
+                                color: "black",
                               }}
                             >
-                              No history found
-                            </td>
-                          </tr>
-                        )}
+                              Rs.{(parseFloat(cnAmount) || 0).toFixed(2)}
+                            </span>
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-              )}
-            </DialogContentText>
-          </DialogContent>
-        </Dialog>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                autoFocus
+                variant="contained"
+                style={{ backgroundColor: "#3f6212", color: "white" }}
+                onClick={handleCnAmount}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+          {/*<====================================================================== Bulk Import csv =====================================================================> */}
 
-        {/*<==========================================================================  Delete PopUP   =========================================================================> */}
-
-        <div
-          id="modal"
-          value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-            }`}
-        >
-          <div />
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
-              viewBox="0 0 24 24"
-              onClick={() => setIsDelete(false)}
+          <Dialog open={openFile} className="custom-dialog">
+            <DialogTitle className="primary">Import Item</DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => {
+                setOpenFile(false);
+              }}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
             >
-              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-            </svg>
-            <div className="my-4 text-center">
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div
+                  className="bg-white"
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    marginBlock: "20px",
+                  }}
+                >
+                  {/* Different dropdowns for each mode */}
+                  {dialogMode === "csv" && (
+                    <FormControl size="small" sx={{ width: 200 }}>
+                      <InputLabel>Select Software (CSV)</InputLabel>
+                      <Select
+                        value={importConpany}
+                        onChange={(event) => setImportConpany(event.target.value)}
+                        label="Select Software (CSV)"
+                        autoFocus
+                      >
+                        {Object.keys(optionForCsv).map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  {dialogMode === "stock" && (
+                    <FormControl size="small" sx={{ width: 200 }}>
+                      <InputLabel>Select Software (Stock)</InputLabel>
+                      <Select
+                        value={importConpany}
+                        onChange={(event) => setImportConpany(event.target.value)}
+                        label="Select Software (Stock)"
+                        autoFocus
+                      >
+                        {Object.keys(optionForStock).map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+
+                  {/* File Upload */}
+                  <div>
+                    <input
+                      className="File-upload"
+                      type="file"
+                      accept=".csv, .xls, .xlsx"
+                      id="file-upload"
+                      onChange={handleFileSelect}
+                    />
+
+                  </div>
+                </div>
+
+                <Button
+                  onClick={handleDownload}
+                  style={{ backgroundColor: "#3f6212", color: "white" }}
+                >
+                  <CloudDownloadIcon className="mr-2 " />
+                  Download Sample
+                </Button>
+              </DialogContentText>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                autoFocus
+                style={{ backgroundColor: "#3f6212", color: "white" }}
+                type="success"
+                onClick={handleFileUpload}
+              >
+                Save
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/*<=============================================================== add Distributor PopUp Box  ============================================================> */}
+
+          <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
+            <DialogTitle id="alert-dialog-title" className="primary">
+              Add Distributor
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => {
+                setOpenAddDistributorPopUp(false);
+                setAddDistributorAddress("");
+                setAddDistributorMobile("");
+                setAddDistributorName("");
+                setAddDistributorNo("");
+              }}
+
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="bg-white" style={{
+                  alignItems: "center",
+                  gap: "15px",
+                  overflow: "hidden"
+                }}>
+                  <div className="mainform bg-white rounded-lg">
+
+                    {/* Row 1: Distributor Name + GST */}
+                    <div className="row gap-5">
+
+                      {/* Distributor Name */}
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Distributor Name<span className="text-red-600  ">*</span></label>
+                        <Autocomplete
+                          freeSolo
+                          options={distributorList.map(d => d.name)}
+                          value={addDistributorName}
+                          onInputChange={(e, newValue) => {
+                            setAddDistributorName(newValue.toUpperCase());
+                          }}
+                          onChange={(e, selectedValue) => {
+                            const found = distributorList.find(d => d.name === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
+                            }
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+
+                              size="small"
+                              inputRef={(el) => (inputRefs.current[16] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 16)}
+                              inputProps={{
+                                ...params.inputProps,
+                                style: { textTransform: "uppercase" },
+                                autoComplete: "off",
+                              }}
+                            />
+                          )}
+                        />
+                      </div>
+
+                    </div>
+                    <div className="row gap-5">
+
+                      {/* Mobile Number */}
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Mobile Number<span className="text-red-600  ">*</span></label>
+                        <Autocomplete
+                          freeSolo
+                          options={distributorList.map(d => d.phone_number)}
+                          value={addDistributorMobile}
+                          onInputChange={(e, newValue) => {
+                            const numericValue = newValue.replace(/[^0-9]/g, "").slice(0, 10);
+
+                            // Check if number already exists
+                            const exists = distributorList.some(d => d.phone_number === numericValue);
+                            if (exists) {
+                              // Optional: show alert or set error state
+                              console.warn("This number already exists!");
+                            }
+
+                            setAddDistributorMobile(numericValue);
+                          }}
+                          onChange={(e, selectedValue) => {
+                            const found = distributorList.find(d => d.phone_number === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
+                            }
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              size="small"
+                              inputRef={(el) => (inputRefs.current[17] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 17)}
+                              inputProps={{
+                                ...params.inputProps,
+                                autoComplete: "off",
+                                inputMode: "numeric",
+                                maxLength: 10,
+                                pattern: "[0-9]{10}",
+                                onInput: (e) => {
+                                  e.target.value = e.target.value.replace(/[^0-9]/g, "").slice(0, 10);
+                                }
+                              }}
+                              error={distributorList.some(d => d.phone_number === addDistributorMobile)}
+                              helperText={distributorList.some(d => d.phone_number === addDistributorMobile) ? "This number already exists" : ""}
+                            />
+                          )}
+                        />
+                      </div>
+                      {/* GST Number */}
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Distributor GSTIN Number<span className="text-red-600  ">*</span></label>
+                        <Autocomplete
+                          freeSolo
+                          options={distributorList.map(d => d.gst)}
+                          getOptionLabel={(option) => (typeof option === "string" ? option : "")}
+                          value={addDistributorNo}
+                          onInputChange={(e, newValue) => {
+                            setAddDistributorNo(newValue.toUpperCase());
+                          }}
+                          onChange={(e, selectedValue) => {
+                            const found = distributorList.find(d => d.gst === selectedValue);
+                            if (found) {
+                              setAddDistributorName(found.name);
+                              setAddDistributorMobile(found.phone_number);
+                              setAddDistributorNo(found.gst);
+                              setAddDistributorAddress(found.area || "");
+                            }
+                          }}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+
+                              size="small"
+                              inputRef={(el) => (inputRefs.current[18] = el)}
+                              onKeyDown={(e) => handleKeyDown(e, 18)}
+                              inputProps={{
+                                ...params.inputProps,
+                                style: { textTransform: "uppercase" },
+                                autoComplete: "off",
+                                maxLength: 15,
+                                onInput: (e) => {
+                                  e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase().slice(0, 15);
+                                }
+                              }}
+
+                            />
+                          )}
+                        />
+
+                      </div>
+                    </div>
+
+                    {/* Row 3: Mobile + Address */}
+                    <div className="row gap-5">
+
+
+                      {/* Address */}
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Address</label>
+                        <TextField
+                          autoComplete="off"
+                          size="small"
+                          value={addDistributorAddress}
+                          onChange={(e) => setAddDistributorAddress(e.target.value)}
+                          inputRef={(el) => (inputRefs.current[19] = el)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              handleAddNewDistributor();
+                            }
+                          }}
+                        />
+                      </div>
+
+                    </div>
+
+                    {/* Add Button */}
+                    <div className="row" style={{
+                      justifyContent: "flex-end",
+                      paddingRight: "4px",
+                      paddingTop: "8%",
+                    }}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#3f6212",
+                          "&:hover": { backgroundColor: "#3f6212" },
+                        }}
+                        onClick={handleAddNewDistributor}
+                        ref={addButtonref}
+                      >
+                        <ControlPointIcon className="mr-2" />
+                        Add Distributor
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+
+          {/*<=============================================================== add item PopUp Box  ==============================================================> */}
+
+          <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
+            <DialogTitle id="alert-dialog-title" className="primary">
+              Add New Item
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={resetAddDialog}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div className="bg-white">
+                  <div className="mainform bg-white rounded-lg">
+                    <div className="row gap-3 sm:flex-nowrap flex-wrap">
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Item Name <span className="text-red-600  ">*</span></label>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-number"
+                          size="small"
+                          value={addItemName}
+                          autoFocus
+                          onChange={(e) =>
+                            setAddItemName(e.target.value.toUpperCase())
+                          }
+                          inputRef={(el) => (inputRefs.current[13] = el)}
+                          onKeyDown={(e) => handleKeyDown(e, 13)}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="row gap-3 sm:flex-nowrap flex-wrap">
+
+                      <div className="fields add_new_item_divv">
+                        <label className="label  secondary">Barcode</label>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-number"
+                          type="number"
+                          size="small"
+                          value={addBarcode}
+                          onChange={(e) => setAddBarcode(Number(e.target.value))}
+                          inputRef={(el) => (inputRefs.current[14] = el)}
+                          onKeyDown={(e) => handleKeyDown(e, 14)}
+                        />
+                      </div>
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Unit <span className="text-red-600  ">*</span></label>
+                        <TextField
+                          autoComplete="off"
+                          id="outlined-number"
+                          type="number"
+                          size="small"
+                          value={addUnit}
+                          onChange={(e) => setAddUnit(e.target.value)}
+                          inputRef={(el) => (inputRefs.current[15] = el)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault(); // Prevent form submission
+                              handleAddNewItem();
+                            }
+                          }}
+                        />
+                      </div>
+                      <div className="fields add_new_item_divv">
+                        <label className="label secondary">Pack</label>
+                        <TextField
+                          autoComplete="off"
+                          disabled
+                          id="outlined-number"
+                          size="small"
+                          value={`1 * ${addUnit} `}
+                        />
+                      </div>
+                    </div>
+                    <div
+                      className="row mt-3"
+                      style={{
+                        justifyContent: "flex-end",
+                        paddingRight: "4px",
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#3f6212",
+                          "&:hover": {
+                            backgroundColor: "#3f6212",
+                          },
+                        }}
+                        onClick={handleAddNewItem}
+                        ref={addButtonref}
+                      >
+                        <ControlPointIcon className="mr-2" />
+                        Add New Item
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+
+          {/*<====================================================================== Item History Modal  =====================================================================> */}
+          <Dialog
+            open={openItemHistory}
+            onClose={() => setOpenItemHistory(false)}
+            className="custom-dialog"
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "80%",
+                  maxWidth: "1200px",
+                },
+              },
+            }}
+          >
+            <DialogTitle id="alert-dialog-title" className="secondary">
+              Item Purchase History
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => setOpenItemHistory(false)}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent sx={{ padding: 0 }}>
+              <DialogContentText id="alert-dialog-description" sx={{ margin: 0 }}>
+                {isLoading ? (
+                  <div className="flex justify-center items-center p-8">
+                    <CircularProgress />
+                  </div>
+                ) : (
+                  <div
+                    className="flex"
+                    style={{ flexDirection: "column", gap: "0" }}
+                  >
+                    <div className="custom-scroll-sale" style={{ width: "100%" }}>
+                      <table className="custom-table" style={{ background: "none", margin: 0 }}>
+                        <thead>
+                          <tr className="customtable">
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Distributor</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Bill No</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Bill Date</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Unit</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Batch</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Expiry Date</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Qty</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Free Qty</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Discount</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Rate</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>MRP</span>
+                              </div>
+                            </th>
+                            <th>
+                              <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                                <span>Margin</span>
+                              </div>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {itemHistoryData && itemHistoryData.length > 0 ? (
+                            itemHistoryData.map((item) => (
+                              <tr
+                                hover
+                                tabIndex={-1}
+                                key={item.id}
+                                onClick={() => { history.push(`/purchase/view/${item.id}`) }}
+                              >
+                                <td>{item.party_name}</td>
+                                <td>{item.bill_no}</td>
+                                <td>{item.bill_date}</td>
+                                <td>{item.unit}</td>
+                                <td>{item.batch_name}</td>
+                                <td>{item.expiry_date}</td>
+                                <td>{item.qty}</td>
+                                <td>{item.free_qty}</td>
+                                <td>{item.sch}</td>
+                                <td>{item.rate}</td>
+                                <td>{item.mrp}</td>
+                                <td>{item.margin}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td
+                                colSpan={12}
+                                style={{
+                                  textAlign: "center",
+                                  fontSize: "16px",
+                                  fontWeight: 600,
+                                  padding: "20px"
+                                }}
+                              >
+                                No history found
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </DialogContentText>
+            </DialogContent>
+          </Dialog>
+
+          {/*<===================================================================  Delete PopUP   ==================================================================> */}
+
+          <div
+            id="modal"
+            value={IsDelete}
+            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+              }`}
+          >
+            <div />
+            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-12 fill-red-500 inline"
+                className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
                 viewBox="0 0 24 24"
-              >
-                <path
-                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                  data-original="#000000"
-                />
-                <path
-                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                  data-original="#000000"
-                />
-              </svg>
-              <h4 className=" font-semibold mt-6 first-letter:uppercase">
-                <span style={{ textTransform: "none" }}>
-                  Are you sure you want to delete it?
-                </span>
-              </h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                onClick={() => handleDeleteItem(ItemId)}
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
                 onClick={() => setIsDelete(false)}
               >
-                Cancel
-              </button>
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+              </svg>
+              <div className="my-4 text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-12 fill-red-500 inline"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                    data-original="#000000"
+                  />
+                  <path
+                    d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                    data-original="#000000"
+                  />
+                </svg>
+                <h4 className=" font-semibold mt-6 first-letter:uppercase">
+                  <span style={{ textTransform: "none" }}>
+                    Are you sure you want to delete it?
+                  </span>
+                </h4>
+              </div>
+              <div className="flex gap-5 justify-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                  onClick={() => handleDeleteItem(ItemId)}
+                >
+                  Delete
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                  onClick={() => setIsDelete(false)}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
+          {/*<================================================================= Leave page  PopUp Box  ================================================================> */}
 
-        <Prompt
-          when={unsavedItems}
-          message={(location) => {
-            handleNavigation(location.pathname);
-            return false;
-          }}
-        />
-
-        <div
-          id="modal"
-          value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
-            }`}
-        >
-
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <div className="my-4 logout-icon">
-              <VscDebugStepBack
-                className="h-12 w-14"
-                style={{ color: "#628A2F" }}
-              />
-              <h4 className=" font-semibold mt-6 text-center">
-                <span style={{ textTransform: "none" }}>
-                  Are you sure you want to leave this page?
-                </span>
-              </h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-                onClick={handleLeavePage}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                onClick={LogoutClose}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {showModal && (
-          <TipsModal
-            id="add-purchase"
-            onClose={() => setShowModal(false)}
+          <Prompt
+            when={unsavedItems}
+            message={(location) => {
+              handleNavigation(location.pathname);
+              return false;
+            }}
           />
-        )}
 
-      </div>
+          <div
+            id="modal"
+            value={isOpenBox}
+            className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+              }`}
+          >
+
+            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+              <div className="my-4 logout-icon">
+                <VscDebugStepBack
+                  className="h-12 w-14"
+                  style={{ color: "#628A2F" }}
+                />
+                <h4 className=" font-semibold mt-6 text-center">
+                  <span style={{ textTransform: "none" }}>
+                    Are you sure you want to leave this page?
+                  </span>
+                </h4>
+              </div>
+              <div className="flex gap-5 justify-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                  onClick={handleLeavePage}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                  onClick={LogoutClose}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {showModal && (
+            <TipsModal
+              id="add-purchase"
+              onClose={() => setShowModal(false)}
+            />
+          )}
+
+        </div>
+      </>
     </>
   );
 };

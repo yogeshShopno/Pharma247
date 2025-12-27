@@ -101,6 +101,7 @@ import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
 import TrialEnd from './componets/Login/TrialEnd';
 import SehatPoints from './dashboard/More/SehatPoints/SehatPoints';
+import SehatMembersList from './dashboard/More/SehatPoints/SehatMembersList';
 
 function App() {
   const goFullScreen = () => {
@@ -467,6 +468,11 @@ function App() {
             <Route path='/more/sehatpoints'>
               <Protected>
                 <SehatPoints />
+              </Protected>
+            </Route>
+             <Route path='/more/sehatmemberslist'>
+              <Protected>
+                <SehatMembersList />
               </Protected>
             </Route>
             <Route path='/more/loyaltypoints'>

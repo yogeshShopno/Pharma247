@@ -49,6 +49,8 @@ import Checkbox from "@mui/material/Checkbox";
 import { FaCloudMoon } from "react-icons/fa";
 import { FaSun } from "react-icons/fa";
 import { FaCloudSun } from "react-icons/fa";
+import { FaCrown } from "react-icons/fa";
+
 import { FaBell } from "react-icons/fa";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 
@@ -340,7 +342,7 @@ const Addsale = () => {
           resetValue();
           setExpiryDate("");
           setMRP("");
-                      console.log(mrp,"mrp at :343")
+          console.log(mrp, "mrp at :343")
 
           setBase("");
           setGst("");
@@ -394,6 +396,9 @@ const Addsale = () => {
   //       }
   //     }
   //   };
+
+  const hasSehatPlan = (option) =>
+    option?.sehat_plan_name && option.sehat_plan_name.trim() !== "";
 
   const isDateDisabled = (date) => {
     const today = new Date();
@@ -654,7 +659,7 @@ const Addsale = () => {
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
-                      console.log(mrp,"mrp at :657")
+      console.log(mrp, "mrp at :657")
 
       setQty(selectedEditItem.qty);
       setBase(selectedEditItem.base);
@@ -728,7 +733,7 @@ const Addsale = () => {
     if (!itemName) {
       setExpiryDate("");
       setMRP("");
-                      console.log(mrp,"mrp at :731")
+      console.log(mrp, "mrp at :731")
 
       setBase("");
       setGst("");
@@ -765,7 +770,7 @@ const Addsale = () => {
     setUnit(event.unit);
     setExpiryDate(event.expiry_date);
     setMRP(event.mrp);
-                      console.log(mrp,"mrp at :768")
+    console.log(mrp, "mrp at :768")
 
     setMaxQty(event.stock);
     setBase(event.mrp);
@@ -1332,7 +1337,7 @@ const Addsale = () => {
               setBatch("");
               setExpiryDate("");
               setMRP("");
-                      console.log(mrp,"mrp at :1334")
+              console.log(mrp, "mrp at :1334")
 
               setQty("");
               setBase("");
@@ -1478,7 +1483,7 @@ const Addsale = () => {
           (item) => parseFloat(item.total_stock) <= 1
         );
 
-    
+
 
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
@@ -1603,21 +1608,21 @@ const Addsale = () => {
         .then((response) => {
           setBatchListData(response.data.data);
           setIsAlternative(response.data.alternative_item_check);
-      // console.log(response.data.data)
-      //     if (Array.isArray(response.data.data)) {
-      //       response.data.data.forEach((item) => {
-      //         setMRP(item.mrp);
-      //             console.log(item.mrp,"mrp at :1600")
-      //         setPtr(item.ptr);
-      //         setDiscount(item.discount);
-      //       });
-      //     } else {
-      //       setMRP(response.data.data.mrp);
-      //             console.log(item.mrp,"mrp at :1606")
+          // console.log(response.data.data)
+          //     if (Array.isArray(response.data.data)) {
+          //       response.data.data.forEach((item) => {
+          //         setMRP(item.mrp);
+          //             console.log(item.mrp,"mrp at :1600")
+          //         setPtr(item.ptr);
+          //         setDiscount(item.discount);
+          //       });
+          //     } else {
+          //       setMRP(response.data.data.mrp);
+          //             console.log(item.mrp,"mrp at :1606")
 
-      //       setPtr(response.data.data.ptr);
-      //       setDiscount(response.data.data.discount);
-      //     }
+          //       setPtr(response.data.data.ptr);
+          //       setDiscount(response.data.data.discount);
+          //     }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1745,7 +1750,7 @@ const Addsale = () => {
       setBatch("");
       setExpiryDate("");
       setMRP("");
-                  console.log(mrp,"mrp at :1738")
+      console.log(mrp, "mrp at :1738")
 
       setQty("");
       setBase("");
@@ -1805,7 +1810,7 @@ const Addsale = () => {
     setSearchItem("");
     setExpiryDate("");
     setMRP("");
-                      console.log(mrp,"mrp at :1808")
+    console.log(mrp, "mrp at :1808")
 
     setBase("");
     setGst("");
@@ -2294,8 +2299,19 @@ const Addsale = () => {
                       padding: '0',
                     }
                   }}
+
                   renderOption={(props, option) => (
-                    <ListItem {...props}>
+                    <ListItem {...props} className="flex items-center gap-2">
+
+                      {/* Crown icon */}
+                      {hasSehatPlan(option) && (
+                        <FaCrown
+                          size={14}
+                          color="#facc15" // gold
+                          title={option.sehat_plan_name}
+                        />
+                      )}
+
                       <ListItemText
                         primary={`${option.name} `}
                         secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
@@ -2311,6 +2327,15 @@ const Addsale = () => {
                         ...params.InputProps,
                         endAdornment: (
                           <>
+                            {customer && hasSehatPlan(customer) && (
+                              <Tooltip title={customer.sehat_plan_name} arrow>
+                                <FaCrown
+                                  size={16}
+                                  color="#facc15"
+                                  style={{ marginRight: 6 }}
+                                />
+                              </Tooltip>
+                            )}
                             {customer && (
                               <Tooltip
                                 title="Sales History"
@@ -3056,7 +3081,7 @@ const Addsale = () => {
                       value={mrp}
                       onChange={(e) => {
                         setMRP(e.target.value);
-                      console.log(mrp,"mrp at :3049")
+                        console.log(mrp, "mrp at :3049")
 
                       }}
                     />

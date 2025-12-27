@@ -22,7 +22,7 @@ const SehatPoints = () => {
 
     const paymentTypes = [
         { id: 1, type: "Cash" },
-        { id: 2, type: "Credit" },
+       
         { id: 3, type: "UPI" },
     ];
 

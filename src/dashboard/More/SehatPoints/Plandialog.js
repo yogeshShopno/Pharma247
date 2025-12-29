@@ -8,7 +8,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 
-export default function PlanDialog({ showPlans, setShowPlans ,plans }) {
+export default function PlanDialog({ showPlans, setShowPlans, plans }) {
   return (
     <Dialog
       open={showPlans}
@@ -22,10 +22,9 @@ export default function PlanDialog({ showPlans, setShowPlans ,plans }) {
           fontSize: 28,
           fontWeight: 700,
           textAlign: "center",
-          background: "#f4f8ff",
         }}
       >
-       Sehat Memebership Plans
+        Sehat Memebership Plans
         <IconButton
           onClick={() => setShowPlans(false)}
           sx={{ position: "absolute", right: 16, top: 16 }}
@@ -35,7 +34,7 @@ export default function PlanDialog({ showPlans, setShowPlans ,plans }) {
       </DialogTitle>
 
       {/* CONTENT */}
-      <DialogContent sx={{ background: "#f4f8ff", py: 4 }}>
+      <DialogContent sx={{ py: 4 }}>
         <div
           style={{
             display: "grid",
@@ -47,13 +46,15 @@ export default function PlanDialog({ showPlans, setShowPlans ,plans }) {
             <div
               key={plan.id}
               style={{
-                background: plan.highlight ? "#0f2a63" : "#fff",
                 color: plan.highlight ? "#fff" : "#000",
                 borderRadius: "20px",
                 padding: "28px",
                 boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
                 display: "flex",
                 flexDirection: "column",
+                borderWidth: 1,
+                borderStyle: "solid",
+                borderColor: "#3f6212",
               }}
             >
               <h3 style={{ marginBottom: 10 }}>{plan.name}</h3>
@@ -83,14 +84,15 @@ export default function PlanDialog({ showPlans, setShowPlans ,plans }) {
                   borderRadius: "30px",
                   py: 1.4,
                   fontWeight: 600,
-                  background: plan.highlight ? "#fff" : "#0f2a63",
-                  color: plan.highlight ? "#0f2a63" : "#fff",
+                  background: "#3f6212",
                   "&:hover": {
-                    background: plan.highlight ? "#e6e6e6" : "#091c42",
-                  },
+                    backgroundColor: "#3f6212", // keep same color
+                    boxShadow: "none",
+                  }
                 }}
+                onClick={()=>setShowPlans(false)}
               >
-               {plan.plan_name}
+                {plan.plan_name}
               </Button>
             </div>
           ))}

@@ -140,6 +140,7 @@ const AddPurchaseBill = () => {
   const [openFile, setOpenFile] = useState(false);
   const [file, setFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [billSaveDraft, setBillSaveDraft] = useState("1");
   const [isOpen, setIsOpen] = useState(false);
@@ -939,6 +940,7 @@ const AddPurchaseBill = () => {
     data.append("random_number", localStorage.getItem("RandomNumber"));
 
     setIsLoading(true);
+    setLoading(true)
 
     try {
       const response = await axios
@@ -964,6 +966,8 @@ const AddPurchaseBill = () => {
       setUnsavedItems(false);
     } finally {
       setIsLoading(false);
+      setLoading(false)
+
     }
   };
 
@@ -2721,7 +2725,7 @@ const AddPurchaseBill = () => {
                           if (isEnter || isTab) {
                             // if (!ptr || ptr === 0) {
                             //   e.preventDefault();
-                              // toast.dismiss();
+                            // toast.dismiss();
                             // toast.error("PTR is required and must be greater than 0");
                             //   return;
                             // }
@@ -2890,8 +2894,14 @@ const AddPurchaseBill = () => {
                     </td>
                   </tr>
 
+                  {loading && (
+                    <div className="loader-container">
+                      <Loader />
+                    </div>
+                  )}
+
                   {/* ITEM LIST OR LOADER */}
-                  {isLoading && (!ItemPurchaseList?.item || ItemPurchaseList.item.length === 0) ? (
+                  {isLoading ? (
                     <tr>
                       <td colSpan={15} style={{ padding: "20px" }}>
                         <div className="loader-container">

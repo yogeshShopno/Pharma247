@@ -744,7 +744,7 @@ toast.error(`PTR should not less than MRP: 0`);
         // if (Number(tempQty) < Number(qty)) {
         //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
         //     toast.dismiss();
-toast.error('Quantity should not be greater than purchase quantity ')
+// toast.error('Quantity should not be greater than purchase quantity ')
         //     return
         // }
         // if (!free) newErrors.free = 'Free quantity is required';
@@ -865,7 +865,7 @@ toast.error("Enter valid GST")
         // if(checkedItems.length===0){
         //     newErrors.checkedItems = 'Item is not selected';
         //     toast.dismiss();
-toast.error("Item is not selected");
+// toast.error("Item is not selected");
 
         // }
         setError(newErrors);

@@ -1107,7 +1107,7 @@ const AddPurchaseBill = () => {
     // } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
     //   newErrors.ptr = "PTR must be less than or equal to MRP";
     //   toast.dismiss();
-    toast.error("PTR must be less than or equal to MRP");
+    // toast.error("PTR must be less than or equal to MRP");
     // }
     if (!gst) {
       newErrors.gst = "GST is required";
@@ -2721,8 +2721,8 @@ const AddPurchaseBill = () => {
                           if (isEnter || isTab) {
                             // if (!ptr || ptr === 0) {
                             //   e.preventDefault();
-                            //   toast.dismiss();
-                            toast.error("PTR is required and must be greater than 0");
+                              // toast.dismiss();
+                            // toast.error("PTR is required and must be greater than 0");
                             //   return;
                             // }
 

@@ -305,7 +305,7 @@ toast.error(error.response.data.message);
         toast.dismiss();
 toast.error("Please Select file");
       }
-      // toast.dismiss();
+      toast.dismiss();
 toast.error(error.data.message)
       console.error("API error:", error);
     }

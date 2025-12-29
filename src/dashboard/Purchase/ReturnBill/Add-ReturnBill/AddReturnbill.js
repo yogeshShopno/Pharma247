@@ -753,7 +753,7 @@ toast.error(
     // if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
     //     newErrors.gst = "Enter valid GST";
     //     toast.dismiss();
-toast.error("Enter valid GST")
+// toast.error("Enter valid GST")
     // };
     // if (!free) newErrors.free = 'Free quantity is required';
     if (!ptr) newErrors.ptr = "PTR is required";

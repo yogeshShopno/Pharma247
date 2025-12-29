@@ -181,7 +181,7 @@ toast.error(newErrors.packageName)
       // else if (!unitList) {
       //   newErrors.unitList = 'Unit is required';
       //   toast.dismiss();
-toast.error(newErrors.unitList)
+// toast.error(newErrors.unitList)
       // }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -201,7 +201,7 @@ toast.error(newErrors.packageName)
       // else if (!unitList) {
       //   newErrors.units = 'Unit is required';
       //   toast.dismiss();
-toast.error(newErrors.unitList)
+// toast.error(newErrors.unitList)
       // }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;

@@ -100,7 +100,7 @@ const Itemmaster = () => {
         setFile(selectedFile);
       } else {
         toast.dismiss();
-toast.error("Please select an Excel or CSV file.");
+        toast.error("Please select an Excel or CSV file.");
       }
     }
   };
@@ -129,7 +129,7 @@ toast.error("Please select an Excel or CSV file.");
       }
     } else {
       toast.dismiss();
-toast.error("No file selected");
+      toast.error("No file selected");
     }
   };
   useEffect(() => {
@@ -347,16 +347,16 @@ toast.error("No file selected");
     } catch (error) {
       console.error("API error:", error);
       toast.dismiss();
-toast.error(error);
+      toast.error(error);
 
     }
   };
 
   const submitCompany = async () => {
     let data = new FormData();
-    if(!companyName) {
+    if (!companyName) {
       toast.dismiss();
-toast.error("enter company name")
+      toast.error("enter company name")
       return;
     }
     data.append("company_name", companyName);
@@ -388,37 +388,37 @@ toast.error("enter company name")
     if (!searchItem.trim()) {
       newErrors.searchItem = "Item name is required.";
       toast.dismiss();
-toast.error(newErrors.searchItem);
+      toast.error(newErrors.searchItem);
     } else {
       const disallowedCharsRegex = /[@$]/;
       if (disallowedCharsRegex.test(searchItem)) {
         newErrors.searchItem = "Enter valid Item name.";
         toast.dismiss();
-toast.error("Enter valid Item name.");
+        toast.error("Enter valid Item name.");
       }
     }
     if (weightage == 0) {
       newErrors.weightage = "Unit is required.";
       toast.dismiss();
-toast.error(newErrors.weightage);
+      toast.error(newErrors.weightage);
       newErrors.pack = "Enter Pack No.";
       toast.dismiss();
-toast.error(newErrors.pack);
+      toast.error(newErrors.pack);
     }
     // if (packaging.length == 0) {
     //   newErrors.packaging = "Select any Packaging.";
-    //   toast.dismiss();
-toast.error(newErrors.packaging);
+    // toast.dismiss();
+    // toast.error(newErrors.packaging);
     // }
     // if (!location) {
     //   newErrors.location = 'Location is required.'
-    //   toast.dismiss();
-toast.error(newErrors.location);
+    // toast.dismiss();
+    // toast.error(newErrors.location);
     // }
     if (!selectedCompany) {
       newErrors.selectedCompany = "Select any Company.";
       toast.dismiss();
-toast.error(newErrors.selectedCompany);
+      toast.error(newErrors.selectedCompany);
     }
     // if (!selectedSuppliers) {
     //   newErrors.selectedSuppliers = 'Select any Supplier.'
@@ -426,12 +426,12 @@ toast.error(newErrors.selectedCompany);
     if (!drugGroup) {
       newErrors.drugGroup = "Drug Group is required.";
       toast.dismiss();
-toast.error(newErrors.drugGroup);
+      toast.error(newErrors.drugGroup);
     }
     // if (!selectedCategory) {
     //   newErrors.selectedCategory = "Category is required.";
-    //   toast.dismiss();
-toast.error(newErrors.selectedCategory);
+    // toast.dismiss();
+    // toast.error(newErrors.selectedCategory);
     // }
     setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -479,17 +479,17 @@ toast.error(newErrors.selectedCategory);
         }, 2000);
       } else if (response.data.status === 400) {
         toast.dismiss();
-toast.error(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         console.error("API error:", error);
 
         toast.dismiss();
-toast.error("Please try again later");
+        toast.error("Please try again later");
       }
     }
   };
@@ -635,7 +635,7 @@ toast.error("Please try again later");
   const handleCloseCompany = () => {
     setOpenCompany(false);
   };
-  
+
   const handleFileClose = () => {
     setOpenFile(false);
   };
@@ -1600,7 +1600,7 @@ toast.error("Please try again later");
                 const value = e.target.value;
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
                 setDrugGroupName(capitalized);
-            
+
               }}
 
 
@@ -1672,7 +1672,7 @@ toast.error("Please try again later");
                   value.charAt(0).toUpperCase() + value.slice(1);
                 setCompanyName(capitalized);
               }}
-              
+
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   submitCompany();

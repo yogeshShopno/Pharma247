@@ -7,10 +7,11 @@ import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, D
 import axios from "axios";
 import PlanDialog from "./Plandialog";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import AddMemberDialog from "./AddMemberDialog";
 
 const SehatPoints = () => {
-        const history = useHistory();
     
+    const history = useHistory();
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [isLoading, setIsLoading] = useState(false);
     const [planList, setPlanList] = useState([])
@@ -277,7 +278,7 @@ const SehatPoints = () => {
                                 >
                                     Membership plan
                                 </span>
-                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " onClick={()=>{history.push('/more/sehatmemberslist')}} />
+                                <BsLightbulbFill className="w-6 h-6 secondary hover-yellow " onClick={() => { history.push('/more/sehatmemberslist') }} />
                             </div>
                             <div className="headerList">
                                 <Button
@@ -457,6 +458,7 @@ const SehatPoints = () => {
                         </Button>
                     </div>
                     {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
+
 
                 </div>
 

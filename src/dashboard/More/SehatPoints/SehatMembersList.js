@@ -36,6 +36,8 @@ import Switch from "@mui/material/Switch";
 import Loader from "../../../componets/loader/Loader";
 import usePermissions, { hasPermission } from "../../../componets/permission";
 import Header from "../../Header";
+import AddMemberDialog from "./AddMemberDialog";
+import PlanDialog from "./Plandialog";
 
 const columns = [
     { id: "name", label: "Name", minWidth: 150 },
@@ -95,8 +97,63 @@ const SehatMembersList = () => {
     const [isSearching, setIsSearching] = useState(false);
     const searchTimeout = useRef(null);
     const currentSearchTerms = useRef(searchTerms);
+    const [showPlans, setShowPlans] = useState(false);
+    const [addMember, setAddMember] = useState(false);
+
+    const [planList, setPlanList] = useState([])
+    const [relations, setRelations] = useState([])
+
+    /*<======================================================================== Fetch data from API ====================================================================> */
+
+    useEffect(() => {
+        getPlanList()
+        relationList()
+    }, []);
+
+        /*<======================================================================== fetch Relations list ====================================================================> */
+    
+        const relationList = async () => {
+            try {
+                await axios.get("patient-family-relation-list?", {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+                    .then((response) => {
+                        setRelations(response.data.data);
+                    });
+            } catch (error) {
+                console.error("API error:", error?.response?.status);
+                if (error?.response?.status === 401) {
+                }
+            }
+        };
+    
+
+    /*<======================================================================== fetch plan list ====================================================================> */
+
+    const getPlanList = async () => {
+
+        try {
+            await axios.get("sehat-membership-plan-list?", {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setPlanList(response.data.data);
+                });
+        } catch (error) {
+            console.error("API error:", error?.response?.status);
+            if (error?.response?.status === 401) {
+            }
+        }
+    };
+    /*<======================================================================== fetch plan list ====================================================================> */
 
     const totalPages = Math.ceil(totalRecords / rowsPerPage);
+
+
     useEffect(() => {
         if (currentPage > 0) {
             DistList(currentPage);
@@ -269,7 +326,7 @@ const SehatMembersList = () => {
         } catch (error) {
             setIsLoading(false);
             toast.dismiss();
-toast.error(error.message);
+            toast.error(error.message);
         }
     };
 
@@ -281,7 +338,7 @@ toast.error(error.message);
                 setFile(selectedFile);
             } else {
                 toast.dismiss();
-toast.error("Please select an Excel or CSV file.");
+                toast.error("Please select an Excel or CSV file.");
             }
         }
     };
@@ -313,7 +370,7 @@ toast.error("Please select an Excel or CSV file.");
         } catch (error) {
             if (error.response && error.response.status === 500) {
                 toast.dismiss();
-toast.error("Please Select file");
+                toast.error("Please Select file");
             }
             console.error("API error:", error);
         }
@@ -501,55 +558,32 @@ toast.error("Please Select file");
                                         <BsLightbulbFill className="w-6 h-6 secondary hover-yellow align-center" />
                                     </div>
                                     <div className="headerList cust_hdr_mn_bg">
-                                        {hasPermission(permissions, "distributor import") && (
-                                            <Button
-                                                variant="contained"
-                                                style={{
-                                                    background: "var(--color1)",
-                                                    display: "flex",
-                                                }}
-                                                className="gap-2"
-                                                onClick={openFilePopUP}
-                                            >
-                                                <CloudUploadIcon /> Import
-                                            </Button>
-                                        )}
-                                        {hasPermission(permissions, "distributor create") && (
-                                            <Button
-                                                variant="contained"
-                                                style={{ background: "var(--color1)", display: "flex" }}
-                                                onClick={() => {
-                                                    history.push("/more/addDistributer");
-                                                }}
-                                                className="gap-2"
-                                            >
-                                                <AddIcon className="" />
-                                                Add Distributor
-                                            </Button>
-                                        )}
-                                        {hasPermission(permissions, "distributor download") && (
-                                            <Button
-                                                className="gap-7"
-                                                variant="contained"
-                                                style={{
-                                                    background: "var(--color1)",
-                                                    color: "white",
-                                                    // paddingLeft: "35px",
-                                                    textTransform: "none",
-                                                    display: "flex",
-                                                }}
-                                                onClick={exportToExcel}
-                                            >
-                                                <div style={{ display: "flex", alignItems: "center" }}>
-                                                    <img
-                                                        src="/csv-file.png"
-                                                        className="report-icon absolute"
-                                                        alt="csv Icon"
-                                                    />
-                                                </div>
-                                                Download
-                                            </Button>
-                                        )}
+
+
+                                        <Button
+                                            variant="contained"
+                                            style={{ background: "var(--color1)", display: "flex" }}
+                                            onClick={() => {
+                                                // history.push("/more/sehatpoints");
+                                                setAddMember(true)
+                                            }}
+                                            className="gap-2"
+                                        >
+                                            <AddIcon className="" />
+                                            Add Member
+                                        </Button>
+
+                                        <Button
+                                            variant="contained"
+                                            style={{ background: "var(--color1)", display: "flex" }}
+                                            onClick={() => { setShowPlans(true) }}
+                                            className="gap-2"
+                                        >
+                                            <VisibilityIcon
+
+                                            />
+                                            View Plan
+                                        </Button>
                                     </div>
                                 </div>
                                 <div
@@ -670,13 +704,13 @@ toast.error("Please Select file");
                                                                     <VisibilityIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
                                                                         onClick={() => {
-                                                                            history.push(`/DistributerView/${row.id}`);
+                                                                            // history.push(`/DistributerView/${row.id}`);
                                                                         }}
                                                                     />
 
                                                                     <BorderColorIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        onClick={() => handleEditOpen(row)}
+                                                                        // onClick={() => handleEditOpen(row)}
                                                                     />
 
                                                                     <Button
@@ -768,438 +802,13 @@ toast.error("Please Select file");
                             Next
                         </button>
                     </div>
-                    {/*<====================================================================== add distributor  =====================================================================> */}
-
-                    <Dialog open={openEdit}>
-                        <div className="flex justify-center items-center h-auto">
-                            <div className="bg-white rounded-lg p-6 w-full max-w-3xl">
-                                <div className="flex justify-between items-center">
-                                    <DialogTitle
-                                        id="alert-dialog-title"
-                                        style={{
-                                            color: "var(--COLOR_UI_PHARMACY)",
-                                            fontWeight: 700,
-                                        }}
-                                    >
-
-                                    </DialogTitle>
-                                    <IconButton
-                                        aria-label="close"
-                                        onClick={resetAddDialog}
-                                        className="text-gray-500"
-                                    >
-                                        <CloseIcon />
-                                    </IconButton>
-                                </div>
-                                <DialogContent>
-                                    <DialogContentText id="alert-dialog-description">
-                                        <div className="flex flex-col gap-5">
-                                            <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <div className="mb-1">
-                                                        <span className="label primary">GST/IN Number</span>
-                                                        <span className="text-red-600 ml-1">*</span>
-                                                    </div>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        type="text"
-                                                        value={gstNumber}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value
-                                                                .toUpperCase()
-                                                                .replace(/[^A-Z0-9]/g, "");
-                                                            setGstnumber(value);
-                                                        }}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                    {errors.Doctor && (
-                                                        <span className="text-red-600 text-xs">
-                                                            {errors.Doctor}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <div className="mb-1">
-                                                        <span className="label primary">
-                                                            Distributor Name
-                                                        </span>
-                                                        <span className="text-red-600 ml-1">*</span>
-                                                    </div>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        type="text"
-                                                        value={distributerName}
-                                                        onChange={(e) => {
-                                                            setDistributerName(e.target.value.toUpperCase());
-                                                        }}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                    {errors.clinic && (
-                                                        <span className="text-red-600 text-xs">
-                                                            {errors.clinic}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">Email ID</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        type="email"
-                                                        value={email}
-                                                        onChange={(e) => setEmail(e.target.value)}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <div className="mb-1">
-                                                        <span className="label primary">Mobile No</span>
-                                                        <span className="text-red-600 ml-1">*</span>
-                                                    </div>
-                                                    <OutlinedInput
-                                                        type="number"
-                                                        value={mobileNo}
-                                                        onChange={handleChange}
-                                                        startAdornment={
-                                                            <InputAdornment position="start">
-                                                                +91
-                                                            </InputAdornment>
-                                                        }
-                                                        className="w-full"
-                                                        size="small"
-                                                    />
-                                                    {errors.mobileNo && (
-                                                        <span className="text-red-600 text-xs">
-                                                            {errors.mobileNo}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">Whatsapp No.</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        type="number"
-                                                        value={whatsapp}
-
-                                                        onChange={(e) => {
-                                                            const value = e.target.value;
-                                                            if (value.length <= 10) {
-                                                                setWhatsApp(value);
-                                                            }
-                                                        }}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary"> Address</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        value={address}
-                                                        onChange={(e) => setAddress(e.target.value)}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">Area</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        value={area}
-                                                        onChange={(e) => setArea(e.target.value)}
-                                                        className="w-full"
-                                                        size="small"
-                                                    />
-                                                </div>
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">Pincode</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        type="number"
-                                                        value={pincode}
-                                                        onChange={(e) => setPincode(e.target.value)}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex flex-col md:flex-row gap-5">
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">State</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        value={state}
-                                                        onChange={(e) => {
-                                                            const value = e.target.value.replace(
-                                                                /[^a-zA-Z]/g,
-                                                                ""
-                                                            ); // Remove non-alphabetic characters
-                                                            const formattedValue =
-                                                                value.charAt(0).toUpperCase() +
-                                                                value.slice(1).toLowerCase();
-                                                            setState(formattedValue);
-                                                        }}
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-
-                                                <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                    <span className="label primary">Credit Due Days</span>
-                                                    <TextField
-                                                        autoComplete="off"
-                                                        id="outlined-multiline-static"
-                                                        size="small"
-                                                        value={creditDuedays}
-                                                        onChange={(e) =>
-                                                            setCreditDuedays(Number(e.target.value))
-                                                        }
-                                                        className="w-full"
-                                                        variant="outlined"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="border-1 text-black font-bold secondary flex justify-between items-center mt-5">
-                                            Add More Details
-                                            <Switch
-                                                checked={switchCheck}
-                                                onChange={(e) => setSwitchChecked(e.target.checked)}
-                                                sx={{
-                                                    "& .MuiSwitch-track": {
-                                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                                    },
-                                                    "&.Mui-checked .MuiSwitch-track": {
-                                                        backgroundColor:
-                                                            "var(--COLOR_UI_PHARMACY) !important",
-                                                    },
-                                                    "& .MuiSwitch-thumb": {
-                                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                                    },
-                                                    "&.Mui-checked .MuiSwitch-thumb": {
-                                                        backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                                    },
-                                                    "& .css-byenzh-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track":
-                                                    {
-                                                        backgroundColor:
-                                                            "var(--COLOR_UI_PHARMACY) !important",
-                                                    },
-                                                }}
-                                            />
-                                        </div>
-                                        {switchCheck && (
-                                            <div className="mt-5 flex flex-col gap-5">
-                                                <div className="flex flex-col md:flex-row gap-5">
-                                                    <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                        <span className="label primary">
-                                                            Distributor Drug License No.
-                                                        </span>
-                                                        <OutlinedInput
-                                                            type="text"
-                                                            value={distributorDrugLicenseNo}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                                                                setDistributorDrugLicenseNo(value);
-                                                            }}
-                                                            className="w-full"
-                                                            size="small"
-                                                        />
-                                                    </div>
-
-                                                    <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                        <span className="label primary">
-                                                            Food Licence No.
-                                                        </span>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-multiline-static"
-                                                            size="small"
-                                                            value={licenceNo}
-                                                            onChange={(e) => {
-                                                                const value = e.target.value.toUpperCase(); // Convert to uppercase for uniformity
-                                                                setLicenceNo(value);
-                                                            }}
-                                                            className="w-full"
-                                                            variant="outlined"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col md:flex-row gap-5">
-                                                    <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                        <span className="label primary">Bank Name</span>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            value={bankName}
-                                                            onChange={(e) => {
-                                                                const uppercasedValue = e.target.value
-                                                                    .toUpperCase()
-                                                                    .replace(/[^A-Z]/g, "");
-                                                                setBankName(uppercasedValue);
-                                                            }}
-                                                            className="w-full"
-                                                            size="small"
-                                                        />
-                                                    </div>
-                                                    <div className="flex flex-col w-full md:w-1/2 lg:w-1/2">
-                                                        <span className="label primary">IFSC Code</span>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            value={ifscCode}
-                                                            onChange={(e) => setIfscCode(e.target.value)}
-                                                            // type="text"
-                                                            // onChange={(e) => {
-                                                            //     const value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                                                            //     setIfscCode(value);
-                                                            // }}
-                                                            className="w-full"
-                                                            size="small"
-                                                        />
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col md:flex-row gap-5">
-                                                    <div className="flex flex-col w-full ">
-                                                        <span className="label primary">Account No.</span>
-                                                        <TextField
-                                                            autoComplete="off"
-                                                            id="outlined-multiline-static"
-                                                            size="small"
-                                                            type="number"
-                                                            value={accountNo}
-                                                            onChange={(e) => setAccountNo(e.target.value)}
-                                                            className="w-full"
-                                                            variant="outlined"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )}
-                                    </DialogContentText>
-                                </DialogContent>
-                                <DialogActions style={{ padding: "16px 24px" }}>
-                                    <Button
-                                        autoFocus
-                                        variant="contained"
-                                        style={{
-                                            backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                            color: "white",
-                                        }}
-                                        onClick={editDistributor}
-                                    >
-                                        Update
-                                    </Button>
-                                    <Button
-                                        autoFocus
-                                        variant="contained"
-                                        color="error"
-                                        onClick={resetAddDialog}
-                                    >
-                                        Cancel
-                                    </Button>
-                                </DialogActions>
-                            </div>
-                        </div>
-                    </Dialog>
-                    {/*<====================================================================== upload import distributor  =====================================================================> */}
-
-                    <Dialog open={openUpload} className="custom-dialog">
-                        <DialogTitle id="alert-dialog-title " className="primary">
-                            Import Distributor
-                        </DialogTitle>
-                        <Alert severity="warning" className="">
-                            <AlertTitle>Warning</AlertTitle>
-                            Please Make Sure Repeated Email ID record is not accepted.
-                        </Alert>
-                        <div className="px-6 ">
-                        </div>
-                        <IconButton
-                            aria-label="close"
-                            onClick={() => setOpenUpload(false)}
-                            sx={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                                color: "#ffffff",
-                            }}
-                        >
-                            <CloseIcon />
-                        </IconButton>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
-                                <div className="primary">Item File Upload</div>
-                                <div
-                                    style={{
-                                        display: "flex",
-                                        gap: "15px",
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    <div className="mt-2">
-                                        <input
-                                            className="File-upload"
-                                            type="file"
-                                            accept=".csv"
-                                            id="file-upload"
-                                            onChange={handleFileChange}
-                                        />
-                                        <span className="errorFile" style={{ fontSize: "small" }}>
-                                            *select only .csv File
-                                        </span>
-                                    </div>
-                                    <div className="mt-2">
-                                        <Button
-                                            onClick={handleDownload}
-                                            style={{
-                                                backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                                color: "white",
-                                            }}
-                                        >
-                                            <CloudDownloadIcon className="mr-2" />
-                                            Download Sample File
-                                        </Button>
-                                    </div>
-                                </div>
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions style={{ padding: "20px 24px" }}>
-                            <Button
-                                autoFocus
-                                style={{
-                                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                                    color: "white",
-                                    width: "100%",
-                                }}
-                                variant="contained"
-                                onClick={uploadDistributorFile}
-                            >
-                                Save
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
+                  
                 </div>
             )}
+            {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} />}
+            {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
+
+
         </>
     );
 };

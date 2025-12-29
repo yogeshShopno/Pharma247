@@ -468,7 +468,9 @@ function App() {
             </Route>
             <Route path='/more/sehatpoints'>
               <Protected>
-                <SehatPoints />
+                {/* <SehatPoints /> */}
+                <SehatMembersList />
+
               </Protected>
             </Route>
              <Route path='/more/sehatmemberslist'>

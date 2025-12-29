@@ -258,7 +258,8 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       }
       // console.error("API error:", error);
     }
@@ -451,7 +452,8 @@ const DoctorList = () => {
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {
-        toast.error("Please Select file");
+        toast.dismiss();
+toast.error("Please Select file");
       }
       console.error("API error:", error);
     }

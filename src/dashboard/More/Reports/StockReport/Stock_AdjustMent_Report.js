@@ -97,7 +97,8 @@ const Stock_AdjustMent_Report = () => {
 
   const exportToCSV = () => {
     if (adjustStockListData?.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       // const total = adjustStockListData?.purches_return_total;
 

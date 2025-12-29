@@ -31,7 +31,8 @@ const Non_Moving_items = () => {
     const newErrors = {};
     if (!nonMovingDate) {
       newErrors.nonMovingDate = "Select any Time Duration.";
-      toast.error(newErrors.nonMovingDate);
+      toast.dismiss();
+toast.error(newErrors.nonMovingDate);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

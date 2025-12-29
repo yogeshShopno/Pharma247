@@ -187,16 +187,20 @@ const Inventory_Reconciliation = () => {
 
     if (!batchListData.iteam_name) {
       newErrors.selectedItem = "select any Item Name.";
-      toast.error(newErrors.selectedItem);
+      toast.dismiss();
+toast.error(newErrors.selectedItem);
     } else if (!batchListData.batch_number) {
       newErrors.batch = "Batch Number is required";
-      toast.error(newErrors.batch);
+      toast.dismiss();
+toast.error(newErrors.batch);
     } else if (!batchListData.company_name) {
       newErrors.selectedCompany = "select any Company Name";
-      toast.error(newErrors.selectedCompany);
+      toast.dismiss();
+toast.error(newErrors.selectedCompany);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
-      toast.error(newErrors.stockAdjust);
+      toast.dismiss();
+toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -298,20 +302,23 @@ const Inventory_Reconciliation = () => {
           setReportData(parsedData.data);
           // toast.success("please wait ...downloading is in progress!")
         } else {
-          toast.error("No data available for the selected criteria.");
+          toast.dismiss();
+toast.error("No data available for the selected criteria.");
         }
       }
     } catch (error) {
       console.error("API error:", error);
 
-      toast.error("An error occurred while downloading the CSV.");
+      toast.dismiss();
+toast.error("An error occurred while downloading the CSV.");
     } finally {
       setIsDownload(false);
     }
   };
   const exportToCSV = () => {
     if (!reportData || reportData.length === 0) {
-      toast.error("No data available for download.");
+      toast.dismiss();
+toast.error("No data available for download.");
       return;
     }
 

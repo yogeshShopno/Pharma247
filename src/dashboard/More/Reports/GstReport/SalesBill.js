@@ -77,10 +77,12 @@ const SalesBill = () => {
     const newErrors = {};
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
-      toast.error(newErrors.reportType);
+      toast.dismiss();
+toast.error(newErrors.reportType);
     } else if (reportType && !paymentMode) {
       newErrors.paymentMode = "Select any Purchase Type.";
-      toast.error(newErrors.paymentMode);
+      toast.dismiss();
+toast.error(newErrors.paymentMode);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,7 +127,8 @@ const SalesBill = () => {
 
   const exportToCSV = () => {
     if (saleGSTData.length == 0) {
-      toast.error("Apply filter, then download records.");
+      toast.dismiss();
+toast.error("Apply filter, then download records.");
     } else {
       const filteredData = saleGSTData?.sales?.map(
         ({

@@ -970,7 +970,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Bank Name is Required");
+                            toast.dismiss();
+toast.error("Bank Name is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1003,7 +1004,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Account Type is Required");
+                            toast.dismiss();
+toast.error("Account Type is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1044,7 +1046,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Opening Balance is Required");
+                            toast.dismiss();
+toast.error("Opening Balance is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1110,7 +1113,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Bank Account Number is Required");
+                            toast.dismiss();
+toast.error("Bank Account Number is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1148,12 +1152,14 @@ const BankAccount = () => {
                         if (!reEnterAccountNumber) {
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Re-Enter Account Number is Required");
+                            toast.dismiss();
+toast.error("Re-Enter Account Number is Required");
                           }
                         } else if (isTab && accountNumber !== reEnterAccountNumber) {
                           // Block focus move if mismatch
                           e.preventDefault();
-                          toast.error("Account Numbers do not match");
+                          toast.dismiss();
+toast.error("Account Numbers do not match");
                         } else {
                           handleKeyDown(e, 4);
                         }
@@ -1194,7 +1200,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("IFSC Code is Required");
+                            toast.dismiss();
+toast.error("IFSC Code is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }
@@ -1230,7 +1237,8 @@ const BankAccount = () => {
 
                             if (isEnter) {
                               e.preventDefault();
-                              toast.error("Branch Name is Required");
+                              toast.dismiss();
+toast.error("Branch Name is Required");
                             }
                             // Shift + Tab is allowed by default; do not prevent it
                           }
@@ -1273,7 +1281,8 @@ const BankAccount = () => {
 
                           if (isEnter) {
                             e.preventDefault();
-                            toast.error("Account Holder Name is Required");
+                            toast.dismiss();
+toast.error("Account Holder Name is Required");
                           }
                           // Shift + Tab is allowed by default; do not prevent it
                         }

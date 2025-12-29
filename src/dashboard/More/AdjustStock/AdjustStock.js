@@ -314,13 +314,16 @@ const AdjustStock = () => {
 
     if (!selectedItem) {
       newErrors.selectedItem = "select any Item Name.";
-      toast.error(newErrors.selectedItem);
+      toast.dismiss();
+toast.error(newErrors.selectedItem);
     } else if (!batch) {
       newErrors.batch = "Batch Number is required";
-      toast.error(newErrors.batch);
+      toast.dismiss();
+toast.error(newErrors.batch);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
-      toast.error(newErrors.stockAdjust);
+      toast.dismiss();
+toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {

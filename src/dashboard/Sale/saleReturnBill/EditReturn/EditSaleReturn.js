@@ -398,7 +398,8 @@ const EditSaleReturn = () => {
       (item) => item.iss_check === false
     );
     if (hasUncheckedItems) {
-      toast.error("Please select at least one item");
+      toast.dismiss();
+toast.error("Please select at least one item");
     } else {
       let data = new FormData();
       data.append("bill_no", saleReturnItems?.bill_no);
@@ -733,12 +734,14 @@ const EditSaleReturn = () => {
 
     if (newQty > tempQty) {
       setQty(tempQty);
-      toast.error(
+      toast.dismiss();
+toast.error(
         `Quantity exceeds the allowed limit. Max available: ${tempQty}`
       );
     } else if (newQty < 0) {
       setQty(tempQty);
-      toast.error(`Quantity should not be less than 0`);
+      toast.dismiss();
+toast.error(`Quantity should not be less than 0`);
     } else {
       setQty(newQty);
     }

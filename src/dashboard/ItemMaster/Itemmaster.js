@@ -99,7 +99,8 @@ const Itemmaster = () => {
       if (fileType === "text/csv") {
         setFile(selectedFile);
       } else {
-        toast.error("Please select an Excel or CSV file.");
+        toast.dismiss();
+toast.error("Please select an Excel or CSV file.");
       }
     }
   };
@@ -127,7 +128,8 @@ const Itemmaster = () => {
 
       }
     } else {
-      toast.error("No file selected");
+      toast.dismiss();
+toast.error("No file selected");
     }
   };
   useEffect(() => {
@@ -344,7 +346,8 @@ const Itemmaster = () => {
 
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error);
+      toast.dismiss();
+toast.error(error);
 
     }
   };
@@ -352,7 +355,8 @@ const Itemmaster = () => {
   const submitCompany = async () => {
     let data = new FormData();
     if(!companyName) {
-      toast.error("enter company name")
+      toast.dismiss();
+toast.error("enter company name")
       return;
     }
     data.append("company_name", companyName);
@@ -383,42 +387,51 @@ const Itemmaster = () => {
     const newErrors = {};
     if (!searchItem.trim()) {
       newErrors.searchItem = "Item name is required.";
-      toast.error(newErrors.searchItem);
+      toast.dismiss();
+toast.error(newErrors.searchItem);
     } else {
       const disallowedCharsRegex = /[@$]/;
       if (disallowedCharsRegex.test(searchItem)) {
         newErrors.searchItem = "Enter valid Item name.";
-        toast.error("Enter valid Item name.");
+        toast.dismiss();
+toast.error("Enter valid Item name.");
       }
     }
     if (weightage == 0) {
       newErrors.weightage = "Unit is required.";
-      toast.error(newErrors.weightage);
+      toast.dismiss();
+toast.error(newErrors.weightage);
       newErrors.pack = "Enter Pack No.";
-      toast.error(newErrors.pack);
+      toast.dismiss();
+toast.error(newErrors.pack);
     }
     // if (packaging.length == 0) {
     //   newErrors.packaging = "Select any Packaging.";
-    //   toast.error(newErrors.packaging);
+    //   toast.dismiss();
+toast.error(newErrors.packaging);
     // }
     // if (!location) {
     //   newErrors.location = 'Location is required.'
-    //   toast.error(newErrors.location);
+    //   toast.dismiss();
+toast.error(newErrors.location);
     // }
     if (!selectedCompany) {
       newErrors.selectedCompany = "Select any Company.";
-      toast.error(newErrors.selectedCompany);
+      toast.dismiss();
+toast.error(newErrors.selectedCompany);
     }
     // if (!selectedSuppliers) {
     //   newErrors.selectedSuppliers = 'Select any Supplier.'
     // }
     if (!drugGroup) {
       newErrors.drugGroup = "Drug Group is required.";
-      toast.error(newErrors.drugGroup);
+      toast.dismiss();
+toast.error(newErrors.drugGroup);
     }
     // if (!selectedCategory) {
     //   newErrors.selectedCategory = "Category is required.";
-    //   toast.error(newErrors.selectedCategory);
+    //   toast.dismiss();
+toast.error(newErrors.selectedCategory);
     // }
     setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -465,15 +478,18 @@ const Itemmaster = () => {
           history.push("/inventory");
         }, 2000);
       } else if (response.data.status === 400) {
-        toast.error(response.data.message);
+        toast.dismiss();
+toast.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
         console.error("API error:", error);
 
-        toast.error("Please try again later");
+        toast.dismiss();
+toast.error("Please try again later");
       }
     }
   };

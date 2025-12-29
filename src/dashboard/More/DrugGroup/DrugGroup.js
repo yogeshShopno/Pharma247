@@ -169,7 +169,8 @@ const DrugGroup = () => {
     const newErrors = {};
     if (!drugGroupName) {
       newErrors.drugGroupName = "Drug Group Name is required";
-      toast.error(newErrors.drugGroupName);
+      toast.dismiss();
+toast.error(newErrors.drugGroupName);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -188,7 +189,8 @@ const DrugGroup = () => {
       DrugGroupList(currentPage);
       toast.success("Drug Group added!");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error");
+      toast.dismiss();
+toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -204,7 +206,8 @@ const DrugGroup = () => {
       DrugGroupList(currentPage);
       toast.success("Drug Group updated!");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error");
+      toast.dismiss();
+toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -232,7 +235,8 @@ const DrugGroup = () => {
       DrugGroupList(currentPage);
       toast.success("Drug Group deleted!");
     } catch (error) {
-      toast.error("Error deleting Drug Group");
+      toast.dismiss();
+toast.error("Error deleting Drug Group");
     }
   };
   const deleteOpen = (id) => {

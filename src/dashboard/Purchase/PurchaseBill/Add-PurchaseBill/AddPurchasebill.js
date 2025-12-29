@@ -340,6 +340,7 @@ const AddPurchaseBill = () => {
     ) {
       if (Number(ptr) >= Number(mrp)) {
         newErrors.ptr = "PTR must be less than MRP";
+        toast.dismiss();
         toast.error(newErrors.ptr);
       }
     }
@@ -537,6 +538,7 @@ const AddPurchaseBill = () => {
       if (allowedTypes.includes(fileType)) {
         setFile(selectedFile);
       } else {
+        toast.dismiss();
         toast.error("Please select a valid Excel (.xls/.xlsx) or CSV file.");
       }
     }
@@ -547,6 +549,7 @@ const AddPurchaseBill = () => {
   const handleFileUpload = async () => {
     generateRandomNumber();
     if (!file) {
+      toast.dismiss();
       toast.error("No file selected");
       return;
     }
@@ -557,6 +560,7 @@ const AddPurchaseBill = () => {
       apiEndpoint = optionForStock[importConpany];
     }
     if (!apiEndpoint) {
+      toast.dismiss();
       toast.error("Invalid option selected");
       return;
     }
@@ -581,8 +585,10 @@ const AddPurchaseBill = () => {
     } catch (error) {
       console.error("API error:", error);
       if (error.response?.data?.status === 400) {
+        toast.dismiss();
         toast.error(error.response.data.message);
       } else {
+        toast.dismiss();
         toast.error(error?.message || "Something went wrong. Please try again.");
       }
     } finally {
@@ -619,6 +625,7 @@ const AddPurchaseBill = () => {
         break;
       default:
         console.warn("Unknown company selected. Downloading default file.");
+        toast.dismiss();
         toast.error("Unknown company selected. Downloading default file.");
         break;
     }
@@ -1048,6 +1055,7 @@ const AddPurchaseBill = () => {
     const numericFree = parseFloat(free) || 0;
 
     if (numericQty === 0 && numericFree === 0) {
+      toast.dismiss();
       toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
@@ -1062,13 +1070,16 @@ const AddPurchaseBill = () => {
 
     if (!batch) {
       newErrors.batch = "Batch is required";
+      toast.dismiss();
       toast.error(newErrors.batch);
     }
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
+      toast.dismiss();
       toast.error(newErrors.expiryDate);
     } else if (!expiryDateRegex.test(expiryDate)) {
       newErrors.expiryDate = "Expiry date must be in MM/YY format";
+      toast.dismiss();
       toast.error(newErrors.expiryDate);
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
@@ -1082,29 +1093,35 @@ const AddPurchaseBill = () => {
       ) {
         newErrors.expiryDate =
           "Expiry date must be in the future and cannot be the current month";
+        toast.dismiss();
         toast.error(newErrors.expiryDate);
       }
     }
     if (!mrp) {
       newErrors.mrp = "MRP is required";
+      toast.dismiss();
       toast.error(newErrors.mrp);
     }
     // if (!ptr) {
     //   newErrors.ptr = "PTR is required";
     // } else if (ptr && parseFloat(ptr) >= parseFloat(mrp)) {
     //   newErrors.ptr = "PTR must be less than or equal to MRP";
-    //   toast.error("PTR must be less than or equal to MRP");
+    //   toast.dismiss();
+    toast.error("PTR must be less than or equal to MRP");
     // }
     if (!gst) {
       newErrors.gst = "GST is required";
+      toast.dismiss();
       toast.error("GST is required");
     }
     if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
       newErrors.gst = "Enter valid GST";
+      toast.dismiss();
       toast.error("Enter valid GST");
     }
 
     if (!searchItem) {
+      toast.dismiss();
       toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
@@ -1247,6 +1264,7 @@ const AddPurchaseBill = () => {
       !addDistributorNo ||
       !addDistributorMobile
     ) {
+      toast.dismiss();
       toast.error("Please fill all the fields");
       return;
     }
@@ -1287,6 +1305,7 @@ const AddPurchaseBill = () => {
         error?.response?.data?.error ||
         error?.message ||
         "Something went wrong";
+      toast.dismiss();
       toast.error(message)
     }
 
@@ -1297,6 +1316,7 @@ const AddPurchaseBill = () => {
 
   const handleAddNewItem = async () => {
     if (!addItemName || !addUnit) {
+      toast.dismiss();
       toast.error("Please fill required fields");
       return;
     }
@@ -1342,12 +1362,14 @@ const AddPurchaseBill = () => {
         inputRefs.current[2]?.focus();
         toast.success("Item added successfully");
       } else {
+        toast.dismiss();
         toast.error(response?.data?.message || "Something went wrong");
       }
 
     } catch (error) {
       setUnsavedItems(false);
       const errMsg = error?.response?.data?.message || "Please try again later";
+      toast.dismiss();
       toast.error(errMsg);
     }
   };
@@ -1449,6 +1471,7 @@ const AddPurchaseBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+      toast.dismiss();
       toast.error("Failed to fetch customer history");
     }
   };
@@ -1531,13 +1554,16 @@ const AddPurchaseBill = () => {
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
+      toast.dismiss();
       toast.error("Please select Distributor");
     }
     if (!billNo) {
       newErrors.billNo = "Bill No is Required";
+      toast.dismiss();
       toast.error("Bill No is Required");
     }
     if (ItemPurchaseList?.item?.length === 0) {
+      toast.dismiss();
       toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
     }
@@ -1601,6 +1627,7 @@ const AddPurchaseBill = () => {
     } catch (error) {
       setUnsavedItems(false);
       if (error.response.data.status == 400) {
+        toast.dismiss();
         toast.error(error.response.data.message);
       } else {
       }
@@ -1776,6 +1803,7 @@ const AddPurchaseBill = () => {
     if (finalTotalAmount <= cnAmount) {
       newErrors.finalTotalAmount =
         "You cannot adjust CN more than the total invoice amount";
+      toast.dismiss();
       toast.error("You cannot adjust CN more than the total invoice amount");
       setError(newErrors);
       setSelectedRows([]);
@@ -2171,6 +2199,7 @@ const AddPurchaseBill = () => {
 
                         if (isEnter || isTab) {
                           e.preventDefault();
+                          toast.dismiss();
                           toast.error("Bill NO is Required");
                         }
                         // Shift + Tab is allowed by default; do not prevent it
@@ -2419,7 +2448,10 @@ const AddPurchaseBill = () => {
 
                                   if (!selectedOption) {
                                     e.preventDefault();
-                                    setTimeout(() => toast.error("Please select an Item"), 100);
+                                    setTimeout(() => {
+                                      toast.dismiss();
+                                      toast.error("Please select an Item")
+                                    }, 100);
                                   } else {
                                     setTimeout(() => inputRefs?.current[3].focus(), 100);
                                   }
@@ -2463,6 +2495,7 @@ const AddPurchaseBill = () => {
                             handleKeyDown(e, 3);
                           } else if (isTab || isEnter) {
                             e.preventDefault();
+                            toast.dismiss();
                             toast.error("Unit is Required");
                           }
                         }}
@@ -2488,6 +2521,7 @@ const AddPurchaseBill = () => {
                             handleKeyDown(e, 4);
                           } else if (e.key === 'Tab' || e.key === 'Enter') {
                             e.preventDefault();
+                            toast.dismiss();
                             toast.error("Batch is Required");
                           }
                         }}
@@ -2517,12 +2551,14 @@ const AddPurchaseBill = () => {
                           if (isTab || isEnter) {
                             if (!expiryDate) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("Expiry is required");
                               return;
                             }
 
                             if (!expiryDateRegex.test(expiryDate)) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("Expiry must be in MM/YY format");
                               return;
                             }
@@ -2535,6 +2571,7 @@ const AddPurchaseBill = () => {
 
                             if (expiry < now) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
 
@@ -2579,6 +2616,7 @@ const AddPurchaseBill = () => {
 
                           if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
                             e.preventDefault();
+                            toast.dismiss();
                             toast.error("MRP is required and must be greater than 0");
                             return;
                           }
@@ -2683,12 +2721,14 @@ const AddPurchaseBill = () => {
                           if (isEnter || isTab) {
                             // if (!ptr || ptr === 0) {
                             //   e.preventDefault();
-                            //   toast.error("PTR is required and must be greater than 0");
+                            //   toast.dismiss();
+                            toast.error("PTR is required and must be greater than 0");
                             //   return;
                             // }
 
                             if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("PTR must be less than MRP");
                               return;
                             }
@@ -2774,12 +2814,14 @@ const AddPurchaseBill = () => {
 
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("GST is required");
                               return;
                             }
 
                             if (!allowedGST.includes(Number(gst))) {
                               e.preventDefault();
+                              toast.dismiss();
                               toast.error("Only 0%, 5%, 18% GST is allowed");
                               return;
                             }

@@ -52,7 +52,8 @@ const DrugGroupView = () => {
             }
         } catch (error) {
             console.error("API error:", error);
-            toast.error("Failed to fetch drug group items");
+            toast.dismiss();
+toast.error("Failed to fetch drug group items");
         } finally {
             setIsLoading(false);
         }

@@ -70,7 +70,8 @@ const DistributerView = () => {
     const newErrors = {};
     if (!companyName) {
       newErrors.companyName = "Company Name is required";
-      toast.error(newErrors.companyName);
+      toast.dismiss();
+toast.error(newErrors.companyName);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -182,7 +183,8 @@ const DistributerView = () => {
         });
     } catch (error) {
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
       }
     }

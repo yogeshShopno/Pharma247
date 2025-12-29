@@ -65,15 +65,18 @@ const Gstr_3B = () => {
           toast.success("please wait ...downloading is in progress!");
           exportToCSV();
         } else {
-          toast.error("No data available for the selected criteria.");
+          toast.dismiss();
+toast.error("No data available for the selected criteria.");
         }
       } else {
-        toast.error("Failed to download records. Please try again.");
+        toast.dismiss();
+toast.error("Failed to download records. Please try again.");
       }
     } catch (error) {
       console.error("API error:", error);
 
-      toast.error("An error occurred while downloading the CSV.");
+      toast.dismiss();
+toast.error("An error occurred while downloading the CSV.");
     } finally {
       setIsDownload(false);
     }
@@ -81,7 +84,8 @@ const Gstr_3B = () => {
 
   const exportToCSV = () => {
     if (!reportData || typeof reportData !== "object") {
-      toast.error("No data available for download.");
+      toast.dismiss();
+toast.error("No data available for download.");
       return;
     }
 

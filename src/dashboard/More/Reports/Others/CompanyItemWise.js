@@ -43,7 +43,8 @@ const CompanyItemWise = () => {
     const newErrors = {};
     if (!searchManu) {
       newErrors.searchManu = "Search Any Company Name";
-      toast.error(newErrors.searchManu);
+      toast.dismiss();
+toast.error(newErrors.searchManu);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -83,7 +84,8 @@ const CompanyItemWise = () => {
 
   const exportToCSV = () => {
     if (companyData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const total_amount = companyData.total;
       const filteredData = companyData?.item_list?.map(

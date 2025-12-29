@@ -172,7 +172,8 @@ const Company = () => {
     const newErrors = {};
     if (!companyName) {
       newErrors.companyName = "Company Name is required";
-      toast.error(newErrors.companyName);
+      toast.dismiss();
+toast.error(newErrors.companyName);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -190,7 +191,8 @@ const Company = () => {
       companyList(currentPage);
       toast.success("Company added!");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error");
+      toast.dismiss();
+toast.error(error?.response?.data?.message || "Error");
     }
   };
   const EditCompany = async () => {
@@ -205,7 +207,8 @@ const Company = () => {
       companyList(currentPage);
       toast.success("Company updated!");
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Error");
+      toast.dismiss();
+toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -233,7 +236,8 @@ const Company = () => {
       companyList(currentPage);
       toast.success("Company deleted!");
     } catch (error) {
-      toast.error("Error deleting company");
+      toast.dismiss();
+toast.error("Error deleting company");
     }
   };
   const deleteOpen = (id) => {

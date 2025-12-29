@@ -27,7 +27,8 @@ const HsnWiseGst = () => {
         const newErrors = {};
         if (!reportType) {
             newErrors.reportType = 'Select any Report Type.';
-            toast.error(newErrors.reportType)
+            toast.dismiss();
+toast.error(newErrors.reportType)
         }
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;

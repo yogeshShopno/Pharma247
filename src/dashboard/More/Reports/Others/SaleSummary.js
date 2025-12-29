@@ -81,11 +81,13 @@ const SaleSummary = () => {
     const newErrors = {};
     if (!paymentMode) {
       newErrors.paymentMode = "Select any Payment Mode Type.";
-      toast.error(newErrors.paymentMode);
+      toast.dismiss();
+toast.error(newErrors.paymentMode);
     }
     if (!selectData) {
       newErrors.selectData = "Select any Report Type.";
-      toast.error(newErrors.selectData);
+      toast.dismiss();
+toast.error(newErrors.selectData);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

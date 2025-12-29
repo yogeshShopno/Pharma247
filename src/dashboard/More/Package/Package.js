@@ -175,11 +175,13 @@ const Package = () => {
       const newErrors = {};
       if (!packageName) {
         newErrors.packageName = 'Package Name is required';
-        toast.error(newErrors.packageName)
+        toast.dismiss();
+toast.error(newErrors.packageName)
       }
       // else if (!unitList) {
       //   newErrors.unitList = 'Unit is required';
-      //   toast.error(newErrors.unitList)
+      //   toast.dismiss();
+toast.error(newErrors.unitList)
       // }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -193,11 +195,13 @@ const Package = () => {
       const newErrors = {};
       if (!packageName) {
         newErrors.packageName = 'Package Name is required';
-        toast.error(newErrors.packageName)
+        toast.dismiss();
+toast.error(newErrors.packageName)
       }
       // else if (!unitList) {
       //   newErrors.units = 'Unit is required';
-      //   toast.error(newErrors.unitList)
+      //   toast.dismiss();
+toast.error(newErrors.unitList)
       // }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -238,7 +242,8 @@ const Package = () => {
     } catch (error) {
       if (error.response.data.status == 400) {
 
-        toast.error(error.response.data.message)
+        toast.dismiss();
+toast.error(error.response.data.message)
       }
       console.error("API error:", error);
 
@@ -274,7 +279,8 @@ const Package = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message)
+        toast.dismiss();
+toast.error(error.response.data.message)
       }
     }
   }

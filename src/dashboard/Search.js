@@ -124,7 +124,8 @@ const Search = ({ searchPage, setSearchPage }) => {
   const searchData = async (query, type = searchType) => {
     if (!query.trim() || !type) {
       if (!type) {
-        toast.error("Please select a search type");
+        toast.dismiss();
+toast.error("Please select a search type");
       }
       return;
     }
@@ -132,7 +133,8 @@ const Search = ({ searchPage, setSearchPage }) => {
     const config = searchConfigs[type];
     if (!config) {
       console.error("Invalid search type");
-      toast.error("Invalid search type selected");
+      toast.dismiss();
+toast.error("Invalid search type selected");
       return;
     }
 
@@ -161,7 +163,8 @@ const Search = ({ searchPage, setSearchPage }) => {
     } catch (error) {
       console.error("API error:", error);
       const errorMessage = error.response?.data?.message || "Search failed. Please try again.";
-      toast.error(errorMessage);
+      toast.dismiss();
+toast.error(errorMessage);
       setTableData([]);
     } finally {
       setIsLoading(false);

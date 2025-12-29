@@ -70,7 +70,8 @@ const Plans = () => {
 
       script.onload = () => {
         if (!key) {
-          toast.error("Payment key not available");
+          toast.dismiss();
+toast.error("Payment key not available");
           return;
         }
         // const remainingTime = Math.floor((timer - Date.now()) / 1000);
@@ -110,7 +111,8 @@ const Plans = () => {
       // Append the Razorpay script to the document body
       document.body.appendChild(script);
     } catch (error) {
-      toast.error(
+      toast.dismiss();
+toast.error(
         error.response?.data?.message || "Failed to fetch payment key"
       );
     }

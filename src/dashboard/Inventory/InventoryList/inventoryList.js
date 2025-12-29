@@ -543,7 +543,8 @@ const InventoryList = () => {
         .then((response) => {
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
-            // toast.error("No Record Found");
+            // toast.dismiss();
+toast.error("No Record Found");
           }
           setIsLoading(false);
         
@@ -605,7 +606,8 @@ const InventoryList = () => {
       });
       setData(res.data.data.data);
       if (res.data.data.data.length == 0) {
-        // toast.error("No Record Found");
+        // toast.dismiss();
+toast.error("No Record Found");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -677,7 +679,8 @@ const InventoryList = () => {
     const newErrors = {};
     if (selectedItems.length == 0) {
       newErrors.selectedItems = "Please First Select any Item.";
-      toast.error(newErrors.selectedItems);
+      toast.dismiss();
+toast.error(newErrors.selectedItems);
     }
 
     setErrors(newErrors);
@@ -728,10 +731,12 @@ const InventoryList = () => {
     const newErrors = {};
     if (selectedItems.length == 0) {
       newErrors.selectedItems = "Please First Select any Item.";
-      toast.error(newErrors.selectedItems);
+      toast.dismiss();
+toast.error(newErrors.selectedItems);
     } else if (!barcode && !locationBulk) {
       newErrors.locationBulk = "Please add Location or Barcode.";
-      toast.error(newErrors.locationBulk);
+      toast.dismiss();
+toast.error(newErrors.locationBulk);
     }
 
     setErrors(newErrors);
@@ -784,16 +789,20 @@ const InventoryList = () => {
 
     if (!selectedItem) {
       newErrors.selectedItem = "select any Item Name.";
-      toast.error(newErrors.selectedItem);
+      toast.dismiss();
+toast.error(newErrors.selectedItem);
     } else if (!batch) {
       newErrors.batch = "Batch Number is required";
-      toast.error(newErrors.batch);
+      toast.dismiss();
+toast.error(newErrors.batch);
     } else if (!selectedCompany) {
       newErrors.selectedCompany = "select any Company Name";
-      toast.error(newErrors.selectedCompany);
+      toast.dismiss();
+toast.error(newErrors.selectedCompany);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
-      toast.error(newErrors.stockAdjust);
+      toast.dismiss();
+toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {

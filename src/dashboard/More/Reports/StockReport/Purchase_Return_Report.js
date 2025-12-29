@@ -57,7 +57,8 @@ const Purchase_Return_Report = () => {
 
   const exportToCSV = () => {
     if (purchaseReturnData?.purches_return?.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const total = purchaseReturnData?.purches_return_total;
 

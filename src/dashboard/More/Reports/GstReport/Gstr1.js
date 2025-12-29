@@ -40,7 +40,8 @@ const Gstr1 = () => {
 
   const downloadCSV = async () => {
     if (!reportType) {
-      toast.error("Please select a report type.");
+      toast.dismiss();
+toast.error("Please select a report type.");
       return;
     }
 
@@ -66,21 +67,25 @@ const Gstr1 = () => {
         if (parsedData?.data) {
           setReportData([parsedData.data]); // Update state with parsed data
         } else {
-          toast.error("No data available for the selected criteria.");
+          toast.dismiss();
+toast.error("No data available for the selected criteria.");
         }
       } else {
-        toast.error("Failed to download records. Please try again.");
+        toast.dismiss();
+toast.error("Failed to download records. Please try again.");
       }
     } catch (error) {
       console.error("API error:", error);
 
-      toast.error("An error occurred while downloading the CSV.");
+      toast.dismiss();
+toast.error("An error occurred while downloading the CSV.");
     }
   };
 
   const exportToCSV = () => {
     if (!Array.isArray(reportData) || reportData.length === 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
       return;
     }
 

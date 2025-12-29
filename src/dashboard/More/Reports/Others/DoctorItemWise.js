@@ -59,7 +59,8 @@ const DoctorItemWise = () => {
     const newErrors = {};
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
-      toast.error(newErrors.reportType);
+      toast.dismiss();
+toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -104,7 +105,8 @@ const DoctorItemWise = () => {
 
   const exportToCSV = () => {
     if (doctorItemWiseData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const total_amount = doctorItemWiseData.total_amount;
       const total_net_profite = doctorItemWiseData.total_net_profite;

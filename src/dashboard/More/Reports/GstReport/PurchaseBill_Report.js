@@ -79,10 +79,12 @@ const PurchaseBillReport = () => {
     const newErrors = {};
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
-      toast.error(newErrors.reportType);
+      toast.dismiss();
+toast.error(newErrors.reportType);
     } else if (reportType && !purchaseType) {
       newErrors.purchaseType = "Select any Purchase Type.";
-      toast.error(newErrors.purchaseType);
+      toast.dismiss();
+toast.error(newErrors.purchaseType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

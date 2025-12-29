@@ -52,7 +52,8 @@ const ItemWiseMargin = () => {
     const newErrors = {};
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
-      toast.error(newErrors.reportType);
+      toast.dismiss();
+toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -92,7 +93,8 @@ const ItemWiseMargin = () => {
 
   const exportToCSV = () => {
     if (itemMarginData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const saleamt = itemMarginData.total_sales;
       const total_purchase = itemMarginData.total_purches;

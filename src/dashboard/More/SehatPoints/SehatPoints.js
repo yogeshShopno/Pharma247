@@ -234,7 +234,8 @@ const SehatPoints = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
-            toast.error(error.response.data.message);
+            toast.dismiss();
+toast.error(error.response.data.message);
 
         }
 

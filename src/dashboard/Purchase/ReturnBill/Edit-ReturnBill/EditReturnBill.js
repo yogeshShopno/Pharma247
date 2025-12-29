@@ -301,7 +301,8 @@ const EditReturnBill = () => {
                         handleReturnUpdate();
                     }, 100);
                 } else {
-                    toast.error("Please wait for data to load completely");
+                    toast.dismiss();
+toast.error("Please wait for data to load completely");
                 }
 
             } else if (event.key.toLowerCase() === "m") {
@@ -703,7 +704,8 @@ const EditReturnBill = () => {
             setQty(value);
         } else if (value > availableStockForEdit) {
             setQty(availableStockForEdit);
-            toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
+            toast.dismiss();
+toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
     };
     /*<================================================================ handle PTR MRP validation  ======================================================================> */
@@ -714,10 +716,12 @@ const EditReturnBill = () => {
 
         if (newPTR > mrp) {
             setPTR(mrp);
-            toast.error(`PTR should not greater than MRP: ${mrp}`);
+            toast.dismiss();
+toast.error(`PTR should not greater than MRP: ${mrp}`);
         } else if (mrp < 0) {
             setPTR(mrp);
-            toast.error(`PTR should not less than MRP: 0`);
+            toast.dismiss();
+toast.error(`PTR should not less than MRP: 0`);
         } else {
             setPTR(newPTR)
         }
@@ -739,7 +743,8 @@ const EditReturnBill = () => {
         if (!qty) newErrors.qty = 'Quantity is required';
         // if (Number(tempQty) < Number(qty)) {
         //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
-        //     toast.error('Quantity should not be greater than purchase quantity ')
+        //     toast.dismiss();
+toast.error('Quantity should not be greater than purchase quantity ')
         //     return
         // }
         // if (!free) newErrors.free = 'Free quantity is required';
@@ -751,7 +756,8 @@ const EditReturnBill = () => {
         // if (!loc) newErrors.loc = 'Location is required';
         if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
             newErrors.gst = "Enter valid GST";
-            toast.error("Enter valid GST")
+            toast.dismiss();
+toast.error("Enter valid GST")
         };
 
         setErrors(newErrors);
@@ -858,7 +864,8 @@ const EditReturnBill = () => {
 
         // if(checkedItems.length===0){
         //     newErrors.checkedItems = 'Item is not selected';
-        //     toast.error("Item is not selected");
+        //     toast.dismiss();
+toast.error("Item is not selected");
 
         // }
         setError(newErrors);
@@ -1203,7 +1210,8 @@ const EditReturnBill = () => {
                                                         inputRef={(el) => (inputRefs.current[0] = el)}
                                                         onKeyDown={e => {
                                                             if (e.key === "Enter" && !searchQuery) {
-                                                                toast.error("Please search any items..");
+                                                                toast.dismiss();
+toast.error("Please search any items..");
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -1238,7 +1246,8 @@ const EditReturnBill = () => {
                                                             if (unit && unit !== 0) {
                                                                 handleKeyDown(e, 1);
                                                             } else {
-                                                                toast.error("Please enter unit");
+                                                                toast.dismiss();
+toast.error("Please enter unit");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1320,7 +1329,8 @@ const EditReturnBill = () => {
                                                             if (qty && qty !== 0) {
                                                                 handleKeyDown(e, 2);
                                                             } else {
-                                                                toast.error("Please enter quantity");
+                                                                toast.dismiss();
+toast.error("Please enter quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1349,7 +1359,8 @@ const EditReturnBill = () => {
                                                             if (free !== "") {
                                                                 handleKeyDown(e, 3);
                                                             } else {
-                                                                toast.error("Please enter free quantity");
+                                                                toast.dismiss();
+toast.error("Please enter free quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1375,7 +1386,8 @@ const EditReturnBill = () => {
                                                             if (ptr && ptr !== 0) {
                                                                 handleKeyDown(e, 4);
                                                             } else {
-                                                                toast.error("Please enter PTR");
+                                                                toast.dismiss();
+toast.error("Please enter PTR");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1411,7 +1423,8 @@ const EditReturnBill = () => {
                                                             if (disc !== "") {
                                                                 handleKeyDown(e, 5);
                                                             } else {
-                                                                toast.error("Please enter CD");
+                                                                toast.dismiss();
+toast.error("Please enter CD");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1443,7 +1456,8 @@ const EditReturnBill = () => {
                                                             if (gst && gst !== "") {
                                                                 handleKeyDown(e, 6);
                                                             } else {
-                                                                toast.error("Please enter GST");
+                                                                toast.dismiss();
+toast.error("Please enter GST");
                                                                 e.preventDefault();
                                                             }
                                                         }

@@ -261,7 +261,8 @@ const OrderList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-      toast.error("Failed to update status");
+      toast.dismiss();
+toast.error("Failed to update status");
       setUpdatingStatus(null);
     }
   };

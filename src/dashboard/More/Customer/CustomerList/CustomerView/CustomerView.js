@@ -135,7 +135,8 @@ const CustomerView = () => {
     } else if (tabValue === 1) {
       history.push(`/SaleReturn/View/${item.sales_id}`);
     } else {
-      // toast.error('Route not Found')
+      // toast.dismiss();
+// toast.error('Route not Found')
     }
   };
 

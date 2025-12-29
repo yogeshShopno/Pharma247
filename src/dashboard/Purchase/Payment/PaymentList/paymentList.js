@@ -296,7 +296,8 @@ const PaymentList = () => {
     const newErrors = {};
     if (!distributorValue) {
       newErrors.distributorValue = "Distributor is required";
-      toast.error(newErrors.distributorValue);
+      toast.dismiss();
+toast.error(newErrors.distributorValue);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;

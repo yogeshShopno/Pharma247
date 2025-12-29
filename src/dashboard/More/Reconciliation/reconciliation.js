@@ -105,7 +105,8 @@ const Reconciliation = () => {
 
 
           if (response.data.data.data.length == 0) {
-            toast.error("No Record Found");
+            toast.dismiss();
+toast.error("No Record Found");
           }
           setIsLoading(false);
         });
@@ -117,7 +118,8 @@ const Reconciliation = () => {
 
   let handleSubmit = async () => {
     if (stockData.length != itemCount) {
-      toast.error("Enter all item's stock");
+      toast.dismiss();
+toast.error("Enter all item's stock");
       return;
     }
     setIsLoading(true);

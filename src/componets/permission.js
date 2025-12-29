@@ -49,7 +49,8 @@ export const ProtectedRoute = ({ component: Component, requiredPermission, ...re
         if (hasPermission(permissions, requiredPermission)) {
           return <Component {...props} />;
         } else {
-          toast.error("You do not have permission to access this page.");
+          toast.dismiss();
+toast.error("You do not have permission to access this page.");
           return <Redirect to="/errorpage" />;
         }
       }}

@@ -482,7 +482,8 @@ const Addsale = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-      toast.error("Failed to fetch customer history");
+      toast.dismiss();
+toast.error("Failed to fetch customer history");
     }
   };
 
@@ -800,11 +801,13 @@ const Addsale = () => {
     const newErrors = {};
     if (!addItemName) {
       newErrors.addItemName = "Item Name is required";
-      toast.error(newErrors.addItemName);
+      toast.dismiss();
+toast.error(newErrors.addItemName);
     }
     if (!addUnit) {
       newErrors.addUnit = "Item Unit is required";
-      toast.error(newErrors.addUnit);
+      toast.dismiss();
+toast.error(newErrors.addUnit);
     }
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -851,16 +854,19 @@ const Addsale = () => {
         setOpenAddItemPopUp(false);
         resetAddDialog();
       } else if (response.data.status === 400) {
-        toast.error(response.data.message);
+        toast.dismiss();
+toast.error(response.data.message);
       } else if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
-        toast.error("Please try again later");
+        toast.dismiss();
+toast.error("Please try again later");
       }
     }
   };
@@ -886,7 +892,8 @@ const Addsale = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-      toast.error("Failed to fetch customer history");
+      toast.dismiss();
+toast.error("Failed to fetch customer history");
     }
   };
 
@@ -1047,7 +1054,8 @@ const Addsale = () => {
 
   const AddDoctorRecord = async () => {
     if (!doctorName || !clinic) {
-      toast.error("Please fill all required fields");
+      toast.dismiss();
+toast.error("Please fill all required fields");
       return; // stop further execution if validation fails
     }
 
@@ -1071,9 +1079,11 @@ const Addsale = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
-        toast.error("An unexpected error occurred");
+        toast.dismiss();
+toast.error("An unexpected error occurred");
       }
     }
   };
@@ -1081,7 +1091,8 @@ const Addsale = () => {
 
   const AddCustomerRecord = async () => {
     if (!customerName.trim() || !mobileNo.trim()) {
-      toast.error("Please fill all the fields");
+      toast.dismiss();
+toast.error("Please fill all the fields");
       return; // Prevent further execution if validation fails
     }
 
@@ -1103,9 +1114,11 @@ const Addsale = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
-        toast.error("An unexpected error occurred");
+        toast.dismiss();
+toast.error("An unexpected error occurred");
       }
     }
   };
@@ -1390,14 +1403,17 @@ const Addsale = () => {
     }
     if (totalAmount < 1) {
       newErrors.totalAmount = "Total Amount must be greater than 0";
-      toast.error("Total Amount must be greater than 0");
+      toast.dismiss();
+toast.error("Total Amount must be greater than 0");
     }
     if (loyaltyVal > totalAmount) {
       newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
-      toast.error("Total Amount must be greater than Loyalty points");
+      toast.dismiss();
+toast.error("Total Amount must be greater than Loyalty points");
     } else if (ItemSaleList?.sales_item.length == 0) {
       newErrors.item = "Please Add any Item in Sale Bill";
-      toast.error("Please Add any Item in Sale Bill");
+      toast.dismiss();
+toast.error("Please Add any Item in Sale Bill");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -1517,7 +1533,8 @@ const Addsale = () => {
 
       } else if (response.data.status === 400) {
         setIsSubmitting(false); // unlock on known API error
-        toast.error(response.data.message);
+        toast.dismiss();
+toast.error(response.data.message);
       }
 
 
@@ -1529,9 +1546,11 @@ const Addsale = () => {
       setSubmitTimeout(timeout);
 
       if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
-        toast.error("Please try again later");
+        toast.dismiss();
+toast.error("Please try again later");
       }
     }
   };
@@ -1649,12 +1668,14 @@ const Addsale = () => {
     const newErrors = {};
     if (!mrp) {
       newErrors.mrp = "Please Select any Item Name";
-      toast.error(newErrors.mrp);
+      toast.dismiss();
+toast.error(newErrors.mrp);
     }
     if (!qty || qty <= 0) {
       // Notify the user to enter a valid quantity
       newErrors.qty = "Please enter a valid quantity.";
-      toast.error(newErrors.qty);
+      toast.dismiss();
+toast.error(newErrors.qty);
     } else {
       // addSaleItem();
       setIsVisible(false);
@@ -1795,7 +1816,8 @@ const Addsale = () => {
         setOrder("");
       }
     } else {
-      toast.error("Can't add qty more than stock");
+      toast.dismiss();
+toast.error("Can't add qty more than stock");
       setQty(maxQty);
       setOrder("O");
     }
@@ -2039,16 +2061,19 @@ const Addsale = () => {
 
 
         } else if (response.data.status === 400) {
-          toast.error(response.data.message);
+          toast.dismiss();
+toast.error(response.data.message);
         } else if (response.data.status === 401) {
           history.push("/");
           localStorage.clear();
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error(error.response.data.message);
+          toast.dismiss();
+toast.error(error.response.data.message);
         } else {
-          toast.error("Error setting reminder. Please try again later.");
+          toast.dismiss();
+toast.error("Error setting reminder. Please try again later.");
         }
       }
     }
@@ -2830,7 +2855,8 @@ const Addsale = () => {
                                 if (isEnter || isTab) {
                                   e.preventDefault();
                                   if (!selectedOption) {
-                                    setTimeout(() => toast.error("Please select an Item"), 100);
+                                    setTimeout(() => {toast.dismiss();
+toast.error("Please select an Item")}, 100);
                                   } else {
                                     setTimeout(() => {
                                       if (inputRef1.current) inputRef1.current.focus();
@@ -3105,7 +3131,8 @@ const Addsale = () => {
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (base === "" || base === null || base === undefined) {
-                            toast.error("Base is required");
+                            toast.dismiss();
+toast.error("Base is required");
                             e.preventDefault();
                             return;
                           }
@@ -3172,7 +3199,8 @@ const Addsale = () => {
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (qty === "" || qty === null || qty === undefined) {
-                            toast.error("Qty is required");
+                            toast.dismiss();
+toast.error("Qty is required");
                             e.preventDefault();
                             return;
                           }

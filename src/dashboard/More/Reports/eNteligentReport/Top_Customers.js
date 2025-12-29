@@ -65,7 +65,8 @@ const Top_Customers = () => {
 
   const exportToCSV = () => {
     if (topCustomerData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = topCustomerData?.map(
         ({ customer_name, customer_mobile, net_amt, order_count }) => ({

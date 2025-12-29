@@ -227,7 +227,8 @@ const StaffMember = () => {
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
-                toast.error(error.response.data.message);
+                toast.dismiss();
+toast.error(error.response.data.message);
             }
             console.error("API error:", error);
 

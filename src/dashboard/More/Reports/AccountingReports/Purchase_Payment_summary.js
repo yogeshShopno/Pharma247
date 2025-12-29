@@ -56,7 +56,8 @@ const PurchasePaymentSummary = () => {
     const newErrors = {};
     if (!paymentStatus) {
       newErrors.paymentStatus = "Select Any Payment Status";
-      toast.error(newErrors.paymentStatus);
+      toast.dismiss();
+toast.error(newErrors.paymentStatus);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -100,7 +101,8 @@ const PurchasePaymentSummary = () => {
 
   const exportToCSV = () => {
     if (purchasePaymentData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = purchasePaymentData?.map(
         ({

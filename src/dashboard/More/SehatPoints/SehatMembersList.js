@@ -268,7 +268,8 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             setIsLoading(false);
-            toast.error(error.message);
+            toast.dismiss();
+toast.error(error.message);
         }
     };
 
@@ -279,7 +280,8 @@ const SehatMembersList = () => {
             if (fileType === "text/csv") {
                 setFile(selectedFile);
             } else {
-                toast.error("Please select an Excel or CSV file.");
+                toast.dismiss();
+toast.error("Please select an Excel or CSV file.");
             }
         }
     };
@@ -310,7 +312,8 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             if (error.response && error.response.status === 500) {
-                toast.error("Please Select file");
+                toast.dismiss();
+toast.error("Please Select file");
             }
             console.error("API error:", error);
         }

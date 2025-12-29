@@ -153,7 +153,8 @@ const LoyaltyPoint = () => {
           (Number(maximumAmount) >= Number(item.minimum) &&
             Number(maximumAmount) <= Number(item.maximum))
         ) {
-          toast.error("Range overlaps. Choose different values.");
+          toast.dismiss();
+toast.error("Range overlaps. Choose different values.");
           return false; // Prevent form submission if this condition fails
         }
       }
@@ -161,23 +162,27 @@ const LoyaltyPoint = () => {
       // Validate minimum, maximum and percentage
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
-        toast.error(newErrors.maximumAmount);
+        toast.dismiss();
+toast.error(newErrors.maximumAmount);
       }
 
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
-        toast.error(newErrors.minimumAmount);
+        toast.dismiss();
+toast.error(newErrors.minimumAmount);
       }
       
 
       if (Number(maximumAmount) <= Number(minimumAmount)) {
         newErrors.amountMismatch ="Maximum amount must be greater than minimum amount";
-        toast.error(newErrors.amountMismatch);
+        toast.dismiss();
+toast.error(newErrors.amountMismatch);
       }
 
        if (!percentage) {
         newErrors.percentage ="Percentage is required";
-        toast.error(newErrors.percentage);
+        toast.dismiss();
+toast.error(newErrors.percentage);
       }
 
       setErrors(newErrors);
@@ -191,11 +196,13 @@ const LoyaltyPoint = () => {
       const newErrors = {};
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
-        toast.error(newErrors.maximumAmount);
+        toast.dismiss();
+toast.error(newErrors.maximumAmount);
       }
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
-        toast.error(newErrors.minimumAmount);
+        toast.dismiss();
+toast.error(newErrors.minimumAmount);
       }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -230,7 +237,8 @@ const LoyaltyPoint = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       }
     }
   };
@@ -260,7 +268,8 @@ const LoyaltyPoint = () => {
         });
     } catch (error) {
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       }
       console.error("API error:", error);
     }
@@ -287,7 +296,8 @@ const LoyaltyPoint = () => {
         error.response.data &&
         error.response.data.message
       ) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       }
     }
   };

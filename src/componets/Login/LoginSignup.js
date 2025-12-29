@@ -140,22 +140,27 @@ const LoginSignup = () => {
 
     if (!registerData.pharmacy_name) {
       newErrors.pharmacy_name = "pharmacy Name is required";
-      toast.error("Pharmacy Name is required");
+      toast.dismiss();
+toast.error("Pharmacy Name is required");
     }
     if (!registerData.mobile_number) {
       newErrors.mobile_number = "mobile No is required";
-      toast.error("Mobile Number is required");
+      toast.dismiss();
+toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(registerData.mobile_number)) {
       newErrors.mobile_number = "Mobile number must 10 numbers";;
-      toast.error("Mobile number must 10 numbers");
+      toast.dismiss();
+toast.error("Mobile number must 10 numbers");
     }
 
     if (!registerData.email) {
       newErrors.email = "Email Id is required";
-      toast.error("Email Id is required");
+      toast.dismiss();
+toast.error("Email Id is required");
     } else if (!emailRegex.test(registerData.email)) {
       newErrors.email = "Enter a valid email address";
-      toast.error("Enter a valid email address");
+      toast.dismiss();
+toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -187,13 +192,16 @@ const LoginSignup = () => {
         setPassword("");
 
       } else {
-        toast.error(response.data.message);
+        toast.dismiss();
+toast.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       } else {
-        toast.error("An unexpected error occurred. Please try again later.");
+        toast.dismiss();
+toast.error("An unexpected error occurred. Please try again later.");
         console.error("API error:", error);
       }
     }
@@ -204,30 +212,37 @@ const LoginSignup = () => {
 
     if (!otp) {
       newErrors.otp = "OTP is required";
-      toast.error(newErrors.otp);
+      toast.dismiss();
+toast.error(newErrors.otp);
     }
 
     if (!password) {
       newErrors.password = "Password is required";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     } else if (!/[A-Z]/.test(password)) {
       newErrors.password =
         "Password must contain at least one uppercase letter";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     } else if (!/[a-z]/.test(password)) {
       newErrors.password =
         "Password must contain at least one lowercase letter";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     } else if (!/[0-9]/.test(password)) {
       newErrors.password = "Password must contain at least one digit";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
       newErrors.password =
         "Password must contain at least one special character";
-      toast.error(newErrors.password);
+      toast.dismiss();
+toast.error(newErrors.password);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -259,10 +274,12 @@ const LoginSignup = () => {
           history.push("/", { NewUser: "NewUser" });
         }, 3000);
       } else {
-        toast.error(response.data.message || "Something went wrong");
+        toast.dismiss();
+toast.error(response.data.message || "Something went wrong");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "An error occurred");
+      toast.dismiss();
+toast.error(error.response?.data?.message || "An error occurred");
       console.error("API error:", error);
     }
   };
@@ -296,14 +313,17 @@ const LoginSignup = () => {
     const newErrors = {};
     if (!mobile) {
       newErrors.mobile = "Mobile Number is required";
-      toast.error("Mobile Number is required");
+      toast.dismiss();
+toast.error("Mobile Number is required");
     }
     if (!password) {
       newErrors.password = "Password is required";
-      toast.error("Password is required");
+      toast.dismiss();
+toast.error("Password is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobileNumber = "Mobile Number must be 10 digits";
-      toast.error("Mobile Number must be 10 digits");
+      toast.dismiss();
+toast.error("Mobile Number must be 10 digits");
     }
 
     setErrors(newErrors);
@@ -360,11 +380,13 @@ const LoginSignup = () => {
             history.push("/admindashboard");
           }
         } else {
-          toast.error(response.data.message);
+          toast.dismiss();
+toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error(error.response.data.message);
+          toast.dismiss();
+toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }
@@ -382,17 +404,21 @@ const LoginSignup = () => {
 
     if (!mobile) {
       newErrors.mobile = "mobile No is required";
-      toast.error("Mobile Number is required");
+      toast.dismiss();
+toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobile = "Mobile number must be 10 digits";
-      toast.error("Mobile number must be 10 digits");
+      toast.dismiss();
+toast.error("Mobile number must be 10 digits");
     }
     if (!email) {
       newErrors.email = "Email Id is required";
-      toast.error("Email Id is required");
+      toast.dismiss();
+toast.error("Email Id is required");
     } else if (!emailRegex.test(email)) {
       newErrors.email = "Enter a valid email address";
-      toast.error("Enter a valid email address");
+      toast.dismiss();
+toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -414,11 +440,13 @@ const LoginSignup = () => {
           setMobile("");
           setStep("ForgetOTP");
         } else {
-          toast.error(response.data.message);
+          toast.dismiss();
+toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error(error.response.data.message);
+          toast.dismiss();
+toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }
@@ -433,22 +461,28 @@ const LoginSignup = () => {
     if (!otp) errors.otp = "OTP is required";
     if (!password) {
       errors.password = "Password is required";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     } else if (password.length < 8) {
       errors.password = "Password must be at least 8 characters";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     } else if (!/[A-Z]/.test(password)) {
       errors.password = "Password must contain at least one uppercase letter";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     } else if (!/[a-z]/.test(password)) {
       errors.password = "Password must contain at least one lowercase letter";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     } else if (!/[0-9]/.test(password)) {
       errors.password = "Password must contain at least one digit";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
       errors.password = "Password must contain at least one special character";
-      toast.error(errors.password);
+      toast.dismiss();
+toast.error(errors.password);
     }
     setErrors(errors);
     const isValid = Object.keys(errors).length === 0;
@@ -468,11 +502,13 @@ const LoginSignup = () => {
             history.push("/");
           }, 3000);
         } else {
-          toast.error(response.data.message);
+          toast.dismiss();
+toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
-          toast.error(error.response.data.message);
+          toast.dismiss();
+toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }

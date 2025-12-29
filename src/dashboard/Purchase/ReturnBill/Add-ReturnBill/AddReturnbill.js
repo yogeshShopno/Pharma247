@@ -491,15 +491,18 @@ const AddReturnbill = () => {
 
     if (!distributor) {
       newErrors.distributor = "Distributor is required";
-      toast.error("Distributor is required");
+      toast.dismiss();
+toast.error("Distributor is required");
     }
     if (!startDate) {
       newErrors.startDate = "Start date is required";
-      toast.error("Start date is required");
+      toast.dismiss();
+toast.error("Start date is required");
     }
     if (!endDate) {
       newErrors.endDate = "End date is required";
-      toast.error("End date is required");
+      toast.dismiss();
+toast.error("End date is required");
     }
 
     setErrors(newErrors);
@@ -516,7 +519,8 @@ const AddReturnbill = () => {
     setSearchQuery(value);
 
     if (!distributor) {
-      toast.error("Please select distributor first");
+      toast.dismiss();
+toast.error("Please select distributor first");
       return;
     }
 
@@ -610,7 +614,8 @@ const AddReturnbill = () => {
     }
     if (selectedItem.length === 0) {
       newErrors.ItemId = "Please select at least one item";
-      toast.error("Please select at least one item");
+      toast.dismiss();
+toast.error("Please select at least one item");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -627,7 +632,8 @@ const AddReturnbill = () => {
       (item) => item.iss_check === false
     );
     if (hasUncheckedItems) {
-      toast.error("Please select at least one item");
+      toast.dismiss();
+toast.error("Please select at least one item");
     } else {
       let data = new FormData();
       const selectedItems = returnItemList.item_list.filter((item) =>
@@ -730,7 +736,8 @@ const AddReturnbill = () => {
       setQty(value);
     } else if (value > availableStockForEdit) {
       setQty(availableStockForEdit);
-      toast.error(
+      toast.dismiss();
+toast.error(
         `Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`
       );
     }
@@ -745,7 +752,8 @@ const AddReturnbill = () => {
     if (!qty) newErrors.qty = "Quantity is required";
     // if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
     //     newErrors.gst = "Enter valid GST";
-    //     toast.error("Enter valid GST")
+    //     toast.dismiss();
+toast.error("Enter valid GST")
     // };
     // if (!free) newErrors.free = 'Free quantity is required';
     if (!ptr) newErrors.ptr = "PTR is required";
@@ -754,7 +762,8 @@ const AddReturnbill = () => {
     // if (!loc) newErrors.loc = 'Location is required';
     if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
       newErrors.gst = "Enter valid GST";
-      toast.error("Enter valid GST");
+      toast.dismiss();
+toast.error("Enter valid GST");
     }
 
     setErrors(newErrors);
@@ -1143,7 +1152,8 @@ const AddReturnbill = () => {
                           inputRef={(el) => (inputRefs.current[5] = el)}
                           onKeyDown={e => {
                             if (e.key === "Enter" && !searchQuery) {
-                              toast.error("Please search any items..");
+                              toast.dismiss();
+toast.error("Please search any items..");
                               e.preventDefault();
                             }
                           }}
@@ -1179,7 +1189,8 @@ const AddReturnbill = () => {
                             if (unit && unit !== 0) {
                               handleKeyDown(e, 6);
                             } else {
-                              toast.error("Please enter unit");
+                              toast.dismiss();
+toast.error("Please enter unit");
                               e.preventDefault();
                             }
                           }
@@ -1277,7 +1288,8 @@ const AddReturnbill = () => {
                             if (qty && qty !== 0) {
                               handleKeyDown(e, 7);
                             } else {
-                              toast.error("Please enter quantity");
+                              toast.dismiss();
+toast.error("Please enter quantity");
                               e.preventDefault();
                             }
                           }
@@ -1303,7 +1315,8 @@ const AddReturnbill = () => {
                             if (free !== "") {
                               handleKeyDown(e, 8);
                             } else {
-                              toast.error("Please enter free quantity");
+                              toast.dismiss();
+toast.error("Please enter free quantity");
                             }
                           }
                         }}
@@ -1327,7 +1340,8 @@ const AddReturnbill = () => {
                             if (ptr && ptr !== 0) {
                               handleKeyDown(e, 9);
                             } else {
-                              toast.error("Please enter PTR");
+                              toast.dismiss();
+toast.error("Please enter PTR");
                             }
                           }
                         }}
@@ -1351,7 +1365,8 @@ const AddReturnbill = () => {
                             if (disc !== "") {
                               handleKeyDown(e, 10);
                             } else {
-                              toast.error("Please enter CD");
+                              toast.dismiss();
+toast.error("Please enter CD");
                             }
                           }
                         }}

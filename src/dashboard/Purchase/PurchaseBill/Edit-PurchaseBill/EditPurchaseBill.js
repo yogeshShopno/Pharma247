@@ -576,7 +576,8 @@ const EditPurchaseBill = () => {
     } catch (error) {
       // setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message);
+        toast.dismiss();
+toast.error(error.response.data.message);
       }
     }
   };
@@ -684,22 +685,26 @@ const EditPurchaseBill = () => {
     const numericQty = parseFloat(qty) || 0;
     const numericFree = parseFloat(free) || 0;
     if (numericQty === 0 && numericFree === 0) {
-      toast.error("Free and Qty cannot both be 0");
+      toast.dismiss();
+toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) {
       newErrors.unit = "Unit is required";
-      toast.error(newErrors.unit);
+      toast.dismiss();
+toast.error(newErrors.unit);
     }
 
     if (!batch) {
       newErrors.batch = "Batch is required";
-      toast.error(newErrors.batch);
+      toast.dismiss();
+toast.error(newErrors.batch);
     }
 
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
-      toast.error(newErrors.expiryDate);
+      toast.dismiss();
+toast.error(newErrors.expiryDate);
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
       const currentDate = new Date();
@@ -712,7 +717,8 @@ const EditPurchaseBill = () => {
       ) {
         newErrors.expiryDate =
           "Expiry date must be in the future and cannot be the current month";
-        toast.error(newErrors.expiryDate);
+        toast.dismiss();
+toast.error(newErrors.expiryDate);
       }
     }
     if (!mrp) newErrors.mrp = "MRP is required";
@@ -720,19 +726,23 @@ const EditPurchaseBill = () => {
     //   newErrors.ptr = "PTR is required";
     // } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
     //   newErrors.ptr = "PTR must be less than or equal to MRP";
-    //   toast.error("PTR must be less than or equal to MRP");
+    //   toast.dismiss();
+toast.error("PTR must be less than or equal to MRP");
     // }
 
     if (!gst) {
       newErrors.gst = "GST is required";
-      toast.error(newErrors.gst);
+      toast.dismiss();
+toast.error(newErrors.gst);
     }
     if (!searchItem) {
-      toast.error("Please Select any Item Name");
+      toast.dismiss();
+toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
     // if (!ItemTotalAmount) {
-    //   toast.error("Total amount is not available");
+    //   toast.dismiss();
+toast.error("Total amount is not available");
     //   newErrors.searchItem = "Total amount is not available";
     // }
     setErrors(newErrors);
@@ -1040,7 +1050,8 @@ const EditPurchaseBill = () => {
       newErrors.billNo = "Bill No is Required";
     }
     if (purchase?.item_list?.length === 0) {
-      toast.error("Please add atleast one item");
+      toast.dismiss();
+toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
 
     }
@@ -1104,7 +1115,8 @@ const EditPurchaseBill = () => {
           }
         })
     } catch (error) {
-      toast.error(error.data.message);
+      toast.dismiss();
+toast.error(error.data.message);
       console.error("API error:", error);
     }
   };
@@ -1351,7 +1363,8 @@ const EditPurchaseBill = () => {
     if (finalTotalAmount <= cnAmount) {
       newErrors.finalTotalAmount =
         "You cannot adjust CN more than the total invoice amount";
-      toast.error("You cannot adjust CN more than the total invoice amount");
+      toast.dismiss();
+toast.error("You cannot adjust CN more than the total invoice amount");
       setError(newErrors);
       setError(newErrors);
       setSelectedRows([]);
@@ -1695,7 +1708,8 @@ const EditPurchaseBill = () => {
                             handleKeyDown(e, 3);
                           } else if (isTab || isEnter) {
                             e.preventDefault();
-                            toast.error("Unit is Required");
+                            toast.dismiss();
+toast.error("Unit is Required");
                           }
                         }}
                         inputRef={(el) => (inputRefs.current[3] = el)}
@@ -1719,7 +1733,8 @@ const EditPurchaseBill = () => {
                             handleKeyDown(e, 4);
                           } else if (e.key === "Tab" || e.key === "Enter") {
                             e.preventDefault();
-                            toast.error("Batch is Required");
+                            toast.dismiss();
+toast.error("Batch is Required");
                           }
                         }}
                       />
@@ -1745,12 +1760,14 @@ const EditPurchaseBill = () => {
                           if (isTab || isEnter) {
                             if (!expiryDate) {
                               e.preventDefault();
-                              toast.error("Expiry is required");
+                              toast.dismiss();
+toast.error("Expiry is required");
                               return;
                             }
                             if (!expiryDateRegex.test(expiryDate)) {
                               e.preventDefault();
-                              toast.error("Expiry must be in MM/YY format");
+                              toast.dismiss();
+toast.error("Expiry must be in MM/YY format");
                               return;
                             }
                             const [month, year] = expiryDate.split("/").map(Number);
@@ -1760,7 +1777,8 @@ const EditPurchaseBill = () => {
                             sixMonthsLater.setMonth(now.getMonth() + 6);
                             if (expiry < now) {
                               e.preventDefault();
-                              toast.error("Product has expired");
+                              toast.dismiss();
+toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
                               e.preventDefault();
                               toast.warning("Product will expire within 6 months");
@@ -1797,7 +1815,8 @@ const EditPurchaseBill = () => {
                           }
                           if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
                             e.preventDefault();
-                            toast.error("MRP is required and must be greater than 0");
+                            toast.dismiss();
+toast.error("MRP is required and must be greater than 0");
                             return;
                           }
                           handleKeyDown(e, 6);
@@ -1859,7 +1878,8 @@ const EditPurchaseBill = () => {
                             const isQtyEmptyOrZero = !qty || Number(qty) === 0;
                             const isFreeEmptyOrZero = !free || Number(free) === 0;
                             if (isQtyEmptyOrZero && isFreeEmptyOrZero) {
-                              toast.error("Quantity and free quantity both can't be empty or zero");
+                              toast.dismiss();
+toast.error("Quantity and free quantity both can't be empty or zero");
                               return;
                             }
                             handleKeyDown(e, 8);
@@ -1897,12 +1917,14 @@ const EditPurchaseBill = () => {
                           if (isEnter || isTab) {
                             // if (!ptr || ptr === 0) {
                             //   e.preventDefault();
-                            //   toast.error("PTR is required and must be greater than 0");
+                            //   toast.dismiss();
+toast.error("PTR is required and must be greater than 0");
                             //   return;
                             // }
                             if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                               e.preventDefault();
-                              toast.error("PTR must be less than MRP");
+                              toast.dismiss();
+toast.error("PTR must be less than MRP");
                               return;
                             }
                           }
@@ -1975,12 +1997,14 @@ const EditPurchaseBill = () => {
                             const allowedGST = [0, 5, 18,];
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
-                              toast.error("GST is required");
+                              toast.dismiss();
+toast.error("GST is required");
                               return;
                             }
                             if (!allowedGST.includes(Number(gst))) {
                               e.preventDefault();
-                              toast.error("Only 0%,5%,18%, GST is allowed");
+                              toast.dismiss();
+toast.error("Only 0%,5%,18%, GST is allowed");
                               return;
                             }
                           }

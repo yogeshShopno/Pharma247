@@ -70,7 +70,8 @@ const Top_Distributor = () => {
 
   const exportToCSV = () => {
     if (topDistributorData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = topDistributorData?.map(
         ({ distributor_name, gst_in, total, count }) => ({

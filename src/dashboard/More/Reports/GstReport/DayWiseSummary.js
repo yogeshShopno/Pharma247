@@ -46,7 +46,8 @@ const DayWiseSummary = () => {
     const newErrors = {};
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
-      toast.error(newErrors.reportType);
+      toast.dismiss();
+toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -85,7 +86,8 @@ const DayWiseSummary = () => {
 
   const exportToCSV = async () => {
     if (dayWiseSummaryData?.length == 0) {
-      toast.error("Apply filter, then download records.");
+      toast.dismiss();
+toast.error("Apply filter, then download records.");
     } else {
       let data = new FormData();
       const params = {

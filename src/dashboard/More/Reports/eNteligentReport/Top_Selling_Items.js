@@ -119,7 +119,8 @@ const Top_Selling_Items = () => {
 
   const exportToCSV = () => {
     if (topSaleData.length == 0) {
-      toast.error("Apply filter and then after download records.");
+      toast.dismiss();
+toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = topSaleData?.map(
         ({ iteam_name, company_name, qty, amt }) => ({

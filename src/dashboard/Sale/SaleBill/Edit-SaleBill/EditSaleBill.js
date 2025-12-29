@@ -797,12 +797,14 @@ const EditSaleBill = () => {
 
     if (newQty > tempQty) {
       setQty(tempQty);
-      toast.error(
+      toast.dismiss();
+toast.error(
         `Quantity exceeds the allowed limit. Max available: ${tempQty}`
       );
     } else if (newQty < 0) {
       setQty(tempQty);
-      toast.error(`Quantity should not be less than 0`);
+      toast.dismiss();
+toast.error(`Quantity should not be less than 0`);
     } else {
       setQty(newQty);
     }
@@ -899,7 +901,8 @@ const EditSaleBill = () => {
       setIsDelete(false);
     } catch (error) {
       console.error("Error during delete:", error);
-      toast.error("Failed to delete the item.");
+      toast.dismiss();
+toast.error("Failed to delete the item.");
     }
   };
 
@@ -1139,11 +1142,13 @@ const EditSaleBill = () => {
     const currentPickup = pickup;
 
     if (!currentCustomer?.id) {
-      toast.error("Please select a customer before saving");
+      toast.dismiss();
+toast.error("Please select a customer before saving");
       return;
     }
     if (!netAmount || netAmount <= 0) {
-      toast.error("Net amount must be greater than 0");
+      toast.dismiss();
+toast.error("Net amount must be greater than 0");
       return;
     }
 
@@ -1194,7 +1199,8 @@ const EditSaleBill = () => {
       }, 2000);
     } catch (error) {
       console.error("API error:", error);
-      toast.error("Failed to save the bill");
+      toast.dismiss();
+toast.error("Failed to save the bill");
     }
   };
 
@@ -1712,7 +1718,8 @@ const EditSaleBill = () => {
                                     if (isEnter || isTab) {
                                       e.preventDefault();
                                       if (!selectedOption) {
-                                        setTimeout(() => toast.error("Please select an Item"), 50);
+                                        setTimeout(() =>{ toast.dismiss()
+toast.error("Please select an Item")}, 50);
                                       } else {
                                         setTimeout(() => {
                                           focusBase();
@@ -1922,7 +1929,8 @@ const EditSaleBill = () => {
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (base === "" || base === null || base === undefined) {
-                            toast.error("Base is required");
+                            toast.dismiss();
+toast.error("Base is required");
                             e.preventDefault();
                             return;
                           }
@@ -1964,7 +1972,8 @@ const EditSaleBill = () => {
                         }
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (qty === "" || qty === null || qty === undefined) {
-                            toast.error("Qty is required");
+                            toast.dismiss();
+toast.error("Qty is required");
                             e.preventDefault();
                             return;
                           }

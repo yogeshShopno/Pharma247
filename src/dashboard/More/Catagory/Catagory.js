@@ -97,7 +97,8 @@ const Catagory = () => {
       const newErrors = {};
       if (!categoryName) {
         newErrors.categoryName = 'Category Name is required';
-        toast.error(newErrors.categoryName)
+        toast.dismiss();
+toast.error(newErrors.categoryName)
       }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -111,7 +112,8 @@ const Catagory = () => {
       const newErrors = {};
       if (!categoryName) {
         newErrors.categoryName = 'Category Name is required';
-        toast.error(newErrors.categoryName)
+        toast.dismiss();
+toast.error(newErrors.categoryName)
       }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -145,7 +147,8 @@ const Catagory = () => {
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
-        toast.error(error.response.data.message)
+        toast.dismiss();
+toast.error(error.response.data.message)
       }
     }
   }
@@ -176,7 +179,8 @@ const Catagory = () => {
     } catch (error) {
       if (error.response.data.status == 400) {
 
-        toast.error(error.response.data.message)
+        toast.dismiss();
+toast.error(error.response.data.message)
       }
       console.error("API error:", error);
 

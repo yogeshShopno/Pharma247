@@ -102,6 +102,7 @@ import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupVie
 import TrialEnd from './componets/Login/TrialEnd';
 import SehatPoints from './dashboard/More/SehatPoints/SehatPoints';
 import SehatMembersList from './dashboard/More/SehatPoints/SehatMembersList';
+import SehatView from './dashboard/More/SehatPoints/SehatView';
 
 function App() {
   const goFullScreen = () => {
@@ -473,6 +474,11 @@ function App() {
              <Route path='/more/sehatmemberslist'>
               <Protected>
                 <SehatMembersList />
+              </Protected>
+            </Route>
+             <Route path='/more/SehatView'>
+              <Protected>
+                <SehatView />
               </Protected>
             </Route>
             <Route path='/more/loyaltypoints'>

@@ -22,7 +22,7 @@ const SehatPoints = () => {
 
     const paymentTypes = [
         { id: 1, type: "Cash" },
-       
+
         { id: 3, type: "UPI" },
     ];
 
@@ -235,7 +235,7 @@ const SehatPoints = () => {
         } catch (error) {
             console.error("API error:", error);
             toast.dismiss();
-toast.error(error.response.data.message);
+            toast.error(error.response.data.message);
 
         }
 
@@ -454,7 +454,7 @@ toast.error(error.response.data.message);
                         </Button>
                     </div>
                     {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
-                 
+
                 </div>
 
             )}

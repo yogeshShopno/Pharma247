@@ -504,6 +504,10 @@ const EditSaleBill = () => {
     return () => clearTimeout(timeoutId);
   }, [barcode]);
 
+  useEffect(() => {
+    updateTodayPoints()
+  }, [netAmount])
+
   const updateTodayPoints = async (netAmount) => {
     let data = new FormData();
     data.append("net_amount", netAmount);
@@ -798,13 +802,13 @@ const EditSaleBill = () => {
     if (newQty > tempQty) {
       setQty(tempQty);
       toast.dismiss();
-toast.error(
+      toast.error(
         `Quantity exceeds the allowed limit. Max available: ${tempQty}`
       );
     } else if (newQty < 0) {
       setQty(tempQty);
       toast.dismiss();
-toast.error(`Quantity should not be less than 0`);
+      toast.error(`Quantity should not be less than 0`);
     } else {
       setQty(newQty);
     }
@@ -902,7 +906,7 @@ toast.error(`Quantity should not be less than 0`);
     } catch (error) {
       console.error("Error during delete:", error);
       toast.dismiss();
-toast.error("Failed to delete the item.");
+      toast.error("Failed to delete the item.");
     }
   };
 
@@ -1143,12 +1147,12 @@ toast.error("Failed to delete the item.");
 
     if (!currentCustomer?.id) {
       toast.dismiss();
-toast.error("Please select a customer before saving");
+      toast.error("Please select a customer before saving");
       return;
     }
     if (!netAmount || netAmount <= 0) {
       toast.dismiss();
-toast.error("Net amount must be greater than 0");
+      toast.error("Net amount must be greater than 0");
       return;
     }
 
@@ -1200,7 +1204,7 @@ toast.error("Net amount must be greater than 0");
     } catch (error) {
       console.error("API error:", error);
       toast.dismiss();
-toast.error("Failed to save the bill");
+      toast.error("Failed to save the bill");
     }
   };
 
@@ -1718,8 +1722,10 @@ toast.error("Failed to save the bill");
                                     if (isEnter || isTab) {
                                       e.preventDefault();
                                       if (!selectedOption) {
-                                        setTimeout(() =>{ toast.dismiss()
-toast.error("Please select an Item")}, 50);
+                                        setTimeout(() => {
+                                          toast.dismiss()
+                                          toast.error("Please select an Item")
+                                        }, 50);
                                       } else {
                                         setTimeout(() => {
                                           focusBase();
@@ -1930,7 +1936,7 @@ toast.error("Please select an Item")}, 50);
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (base === "" || base === null || base === undefined) {
                             toast.dismiss();
-toast.error("Base is required");
+                            toast.error("Base is required");
                             e.preventDefault();
                             return;
                           }
@@ -1973,7 +1979,7 @@ toast.error("Base is required");
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (qty === "" || qty === null || qty === undefined) {
                             toast.dismiss();
-toast.error("Qty is required");
+                            toast.error("Qty is required");
                             e.preventDefault();
                             return;
                           }
@@ -2299,7 +2305,7 @@ toast.error("Qty is required");
                           await updateTodayPoints(netAmount);
                         }
                         setIsModalOpen(!isModalOpen);
-                      }} 
+                      }}
                       cursor={"pointer"}
                       size={30}
                     />

@@ -187,6 +187,7 @@ const Addsale = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -382,21 +383,6 @@ const Addsale = () => {
     };
   }, [billNo, ItemSaleList, isSubmitting, netAmount, totalAmount, loyaltyVal, customer]);
 
-
-  // Dependencies only affect Alt+S
-
-  //   const handleKeyDown = (event, index) => {
-
-  //     if (event.key === "Enter") {
-  //       event.preventDefault(); // Prevent form submission
-
-  //       const nextInput = inputRefs.current[index + 1];
-  //       if (nextInput) {
-  //         nextInput.focus(); // Move to next input
-  //       }
-  //     }
-  //   };
-
   const hasSehatPlan = (option) =>
     option?.sehat_plan_name && option.sehat_plan_name.trim() !== "";
 
@@ -441,6 +427,10 @@ const Addsale = () => {
 
     setExpiryDate(inputValue);
   };
+
+  useEffect(() => {
+    updateTodayPoints()
+  }, [netAmount])
   //  =============================== On submit the today point update ===============================
   const updateTodayPoints = async () => {
     let data = new FormData();
@@ -483,7 +473,7 @@ const Addsale = () => {
       setIsLoading(false);
       console.error("API error:", error);
       toast.dismiss();
-toast.error("Failed to fetch customer history");
+      toast.error("Failed to fetch customer history");
     }
   };
 
@@ -500,11 +490,7 @@ toast.error("Failed to fetch customer history");
     if (otherAmt < 0 && Math.abs(otherAmt) > totalAmount) {
       setOtherAmt("");
     } else {
-      // let calculatedNetAmount = totalAmount - discount + Number(otherAmt);
-      // if (calculatedNetAmount < 0) {
-      //     setOtherAmt(-(totalAmount - discount));
-      //     calculatedNetAmount = 0;
-      // }
+
 
       let loyaltyPointsDeduction = loyaltyVal;
       let calculatedNetAmount =
@@ -802,12 +788,12 @@ toast.error("Failed to fetch customer history");
     if (!addItemName) {
       newErrors.addItemName = "Item Name is required";
       toast.dismiss();
-toast.error(newErrors.addItemName);
+      toast.error(newErrors.addItemName);
     }
     if (!addUnit) {
       newErrors.addUnit = "Item Unit is required";
       toast.dismiss();
-toast.error(newErrors.addUnit);
+      toast.error(newErrors.addUnit);
     }
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
@@ -855,7 +841,7 @@ toast.error(newErrors.addUnit);
         resetAddDialog();
       } else if (response.data.status === 400) {
         toast.dismiss();
-toast.error(response.data.message);
+        toast.error(response.data.message);
       } else if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
@@ -863,10 +849,10 @@ toast.error(response.data.message);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         toast.dismiss();
-toast.error("Please try again later");
+        toast.error("Please try again later");
       }
     }
   };
@@ -893,7 +879,7 @@ toast.error("Please try again later");
       setIsLoading(false);
       console.error("API error:", error);
       toast.dismiss();
-toast.error("Failed to fetch customer history");
+      toast.error("Failed to fetch customer history");
     }
   };
 
@@ -1055,7 +1041,7 @@ toast.error("Failed to fetch customer history");
   const AddDoctorRecord = async () => {
     if (!doctorName || !clinic) {
       toast.dismiss();
-toast.error("Please fill all required fields");
+      toast.error("Please fill all required fields");
       return; // stop further execution if validation fails
     }
 
@@ -1080,10 +1066,10 @@ toast.error("Please fill all required fields");
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         toast.dismiss();
-toast.error("An unexpected error occurred");
+        toast.error("An unexpected error occurred");
       }
     }
   };
@@ -1092,7 +1078,7 @@ toast.error("An unexpected error occurred");
   const AddCustomerRecord = async () => {
     if (!customerName.trim() || !mobileNo.trim()) {
       toast.dismiss();
-toast.error("Please fill all the fields");
+      toast.error("Please fill all the fields");
       return; // Prevent further execution if validation fails
     }
 
@@ -1115,10 +1101,10 @@ toast.error("Please fill all the fields");
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         toast.dismiss();
-toast.error("An unexpected error occurred");
+        toast.error("An unexpected error occurred");
       }
     }
   };
@@ -1404,16 +1390,16 @@ toast.error("An unexpected error occurred");
     if (totalAmount < 1) {
       newErrors.totalAmount = "Total Amount must be greater than 0";
       toast.dismiss();
-toast.error("Total Amount must be greater than 0");
+      toast.error("Total Amount must be greater than 0");
     }
     if (loyaltyVal > totalAmount) {
       newErrors.totalAmount = "Total Amount must be greater than Loyalty points";
       toast.dismiss();
-toast.error("Total Amount must be greater than Loyalty points");
+      toast.error("Total Amount must be greater than Loyalty points");
     } else if (ItemSaleList?.sales_item.length == 0) {
       newErrors.item = "Please Add any Item in Sale Bill";
       toast.dismiss();
-toast.error("Please Add any Item in Sale Bill");
+      toast.error("Please Add any Item in Sale Bill");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -1534,7 +1520,7 @@ toast.error("Please Add any Item in Sale Bill");
       } else if (response.data.status === 400) {
         setIsSubmitting(false); // unlock on known API error
         toast.dismiss();
-toast.error(response.data.message);
+        toast.error(response.data.message);
       }
 
 
@@ -1547,10 +1533,10 @@ toast.error(response.data.message);
 
       if (error.response && error.response.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         toast.dismiss();
-toast.error("Please try again later");
+        toast.error("Please try again later");
       }
     }
   };
@@ -1627,21 +1613,6 @@ toast.error("Please try again later");
         .then((response) => {
           setBatchListData(response.data.data);
           setIsAlternative(response.data.alternative_item_check);
-          // console.log(response.data.data)
-          //     if (Array.isArray(response.data.data)) {
-          //       response.data.data.forEach((item) => {
-          //         setMRP(item.mrp);
-          //             console.log(item.mrp,"mrp at :1600")
-          //         setPtr(item.ptr);
-          //         setDiscount(item.discount);
-          //       });
-          //     } else {
-          //       setMRP(response.data.data.mrp);
-          //             console.log(item.mrp,"mrp at :1606")
-
-          //       setPtr(response.data.data.ptr);
-          //       setDiscount(response.data.data.discount);
-          //     }
         });
     } catch (error) {
       console.error("API error:", error);
@@ -1669,13 +1640,13 @@ toast.error("Please try again later");
     if (!mrp) {
       newErrors.mrp = "Please Select any Item Name";
       toast.dismiss();
-toast.error(newErrors.mrp);
+      toast.error(newErrors.mrp);
     }
     if (!qty || qty <= 0) {
       // Notify the user to enter a valid quantity
       newErrors.qty = "Please enter a valid quantity.";
       toast.dismiss();
-toast.error(newErrors.qty);
+      toast.error(newErrors.qty);
     } else {
       // addSaleItem();
       setIsVisible(false);
@@ -1817,7 +1788,7 @@ toast.error(newErrors.qty);
       }
     } else {
       toast.dismiss();
-toast.error("Can't add qty more than stock");
+      toast.error("Can't add qty more than stock");
       setQty(maxQty);
       setOrder("O");
     }
@@ -2062,7 +2033,7 @@ toast.error("Can't add qty more than stock");
 
         } else if (response.data.status === 400) {
           toast.dismiss();
-toast.error(response.data.message);
+          toast.error(response.data.message);
         } else if (response.data.status === 401) {
           history.push("/");
           localStorage.clear();
@@ -2070,10 +2041,10 @@ toast.error(response.data.message);
       } catch (error) {
         if (error.response && error.response.status === 400) {
           toast.dismiss();
-toast.error(error.response.data.message);
+          toast.error(error.response.data.message);
         } else {
           toast.dismiss();
-toast.error("Error setting reminder. Please try again later.");
+          toast.error("Error setting reminder. Please try again later.");
         }
       }
     }
@@ -2555,13 +2526,7 @@ toast.error("Error setting reminder. Please try again later.");
                   }}
                 >
                   Select Date{" "}
-                  {/* <FaPlusCircle
-                        className="icon primary"
-                        onClick={() => {
-                          setOpenAddPopUp(true);
-                          setUnsavedItems(true);
-                        }}
-                      /> */}
+
                 </span>
 
                 <DatePicker
@@ -2855,8 +2820,10 @@ toast.error("Error setting reminder. Please try again later.");
                                 if (isEnter || isTab) {
                                   e.preventDefault();
                                   if (!selectedOption) {
-                                    setTimeout(() => {toast.dismiss();
-toast.error("Please select an Item")}, 100);
+                                    setTimeout(() => {
+                                      toast.dismiss();
+                                      toast.error("Please select an Item")
+                                    }, 100);
                                   } else {
                                     setTimeout(() => {
                                       if (inputRef1.current) inputRef1.current.focus();
@@ -3132,7 +3099,7 @@ toast.error("Please select an Item")}, 100);
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (base === "" || base === null || base === undefined) {
                             toast.dismiss();
-toast.error("Base is required");
+                            toast.error("Base is required");
                             e.preventDefault();
                             return;
                           }
@@ -3200,7 +3167,7 @@ toast.error("Base is required");
                         if (e.key === "Enter" || e.key === "Tab") {
                           if (qty === "" || qty === null || qty === undefined) {
                             toast.dismiss();
-toast.error("Qty is required");
+                            toast.error("Qty is required");
                             e.preventDefault();
                             return;
                           }

@@ -221,7 +221,8 @@ const StaffMember = () => {
                 setPassword('');
                 setReEnterPassword('');
                 setOpenAddPopUp(false)
-                toast.success(response.data.message);
+                 toast.dismiss();
+toast.success(response.data.message);
                 setErrors({});
 
             })
@@ -267,7 +268,8 @@ toast.error(error.response.data.message);
                 setOpenAddPopUp(false)
                 setIsEditMode(false)
                 setErrors({});
-                toast.success(response.data.message);
+                 toast.dismiss();
+toast.success(response.data.message);
 
             })
         } catch (error) {

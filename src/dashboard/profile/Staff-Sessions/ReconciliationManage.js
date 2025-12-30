@@ -71,7 +71,8 @@ const ReconciliationManage = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success("Updated successfully");
+         toast.dismiss();
+toast.success("Updated successfully");
         getData(); // Refresh data after update
       }
     } catch (error) {
@@ -92,7 +93,8 @@ const ReconciliationManage = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast.success("reconciliation restarted")
+       toast.dismiss();
+toast.success("reconciliation restarted")
       if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();

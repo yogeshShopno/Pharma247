@@ -273,7 +273,8 @@ const CustomerList = () => {
           setArea("");
           setAmount("");
           setAddress("");
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -298,7 +299,8 @@ toast.error(error.response.data.message);
         .then((response) => {
           customerAllData();
           setOpenUpload(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {
@@ -332,7 +334,8 @@ toast.error(error.data.message)
         .then((response) => {
           customerAllData();
           setOpenAddPopUp(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setCustomer("");
           setIsEditMode(false);
           setEmailId("");

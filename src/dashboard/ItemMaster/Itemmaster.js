@@ -118,7 +118,8 @@ const Itemmaster = () => {
             },
           })
           .then((response) => {
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             setOpenFile(false);
             setIsLoading(false);
           });
@@ -341,7 +342,8 @@ const Itemmaster = () => {
           setDrugGroupName("");
           setIsLoading(false);
           listDrougGroup();
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
 
     } catch (error) {
@@ -473,7 +475,8 @@ const Itemmaster = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setTimeout(() => {
           history.push("/inventory");
         }, 2000);

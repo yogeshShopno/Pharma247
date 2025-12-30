@@ -150,7 +150,8 @@ toast.error("Mobile number must be 10 digits");
           },
         })
         .then((response) => {
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
 
           setGSTNumber("");
           setDistributorName("");

@@ -255,7 +255,8 @@ const OrderList = () => {
           },
         })
         .then((response) => {
-          toast.success(response.data.meassage || "Status updated successfully");
+           toast.dismiss();
+toast.success(response.data.meassage || "Status updated successfully");
           OnlineOrderList(currentPage); // Refresh the current page data
           setUpdatingStatus(null);
         });
@@ -290,7 +291,8 @@ toast.error("Failed to update status");
           },
         })
         .then((response) => {
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
           OnlineOrderList(currentPage);
           setOpenAddPopUpPlaceOrder(false);
           setItems([]);

@@ -137,7 +137,8 @@ toast.error(newErrors.categoryName)
         categoryList();
         setOpenAddPopUp(false);
         setCategoryName('');
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         if (response.data.status === 401) {
           history.push('/');
           localStorage.clear();
@@ -166,7 +167,8 @@ toast.error(error.response.data.message)
       
         categoryList();
         setOpenAddPopUp(false);
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setCategoryName('');
         setIsEditMode(false)
 
@@ -207,7 +209,8 @@ toast.error(error.response.data.message)
       ).then((response) => {
         setIsLoading(true)
         categoryList();
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         if (response.data.status === 401) {
           history.push('/');
           localStorage.clear();

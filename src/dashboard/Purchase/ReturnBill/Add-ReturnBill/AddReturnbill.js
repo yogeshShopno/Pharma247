@@ -681,7 +681,8 @@ toast.error("Please select at least one item");
             setIsLoading(false);
             setSaveValue(true);
             setUnsavedItems(false);
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             setTimeout(() => {
               history.push("/purchase/return");
             }, 2000);

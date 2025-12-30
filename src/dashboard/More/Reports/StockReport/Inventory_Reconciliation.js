@@ -236,7 +236,8 @@ toast.error(newErrors.stockAdjust);
         })
         .then((response) => {
           setIsLoading(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setOpenAddPopUp(false);
           setBatch();
           setSelectedCompany();
@@ -300,7 +301,8 @@ toast.error(newErrors.stockAdjust);
         const parsedData = response.data;
         if (parsedData?.data) {
           setReportData(parsedData.data);
-          // toast.success("please wait ...downloading is in progress!")
+          //  toast.dismiss();
+toast.success("please wait ...downloading is in progress!")
         } else {
           toast.dismiss();
 toast.error("No data available for the selected criteria.");
@@ -348,7 +350,8 @@ toast.error("No data available for download.");
     link.click();
     document.body.removeChild(link);
 
-    toast.success("CSV downloaded successfully!");
+     toast.dismiss();
+toast.success("CSV downloaded successfully!");
   };
 
   const handelAddOpen = (item) => {

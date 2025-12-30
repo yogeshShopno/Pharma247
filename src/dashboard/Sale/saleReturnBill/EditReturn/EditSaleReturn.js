@@ -438,7 +438,8 @@ toast.error("Please select at least one item");
           })
           .then((response) => {
             setUnsavedItems(false);
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             localStorage.removeItem("RandomNumber");
             setTimeout(() => {
               history.push("/saleReturn/list");

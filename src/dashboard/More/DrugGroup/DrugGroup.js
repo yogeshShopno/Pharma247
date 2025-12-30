@@ -187,7 +187,8 @@ toast.error(newErrors.drugGroupName);
       });
       resetAddDialog();
       DrugGroupList(currentPage);
-      toast.success("Drug Group added!");
+       toast.dismiss();
+toast.success("Drug Group added!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
@@ -204,7 +205,8 @@ toast.error(error?.response?.data?.message || "Error");
       });
       resetAddDialog();
       DrugGroupList(currentPage);
-      toast.success("Drug Group updated!");
+       toast.dismiss();
+toast.success("Drug Group updated!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
@@ -233,7 +235,8 @@ toast.error(error?.response?.data?.message || "Error");
       });
       setIsDelete(false);
       DrugGroupList(currentPage);
-      toast.success("Drug Group deleted!");
+       toast.dismiss();
+toast.success("Drug Group deleted!");
     } catch (error) {
       toast.dismiss();
 toast.error("Error deleting Drug Group");

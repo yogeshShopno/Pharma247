@@ -230,7 +230,8 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                 },
             })
                 .then((response) => {
-                    toast.success(response.data.message);
+                     toast.dismiss();
+toast.success(response.data.message);
                     setFormData({
                         planId: "",
                         paymentMethod: "",

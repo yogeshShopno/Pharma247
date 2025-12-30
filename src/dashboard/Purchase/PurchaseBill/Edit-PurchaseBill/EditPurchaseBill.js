@@ -571,7 +571,8 @@ const EditPurchaseBill = () => {
           setPurchaseReturnPending(response.data.data);
           // setCnTotalAmount(response.data.data.total_amount)
 
-          // toast.success(response.data.message);
+          //  toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       // setIsLoading(false);
@@ -1108,7 +1109,8 @@ toast.error("Please add atleast one item");
         })
         .then((response) => {
           if (response?.data?.status === 200) {
-            toast.success(response?.data?.message);
+             toast.dismiss();
+toast.success(response?.data?.message);
             setTimeout(() => {
               history.push("/purchase/purchasebill");
             }, 2000)

@@ -382,7 +382,8 @@ toast.error(newErrors.distributorValue);
             setErrors({});
             setNote("");
             setAmounts(0);
-            toast.success(response.data.meassage);
+             toast.dismiss();
+toast.success(response.data.meassage);
             setPurchaseBill([]);
             if (response.data.status === 401) {
               history.push("/");

@@ -62,7 +62,8 @@ const Gstr_3B = () => {
         const parsedData = response.data;
         if (parsedData?.data) {
           setReportData(parsedData.data);
-          toast.success("please wait ...downloading is in progress!");
+           toast.dismiss();
+toast.success("please wait ...downloading is in progress!");
           exportToCSV();
         } else {
           toast.dismiss();

@@ -76,7 +76,8 @@ const OnlineOrders = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success("Updated successfully");
+         toast.dismiss();
+toast.success("Updated successfully");
         getSettingData();
       }
     } catch (error) {

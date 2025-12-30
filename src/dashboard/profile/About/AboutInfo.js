@@ -103,7 +103,8 @@ const AboutInfo = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      toast.success(response.data.message);
+       toast.dismiss();
+toast.success(response.data.message);
 
       fetchAboutDetails();
       setIsLoading(false);

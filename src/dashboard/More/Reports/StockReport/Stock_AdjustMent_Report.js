@@ -69,10 +69,12 @@ const Stock_AdjustMent_Report = () => {
         .then((response) => {
           setAdjustStockListData(response.data.data.data);
           setTotal(response.data.data.total_amount);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
-      toast.success(error.data.message);
+       toast.dismiss();
+toast.success(error.data.message);
     }
   };
 

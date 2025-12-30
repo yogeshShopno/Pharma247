@@ -139,7 +139,8 @@ toast.error("Enter all item's stock");
         setStockData([])
         localStorage.setItem('reconciliation', "true")
         history.push("/admindashboard")
-        toast.success("Data submitted successfully");
+         toast.dismiss();
+toast.success("Data submitted successfully");
       }
      
       setIsLoading(false);
@@ -147,7 +148,8 @@ toast.error("Enter all item's stock");
       setIsLoading(false);
       console.error("API error:", error);
 
-      toast.success("Data submitted successfully");
+       toast.dismiss();
+toast.success("Data submitted successfully");
     }
   };
 

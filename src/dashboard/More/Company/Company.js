@@ -189,7 +189,8 @@ toast.error(newErrors.companyName);
       });
       resetAddDialog();
       companyList(currentPage);
-      toast.success("Company added!");
+       toast.dismiss();
+toast.success("Company added!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
@@ -205,7 +206,8 @@ toast.error(error?.response?.data?.message || "Error");
       });
       resetAddDialog();
       companyList(currentPage);
-      toast.success("Company updated!");
+       toast.dismiss();
+toast.success("Company updated!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
@@ -234,7 +236,8 @@ toast.error(error?.response?.data?.message || "Error");
       });
       setIsDelete(false);
       companyList(currentPage);
-      toast.success("Company deleted!");
+       toast.dismiss();
+toast.success("Company deleted!");
     } catch (error) {
       toast.dismiss();
 toast.error("Error deleting company");

@@ -638,7 +638,8 @@ toast.error('Please select at least one item');;
                     },
                 }
                 ).then((response) => {
-                    toast.success(response.data.message);
+                     toast.dismiss();
+toast.success(response.data.message);
                     setUnsavedItems(false);
 
                     setTimeout(() => {

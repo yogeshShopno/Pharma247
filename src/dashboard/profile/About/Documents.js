@@ -122,7 +122,8 @@ const Documents = () => {
                     Authorization: `Bearer ${token}`,
                 },
             }).then((response) => {
-                toast.success(response.data.message)
+                 toast.dismiss();
+toast.success(response.data.message)
                 fetchAboutDetails();
                 setErrors({})
                

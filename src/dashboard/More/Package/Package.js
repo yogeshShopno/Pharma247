@@ -229,7 +229,8 @@ toast.error(newErrors.packageName)
       ).then((response) => {
         PackageList();
         setOpenAddPopUp(false);
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setPackageName('');
         setUnits();
         setUnitList([]);
@@ -270,7 +271,8 @@ toast.error(error.response.data.message)
         setPackageName('');
         // setUnits('');
         // setUnitList([]);
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         if (response.data.status === 401) {
           history.push('/');
           localStorage.clear();

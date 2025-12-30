@@ -103,7 +103,8 @@ const SaleView = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
 
           setIsLoading(false);
           handlePdf(PDFURL);

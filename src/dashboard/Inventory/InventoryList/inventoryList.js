@@ -377,7 +377,8 @@ const InventoryList = () => {
       );
 
       if (response.data.status === 200) {
-        toast.success("QR code Print will be available soon");
+         toast.dismiss();
+toast.success("QR code Print will be available soon");
 
         const url = response.data.pdf_url;
 
@@ -713,7 +714,8 @@ toast.error(newErrors.selectedItems);
         })
         .then((response) => {
           setIsLoading(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           handleSearch();
           setBulkOrder(false);
 
@@ -763,7 +765,8 @@ toast.error(newErrors.locationBulk);
         })
         .then((response) => {
           setIsLoading(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           handleSearch();
           setOpenEdit(false);
           setLocationBulk("");
@@ -838,7 +841,8 @@ toast.error(newErrors.stockAdjust);
         })
         .then((response) => {
           setIsLoading(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setOpenAddPopUp(false);
           setBatch();
           setSelectedCompany();

@@ -186,7 +186,8 @@ toast.error("Enter a valid email address");
       data.append("type", registerData.type);
       const response = await axios.post("resgiter", data);
       if (response.data.status === 200) {
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setUserID(response.data.data.id);
         setStep("otp");
         setPassword("");
@@ -266,7 +267,8 @@ toast.error(newErrors.password);
       const response = await axios.post("resgiter", data);
 
       if (response.data.status === 200 && response.data.message) {
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         localStorage.setItem("userId", userID);
         setPassword("");
         setOtp("")
@@ -346,7 +348,8 @@ toast.error("Mobile Number must be 10 digits");
           localStorage.setItem("role", role);
           localStorage.setItem("email", email);
 
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
 
           await userPermission(token)
 
@@ -433,7 +436,8 @@ toast.error("Enter a valid email address");
         const response = await axios.post("forget-password", userData);
         localStorage.setItem("userId", response.data.data.user_id);
         if (response.data.status === 200) {
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setShowOTP(true);
           setPassword("");
           setEmail("");
@@ -496,7 +500,8 @@ toast.error(errors.password);
       try {
         const response = await axios.post("forget-password", userData);
         if (response.data.status === 200) {
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setShowOTP(true);
           setTimeout(() => {
             history.push("/");

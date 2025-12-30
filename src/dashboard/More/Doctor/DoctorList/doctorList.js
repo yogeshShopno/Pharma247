@@ -253,7 +253,8 @@ const DoctorList = () => {
           setClinic("");
           setAddress("");
           setDefaultDr("");
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -294,11 +295,13 @@ toast.error(error.response.data.message);
           setAddress("");
           setDefaultDr("");
           setIsEditMode(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
-      toast.success(error.message);
+       toast.dismiss();
+toast.success(error.message);
     }
   };
 
@@ -448,7 +451,8 @@ toast.error(error.response.data.message);
         .then((response) => {
           ListOfDoctor();
           setOpenUpload(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {

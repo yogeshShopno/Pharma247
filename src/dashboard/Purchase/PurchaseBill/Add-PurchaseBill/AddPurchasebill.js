@@ -576,7 +576,8 @@ const AddPurchaseBill = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response?.data?.status === 200) {
-        toast.success(response?.data?.message);
+         toast.dismiss();
+toast.success(response?.data?.message);
         setUnsavedItems(true);
       }
       itemPurchaseList();
@@ -1291,7 +1292,8 @@ const AddPurchaseBill = () => {
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
-        toast.success("Distributor Added successfully");
+         toast.dismiss();
+toast.success("Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
         setTimeout(() => {
           if (inputRefs.current[0]) {
@@ -1364,7 +1366,8 @@ const AddPurchaseBill = () => {
         setAddBarcode("");
         setAddUnit("");
         inputRefs.current[2]?.focus();
-        toast.success("Item added successfully");
+         toast.dismiss();
+toast.success("Item added successfully");
       } else {
         toast.dismiss();
         toast.error(response?.data?.message || "Something went wrong");
@@ -1526,7 +1529,8 @@ const AddPurchaseBill = () => {
       setbillNo("")
       setSelectedDate(new Date())
       setUnsavedItems(false);
-      toast.success(response.data.message);
+       toast.dismiss();
+toast.success(response.data.message);
 
       // Add cooldown period
       const timeout = setTimeout(() => {

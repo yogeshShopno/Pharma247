@@ -262,7 +262,8 @@ const DistributerList = () => {
           setDistributorDrugLicenseNo("");
           setCreditDuedays("");
           // setIsEditMode(false)
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -306,7 +307,8 @@ toast.error("Please select an Excel or CSV file.");
         .then((response) => {
           DistList(currentPage);
           setOpenUpload(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {

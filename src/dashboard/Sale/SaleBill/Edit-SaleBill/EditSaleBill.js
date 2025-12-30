@@ -898,7 +898,8 @@ const EditSaleBill = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      toast.success("Item deleted successfully!");
+       toast.dismiss();
+toast.success("Item deleted successfully!");
       setUnsavedItems(true);
       localStorage.setItem("unsavedItems", "true");
       saleBillGetBySaleID();
@@ -1101,7 +1102,8 @@ const EditSaleBill = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -1197,7 +1199,8 @@ const EditSaleBill = () => {
         },
       });
 
-      toast.success(response.data.message);
+       toast.dismiss();
+toast.success(response.data.message);
       setTimeout(() => {
         history.push("/salelist");
       }, 2000);

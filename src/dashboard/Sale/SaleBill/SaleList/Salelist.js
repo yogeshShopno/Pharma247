@@ -155,7 +155,8 @@ const Salelist = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
 
           setOpenAddPopUp(false);
           setIsLoading(false);
@@ -180,7 +181,8 @@ const Salelist = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
           setPDFURL(PDFURL);
           setIsLoading(false);
           handlePdf(PDFURL);

@@ -100,7 +100,8 @@ const Password = () => {
                     },
                 }
                 ).then((response) => {
-                    toast.success(response.data.message);
+                     toast.dismiss();
+toast.success(response.data.message);
                     setIsLoading(false);
 
                 })

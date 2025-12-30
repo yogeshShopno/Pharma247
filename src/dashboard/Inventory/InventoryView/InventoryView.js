@@ -357,7 +357,8 @@ const InventoryView = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setOpenAddPopUp(false);
         itemGetByID();
       } else if (response.data.status === 400) {

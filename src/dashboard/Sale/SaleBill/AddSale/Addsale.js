@@ -836,7 +836,8 @@ const Addsale = () => {
       });
 
       if (response.data.status === 200) {
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         setOpenAddItemPopUp(false);
         resetAddDialog();
       } else if (response.data.status === 400) {
@@ -1060,7 +1061,8 @@ const Addsale = () => {
           setOpenAddPopUp(false);
           setDoctorName("");
           setClinic("");
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -1096,7 +1098,8 @@ const Addsale = () => {
       setOpenCustomer(false);
       setCustomerName("");
       setMobileNo("");
-      toast.success(response.data.message);
+       toast.dismiss();
+toast.success(response.data.message);
     } catch (error) {
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
@@ -1478,7 +1481,8 @@ const Addsale = () => {
       });
       if (response.data.status === 200) {
         setBillNo(billNo + 1);
-        toast.success(response.data.message);
+         toast.dismiss();
+toast.success(response.data.message);
         localStorage.removeItem("RandomNumber");
 
         const lowStockItems = ItemSaleList.sales_item.filter(
@@ -1753,7 +1757,8 @@ const Addsale = () => {
       setOrder("");
       setIsEditMode(false);
 
-      // toast.success(response.data.message);
+      //  toast.dismiss();
+toast.success(response.data.message);
 
       // if (quantityDifference === 1) {
       //     bulkOrderData();
@@ -1950,7 +1955,8 @@ const Addsale = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-          toast.success(response.data.meassage);
+           toast.dismiss();
+toast.success(response.data.meassage);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -2027,7 +2033,8 @@ const Addsale = () => {
           },
         });
         if (response.data.status === 200) {
-          toast.success("Reminder(s) set successfully");
+           toast.dismiss();
+toast.success("Reminder(s) set successfully");
           setOpenReminderPopUp(false);
 
 

@@ -246,7 +246,8 @@ const BankAccount = () => {
           .then((response) => {
             BankList();
             BankDetailgetByID();
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             setPaymentType("");
             setClicked(false);
             setOpenAddPopUpAdjust(false);
@@ -373,7 +374,8 @@ const BankAccount = () => {
           .then((response) => {
             BankList();
             setOpenAddPopUp(false);
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             setBankName("");
             setAccountType("");
             setSwitchChecked(false);

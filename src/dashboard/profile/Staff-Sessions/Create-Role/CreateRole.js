@@ -111,7 +111,8 @@ const CreateRole = () => {
                         },
                     }).then((response) => {
                         setCreateRoleData(response.data.data);
-                        toast.success(response.data.message, 'success')
+                         toast.dismiss();
+toast.success(response.data.message, 'success')
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);
@@ -137,7 +138,8 @@ const CreateRole = () => {
                         },
                     }).then((response) => {
                         setCreateRoleData(response.data.data);
-                        toast.success(response.data.message, 'success')
+                         toast.dismiss();
+toast.success(response.data.message, 'success')
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);

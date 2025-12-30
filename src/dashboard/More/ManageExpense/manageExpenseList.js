@@ -354,7 +354,8 @@ const ManageExpense = () => {
             setRefNo(null);
             setErrors("");
             setRemark(null);
-            toast.success(response.data.message);
+             toast.dismiss();
+toast.success(response.data.message);
             setTimeout(() => {
               setOpenAddPopUp(false);
             }, 2000);

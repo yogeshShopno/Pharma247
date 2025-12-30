@@ -232,7 +232,8 @@ toast.error(newErrors.minimumAmount);
           setMinimumAmount("");
           setMaximumAmount("");
           setPercentage("");
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -260,7 +261,8 @@ toast.error(error.response.data.message);
         .then((response) => {
           LoyaltyPointList();
           setOpenAddPopUp(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setMaximumAmount("");
           setMinimumAmount("");
           setPercentage("");
@@ -288,7 +290,8 @@ toast.error(error.response.data.message);
       });
       setIsLoading(true);
       LoyaltyPointList(); // Refresh the list
-      toast.success(response.data.message);
+       toast.dismiss();
+toast.success(response.data.message);
     } catch (error) {
       console.error("Error deleting item:", error);
       if (

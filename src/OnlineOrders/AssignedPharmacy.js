@@ -135,7 +135,8 @@ const AssignedPharmacy = ({ orderid }) => {
         })
         .then((response) => {
           setIsLoading(false);
-          toast.success(response.data.message);
+           toast.dismiss();
+toast.success(response.data.message);
           setSelectedStatus("");
          setTimeout(() => history.push("/onlinedashboard"), 2000);
 

@@ -18,7 +18,10 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [isLoading, setIsLoading] = useState(false);
     const [planList, setPlanList] = useState([])
-    const [relations, setRelations] = useState([])
+    const [relations, setRelations] = useState([{
+        "id": 0,
+        "name": "Self"
+    },])
     const [formData, setFormData] = useState({
         planId: "",
         paymentMethod: "",
@@ -76,7 +79,10 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                 },
             })
                 .then((response) => {
-                    setRelations(response.data.data);
+                    setRelations(prevRelations => [
+                        ...prevRelations,
+                        ...response.data.data
+                    ]);
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
@@ -125,9 +131,24 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
     }, [formData.planId]);
 
     // Handlers
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
     const handleChange = (field, value) => {
+        let error = "";
+        if (field === "email") {
+            if (!value) {
+                error = "Email is required";
+            } else if (!emailRegex.test(value)) {
+                error = "Enter a valid email address";
+            }
+        }
+
         setFormData(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: error }));
+
     };
+
 
     /*<==================================================================== handle contact form =============================================================== => */
 
@@ -230,8 +251,8 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                 },
             })
                 .then((response) => {
-                     toast.dismiss();
-toast.success(response.data.message);
+                    toast.dismiss();
+                    toast.success(response.data.message);
                     setFormData({
                         planId: "",
                         paymentMethod: "",
@@ -378,8 +399,16 @@ toast.success(response.data.message);
                                             value={contact.name}
                                             error={!!errors.contacts?.[index]?.name}
                                             helperText={errors.contacts?.[index]?.name}
-                                            onChange={(e) => handleContactChange(index, "name", e.target.value)}
+                                            onChange={(e) => {
+                                                const value = e.target.value;
+
+                                                // allow only letters & spaces
+                                                if (/^[A-Za-z\s]*$/.test(value)) {
+                                                    handleContactChange(index, "name", value);
+                                                }
+                                            }}
                                         />
+
 
                                     </div>
 

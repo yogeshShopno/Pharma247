@@ -55,113 +55,113 @@ export default function MemberView({ viewMember, setViewMember, memberDetails })
                     {/* LEFT – MEMBER INFORMATION */}
                     <Grid item xs={12} md={6}>
                         <Paper
-    elevation={0}
-    sx={{
-        p: 3,
-        height: "100%",
-        border: "1px solid #e5e7eb",
-        borderRadius: 2,
-        backgroundColor: "#fff",
-        display: "flex",
-        flexDirection: "column",
-    }}
->
-    <Typography
-        variant="subtitle1"
-        fontWeight={700}
-        sx={{ mb: 3, color: "#3f6212", fontSize: "1rem" }}
-    >
-        Member Information
-    </Typography>
-    <Stack spacing={2.5} sx={{ flex: 1 }}>
-        <Box>
-            <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
-            >
-                Full Name
-            </Typography>
-            <Typography variant="body1" fontWeight={500} color="#1f2937">
-                {memberDetails.name}
-            </Typography>
-        </Box>
-        <Box>
-            <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
-            >
-                Relation
-            </Typography>
-            <Chip
-                label={memberDetails.relation}
-                size="small"
-                sx={{
-                    backgroundColor: "#3f6212",
-                    color: "#ffffff",
-                    fontWeight: 600,
-                    height: 26,
-                }}
-            />
-        </Box>
-        <Box>
-            <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
-            >
-                Email Address
-            </Typography>
-            <Typography variant="body1" fontWeight={500} color="#1f2937">
-                {memberDetails.email}
-            </Typography>
-        </Box>
-        <Box>
-            <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
-            >
-                Mobile Number
-            </Typography>
-            <Typography variant="body1" fontWeight={500} color="#1f2937">
-                {memberDetails.number}
-            </Typography>
-        </Box>
-        <Box>
-            <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
-            >
-                Payment Method
-            </Typography>
-            <Typography variant="body1" fontWeight={500} color="#1f2937">
-                {memberDetails.payment_method}
-            </Typography>
-        </Box>
-    </Stack>
-    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
-        <Button
-            variant="contained"
-            sx={{
-                background: "#3f6212",
-                color: "white",
-                textTransform: "none",
-                fontWeight: 600,
-                px: 3,
-                py: 1,
-                borderRadius: 1.5,
-                "&:hover": {
-                    background: "#2d4610",
-                },
-            }}
-        >
-            Renew
-        </Button>
-    </Box>
-</Paper>
+                            elevation={0}
+                            sx={{
+                                p: 3,
+                                height: "100%",
+                                border: "1px solid #e5e7eb",
+                                borderRadius: 2,
+                                backgroundColor: "#fff",
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <Typography
+                                variant="subtitle1"
+                                fontWeight={700}
+                                sx={{ mb: 3, color: "#3f6212", fontSize: "1rem" }}
+                            >
+                                Member Information
+                            </Typography>
+                            <Stack spacing={2.5} sx={{ flex: 1 }}>
+                                <Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
+                                    >
+                                        Full Name
+                                    </Typography>
+                                    <Typography variant="body1" fontWeight={500} color="#1f2937">
+                                        {memberDetails.name}
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
+                                    >
+                                        Relation
+                                    </Typography>
+                                    <Chip
+                                        label={memberDetails.relation}
+                                        size="small"
+                                        sx={{
+                                            backgroundColor: "#3f6212",
+                                            color: "#ffffff",
+                                            fontWeight: 600,
+                                            height: 26,
+                                        }}
+                                    />
+                                </Box>
+                                <Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
+                                    >
+                                        Email Address
+                                    </Typography>
+                                    <Typography variant="body1" fontWeight={500} color="#1f2937">
+                                        {memberDetails.email}
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
+                                    >
+                                        Mobile Number
+                                    </Typography>
+                                    <Typography variant="body1" fontWeight={500} color="#1f2937">
+                                        {memberDetails.number}
+                                    </Typography>
+                                </Box>
+                                <Box>
+                                    <Typography
+                                        variant="caption"
+                                        color="text.secondary"
+                                        sx={{ display: "block", mb: 0.5, fontWeight: 600, textTransform: "uppercase", fontSize: "0.7rem" }}
+                                    >
+                                        Payment Method
+                                    </Typography>
+                                    <Typography variant="body1" fontWeight={500} color="#1f2937">
+                                        {memberDetails.payment_method}
+                                    </Typography>
+                                </Box>
+                            </Stack>
+                            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+                                <Button
+                                    variant="contained"
+                                    sx={{
+                                        background: "#3f6212",
+                                        color: "white",
+                                        textTransform: "none",
+                                        fontWeight: 600,
+                                        px: 3,
+                                        py: 1,
+                                        borderRadius: 1.5,
+                                        "&:hover": {
+                                            background: "#2d4610",
+                                        },
+                                    }}
+                                >
+                                    Renew
+                                </Button>
+                            </Box>
+                        </Paper>
 
                     </Grid>
 

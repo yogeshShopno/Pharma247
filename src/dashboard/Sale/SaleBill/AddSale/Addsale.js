@@ -996,17 +996,14 @@ toast.success(response.data.message);
     if (newValue) {
       const points = newValue.roylti_point || 0;
       setPreviousLoyaltyPoints(points);
-
       setMaxLoyaltyPoints(points);
+      setFinalDiscount(Number(newValue?.sehat_plan_discount))
     } else {
       setPreviousLoyaltyPoints(0);
       setMaxLoyaltyPoints(0);
       setLoyaltyVal(0);
     }
   };
-
-
-
 
 
   // Define the order of refs for the item entry row (from first td to last td)

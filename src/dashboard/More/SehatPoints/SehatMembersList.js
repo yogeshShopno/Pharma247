@@ -38,6 +38,7 @@ import usePermissions, { hasPermission } from "../../../componets/permission";
 import Header from "../../Header";
 import AddMemberDialog from "./AddMemberDialog";
 import PlanDialog from "./Plandialog";
+import MemberView from "./MemberView";
 
 const columns = [
     { id: "name", label: "Name", minWidth: 150 },
@@ -99,36 +100,19 @@ const SehatMembersList = () => {
     const currentSearchTerms = useRef(searchTerms);
     const [showPlans, setShowPlans] = useState(false);
     const [addMember, setAddMember] = useState(false);
+    const [viewMember, setViewMember] = useState(false);
+
+
 
     const [planList, setPlanList] = useState([])
-    const [relations, setRelations] = useState([])
+
+    const [memberDetails, setMemberDetails] = useState([])
 
     /*<======================================================================== Fetch data from API ====================================================================> */
 
     useEffect(() => {
         getPlanList()
-        relationList()
     }, []);
-
-        /*<======================================================================== fetch Relations list ====================================================================> */
-    
-        const relationList = async () => {
-            try {
-                await axios.get("patient-family-relation-list?", {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                    .then((response) => {
-                        setRelations(response.data.data);
-                    });
-            } catch (error) {
-                console.error("API error:", error?.response?.status);
-                if (error?.response?.status === 401) {
-                }
-            }
-        };
-    
 
     /*<======================================================================== fetch plan list ====================================================================> */
 
@@ -142,6 +126,31 @@ const SehatMembersList = () => {
             })
                 .then((response) => {
                     setPlanList(response.data.data);
+                });
+        } catch (error) {
+            console.error("API error:", error?.response?.status);
+            if (error?.response?.status === 401) {
+            }
+        }
+    };
+
+    /*<======================================================================== Get member detail ====================================================================> */
+
+    const getMember = async (id) => {
+        
+        setViewMember(true)
+        const data = new FormData();
+        data.append("customer_id", id)
+        try {
+            await axios.post("customer-sehat-membership-plan-view-details?", data, {
+
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+                    setMemberDetails(response.data.data);
+                    console.log(response.data.data)
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
@@ -321,8 +330,8 @@ const SehatMembersList = () => {
                     setDistributorDrugLicenseNo("");
                     setCreditDuedays("");
                     // setIsEditMode(false)
-                     toast.dismiss();
-toast.success(response.data.message);
+                    toast.dismiss();
+                    toast.success(response.data.message);
                 });
         } catch (error) {
             setIsLoading(false);
@@ -366,8 +375,8 @@ toast.success(response.data.message);
                 .then((response) => {
                     DistList(currentPage);
                     setOpenUpload(false);
-                     toast.dismiss();
-toast.success(response.data.message);
+                    toast.dismiss();
+                    toast.success(response.data.message);
                 });
         } catch (error) {
             if (error.response && error.response.status === 500) {
@@ -705,28 +714,15 @@ toast.success(response.data.message);
                                                                 >
                                                                     <VisibilityIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        onClick={() => {
-                                                                            // history.push(`/DistributerView/${row.id}`);
-                                                                        }}
+                                                                        onClick={() => {getMember(row?.id)}}
                                                                     />
 
                                                                     <BorderColorIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        // onClick={() => handleEditOpen(row)}
+                                                                    // onClick={() => handleEditOpen(row)}
                                                                     />
 
-                                                                    <Button
-                                                                        variant="contained"
-                                                                        style={{
-                                                                            background: "var(--color1)",
-                                                                            color: "white",
-                                                                            textTransform: "none",
-                                                                            display: "flex",
-                                                                            alignItems: "center",
-                                                                        }}
-                                                                    >
-                                                                        Renew
-                                                                    </Button>
+                                                                    
                                                                 </div>
 
                                                             </td>
@@ -804,11 +800,13 @@ toast.success(response.data.message);
                             Next
                         </button>
                     </div>
-                  
+
                 </div>
             )}
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
+            {viewMember && <MemberView viewMember={viewMember} setViewMember={setViewMember} memberDetails={memberDetails} />}
+
 
 
         </>

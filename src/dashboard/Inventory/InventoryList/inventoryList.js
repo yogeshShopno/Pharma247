@@ -227,7 +227,7 @@ const InventoryList = () => {
         // setIsLoading(false);
       })
       .catch((error) => {
-      
+
       });
   };
 
@@ -243,7 +243,7 @@ const InventoryList = () => {
         setIsLoading(false);
       })
       .catch((error) => {
-       
+
       });
   };
 
@@ -256,10 +256,10 @@ const InventoryList = () => {
       })
       .then((response) => {
         setLocationList(response.data.data);
-  
+
       })
       .catch((error) => {
-       
+
       });
   };
 
@@ -272,10 +272,10 @@ const InventoryList = () => {
       })
       .then((response) => {
         setPackgingTypeList(response.data.data);
-    
+
       })
       .catch((error) => {
-       
+
       });
   };
 
@@ -291,7 +291,7 @@ const InventoryList = () => {
 
       })
       .catch((error) => {
-     
+
       });
   };
 
@@ -377,8 +377,8 @@ const InventoryList = () => {
       );
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success("QR code Print will be available soon");
+        toast.dismiss();
+        toast.success("QR code Print will be available soon");
 
         const url = response.data.pdf_url;
 
@@ -545,10 +545,10 @@ toast.success("QR code Print will be available soon");
           setData(response.data.data.data);
           if (response.data.data.data.length == 0) {
             // toast.dismiss();
-toast.error("No Record Found");
+            toast.error("No Record Found");
           }
           setIsLoading(false);
-        
+
           // setSearchItem("");
           setSelectedOption("");
           setHsnCode("");
@@ -608,7 +608,7 @@ toast.error("No Record Found");
       setData(res.data.data.data);
       if (res.data.data.data.length == 0) {
         // toast.dismiss();
-toast.error("No Record Found");
+        toast.error("No Record Found");
       }
     } catch (error) {
       console.error("API error:", error);
@@ -681,7 +681,7 @@ toast.error("No Record Found");
     if (selectedItems.length == 0) {
       newErrors.selectedItems = "Please First Select any Item.";
       toast.dismiss();
-toast.error(newErrors.selectedItems);
+      toast.error(newErrors.selectedItems);
     }
 
     setErrors(newErrors);
@@ -714,8 +714,8 @@ toast.error(newErrors.selectedItems);
         })
         .then((response) => {
           setIsLoading(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           handleSearch();
           setBulkOrder(false);
 
@@ -734,11 +734,11 @@ toast.success(response.data.message);
     if (selectedItems.length == 0) {
       newErrors.selectedItems = "Please First Select any Item.";
       toast.dismiss();
-toast.error(newErrors.selectedItems);
+      toast.error(newErrors.selectedItems);
     } else if (!barcode && !locationBulk) {
       newErrors.locationBulk = "Please add Location or Barcode.";
       toast.dismiss();
-toast.error(newErrors.locationBulk);
+      toast.error(newErrors.locationBulk);
     }
 
     setErrors(newErrors);
@@ -765,8 +765,8 @@ toast.error(newErrors.locationBulk);
         })
         .then((response) => {
           setIsLoading(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           handleSearch();
           setOpenEdit(false);
           setLocationBulk("");
@@ -793,19 +793,19 @@ toast.success(response.data.message);
     if (!selectedItem) {
       newErrors.selectedItem = "select any Item Name.";
       toast.dismiss();
-toast.error(newErrors.selectedItem);
+      toast.error(newErrors.selectedItem);
     } else if (!batch) {
       newErrors.batch = "Batch Number is required";
       toast.dismiss();
-toast.error(newErrors.batch);
-    } else if (!selectedCompany) {
-      newErrors.selectedCompany = "select any Company Name";
-      toast.dismiss();
-toast.error(newErrors.selectedCompany);
+      toast.error(newErrors.batch);
+    // } else if (!selectedCompany) {
+    //   newErrors.selectedCompany = "select any Company Name";
+    //   toast.dismiss();
+    //   toast.error(newErrors.selectedCompany);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
       toast.dismiss();
-toast.error(newErrors.stockAdjust);
+      toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -841,8 +841,8 @@ toast.error(newErrors.stockAdjust);
         })
         .then((response) => {
           setIsLoading(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setOpenAddPopUp(false);
           setBatch();
           setSelectedCompany();
@@ -1787,10 +1787,10 @@ toast.success(response.data.message);
                           onChange={() => {
                             if (selectedItems.length === data.length) {
                               setSelectedItems([]);
-                            
+
                             } else {
                               setSelectedItems(data.map((item) => item.id));
-                           
+
                             }
                           }}
                         />

@@ -342,7 +342,7 @@ toast.error(newErrors.stockAdjust);
     );
     data.append("item_name", selectedItem ? selectedItem : "");
     data.append("batch", batch ? batch : "");
-    data.append("company", selectedCompany.id ? selectedCompany.id : "");
+    data.append("company", selectedCompany?.id ? selectedCompany?.id : "");
     data.append("unit", unit ? unit : "");
     data.append("expiry", expiry ? expiry : "");
     data.append("mrp", mrp ? mrp : "");

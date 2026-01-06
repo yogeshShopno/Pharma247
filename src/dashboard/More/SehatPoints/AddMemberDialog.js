@@ -43,7 +43,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
         contacts: []
     });
 
-    const [disableContacts,setDisableContacts] = useState(Number)
+    const [disableContacts, setDisableContacts] = useState(Number)
     /*<======================================================================== Fetch data from API ====================================================================> */
 
     useEffect(() => {
@@ -73,7 +73,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                         contacts: response.data.data.customers
                     })
                     setDisableContacts(Number(response.data.data.customers.length))
-  
+
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
@@ -283,17 +283,29 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
     /*<========================================================================= handle submit =====================================================================> */
 
     const handleSubmit = async () => {
+
         if (!validateForm()) {
             return;
         }
+
         const data = new FormData();
+
+        let API = "sehat-membership-plan-create";
+
+        if (disableContacts <= 0) {
+            API = "sehat-membership-plan-create"
+
+        } else {
+            API = "sehat-membership-customer-update"
+            data.append("customer_id", customerId);
+        }
         data.append("plan_id", String(formData.planId));
         data.append("payment_method", formData.paymentMethod);
         data.append("email", formData.email);
         data.append("customers", JSON.stringify(formData.contacts));
 
         try {
-            await axios.post("sehat-membership-plan-create", data, {
+            await axios.post(API, data, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -447,7 +459,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             value={contact.name}
                                             error={!!errors.contacts?.[index]?.name}
                                             helperText={errors.contacts?.[index]?.name}
-                                            disabled={index<disableContacts}
+                                            disabled={index < disableContacts}
                                             onChange={(e) => {
                                                 const value = e.target.value;
 
@@ -456,9 +468,9 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                                     handleContactChange(index, "name", value);
                                                 }
                                             }}
-                                            
-                                            />
-                                
+
+                                        />
+
 
 
                                     </div>
@@ -473,7 +485,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             value={contact.number}
                                             error={!!errors.contacts?.[index]?.number}
                                             helperText={errors.contacts?.[index]?.number}
-                                            disabled={index<disableContacts}
+                                            disabled={index < disableContacts}
 
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(/\D/g, "");
@@ -497,7 +509,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                             size="small"
                                             value={contact.relation}
                                             error={!!errors.contacts?.[index]?.relation}
-                                            disabled={index<disableContacts}
+                                            disabled={index < disableContacts}
 
                                             onChange={(e) => handleContactChange(index, "relation", e.target.value)}
                                             displayEmpty

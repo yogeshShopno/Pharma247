@@ -51,7 +51,7 @@ const SehatMembersList = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
-  
+
     const searchKeys = ["search_name", "search_email", "search_gst", "search_phone_number"];
 
     // Search state management (copied from PurchaseList.js)
@@ -63,8 +63,7 @@ const SehatMembersList = () => {
     const [showPlans, setShowPlans] = useState(false);
     const [addMember, setAddMember] = useState(false);
     const [viewMember, setViewMember] = useState(false);
-
-
+    const [customerId, setCustomerId] = useState()
 
     const [planList, setPlanList] = useState([])
 
@@ -99,7 +98,7 @@ const SehatMembersList = () => {
     /*<======================================================================== Get member detail ====================================================================> */
 
     const getMember = async (id) => {
-        
+
         setViewMember(true)
         const data = new FormData();
         data.append("customer_id", id)
@@ -255,7 +254,7 @@ const SehatMembersList = () => {
 
         }
     };
-   
+
     const handlePrevious = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -350,8 +349,9 @@ const SehatMembersList = () => {
                                             variant="contained"
                                             style={{ background: "var(--color1)", display: "flex" }}
                                             onClick={() => {
-                                                // history.push("/more/sehatpoints");
+                                                setCustomerId(0)
                                                 setAddMember(true)
+
                                             }}
                                             className="gap-2"
                                         >
@@ -472,9 +472,7 @@ const SehatMembersList = () => {
                                                                         }}
                                                                         key={column.id}
                                                                         className={`capitalize ${tdClass}`}
-                                                                        onClick={() => {
-                                                                            history.push(`/DistributerView/${row.id}`);
-                                                                        }}
+                                                               
                                                                     >
                                                                         {column.format && typeof value === "number"
                                                                             ? column.format(value)
@@ -489,12 +487,17 @@ const SehatMembersList = () => {
                                                                 >
                                                                     <VisibilityIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                        onClick={() => {getMember(row?.id)}}
+                                                                        onClick={() => { getMember(row?.id) }}
                                                                     />
                                                                     <BorderColorIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
-                                                                    // onClick={() => handleEditOpen(row)}
-                                                                    />                                                                   
+                                                                        onClick={() => {
+
+                                                                            setCustomerId(row?.id)
+                                                                            setAddMember(true)
+
+                                                                        }}
+                                                                    />
                                                                 </div>
                                                             </td>
                                                         </tr>
@@ -574,10 +577,10 @@ const SehatMembersList = () => {
 
                 </div>
             )}
-            {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} />}
+
+            {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
             {viewMember && <MemberView viewMember={viewMember} setViewMember={setViewMember} memberDetails={memberDetails} />}
-
 
 
         </>

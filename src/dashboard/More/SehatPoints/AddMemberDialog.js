@@ -10,9 +10,11 @@ import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, D
 import axios from "axios";
 import PlanDialog from "./Plandialog";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+;
 
-export default function AddMemberDialog({ addMember, setAddMember, }) {
+export default function AddMemberDialog({ addMember, setAddMember, customerId }) {
     const history = useHistory();
+
 
     const [token, setToken] = useState(localStorage.getItem("token"));
     const [isLoading, setIsLoading] = useState(false);
@@ -41,12 +43,47 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
         contacts: []
     });
 
+    const [disableContacts,setDisableContacts] = useState(Number)
     /*<======================================================================== Fetch data from API ====================================================================> */
 
     useEffect(() => {
         getPlanList()
         relationList()
+        fetchMembersDetails()
     }, []);
+
+
+    const fetchMembersDetails = async () => {
+
+        const data = new FormData();
+        data.append("customer_id", customerId)
+        try {
+            await axios.post("sehat-membership-customer-detail?", data, {
+
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
+                .then((response) => {
+
+                    setFormData({
+                        planId: response.data.data.plan_id,
+                        paymentMethod: response.data.data.payment_method,
+                        email: response.data.data.email,
+                        contacts: response.data.data.customers
+                    })
+                    setDisableContacts(Number(response.data.data.customers.length))
+  
+                });
+        } catch (error) {
+            console.error("API error:", error?.response?.status);
+            if (error?.response?.status === 401) {
+            }
+        }
+    };
+
+
+
 
     /*<======================================================================== fetch plan list ====================================================================> */
 
@@ -92,42 +129,54 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
 
     /*<======================================================================== Change plan ====================================================================> */
 
-    const selectedPlanData = planList.find(plan => plan.id === formData.planId);
+    const selectedPlanData = planList.find(
+        plan => String(plan.id) === String(formData.planId)
+    );
 
-    // Initialize contacts when plan is selected (only run once when plan changes from empty)
+    // Sync contacts when plan OR plan list is ready (edit + create)
     useEffect(() => {
-        if (selectedPlanData && formData.contacts.length === 0) {
-            setFormData(prev => ({
+        if (!selectedPlanData) return;
+
+        setFormData(prev => {
+            const currentContacts = prev.contacts || [];
+            const requiredLength = selectedPlanData.user_covered;
+
+            // If contacts already exist (edit mode), preserve them
+            if (currentContacts.length > 0) {
+                if (currentContacts.length === requiredLength) {
+                    return prev;
+                }
+
+                if (currentContacts.length > requiredLength) {
+                    return {
+                        ...prev,
+                        contacts: currentContacts.slice(0, requiredLength),
+                    };
+                }
+
+                return {
+                    ...prev,
+                    contacts: [
+                        ...currentContacts,
+                        ...Array.from(
+                            { length: requiredLength - currentContacts.length },
+                            () => ({ name: "", number: "", relation: "" })
+                        ),
+                    ],
+                };
+            }
+
+            // Create mode: initialize empty contacts
+            return {
                 ...prev,
                 contacts: Array.from(
-                    { length: selectedPlanData.user_covered },
+                    { length: requiredLength },
                     () => ({ name: "", number: "", relation: "" })
-                )
-            }));
-        } else if (selectedPlanData && formData.contacts.length !== selectedPlanData.user_covered) {
-            // Adjust array size if plan changes, preserving existing data
-            const currentContacts = [...formData.contacts];
-            const newLength = selectedPlanData.user_covered;
+                ),
+            };
+        });
+    }, [formData.planId, planList]);
 
-            if (newLength > currentContacts.length) {
-                // Add empty contacts if new plan has more slots
-                const additionalContacts = Array.from(
-                    { length: newLength - currentContacts.length },
-                    () => ({ name: "", number: "", relation: "" })
-                );
-                setFormData(prev => ({
-                    ...prev,
-                    contacts: [...currentContacts, ...additionalContacts]
-                }));
-            } else {
-                // Remove extra contacts if new plan has fewer slots
-                setFormData(prev => ({
-                    ...prev,
-                    contacts: currentContacts.slice(0, newLength)
-                }));
-            }
-        }
-    }, [formData.planId]);
 
     // Handlers
 
@@ -398,6 +447,7 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                                             value={contact.name}
                                             error={!!errors.contacts?.[index]?.name}
                                             helperText={errors.contacts?.[index]?.name}
+                                            disabled={index<disableContacts}
                                             onChange={(e) => {
                                                 const value = e.target.value;
 
@@ -406,7 +456,9 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                                                     handleContactChange(index, "name", value);
                                                 }
                                             }}
-                                        />
+                                            
+                                            />
+                                
 
 
                                     </div>
@@ -421,6 +473,8 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                                             value={contact.number}
                                             error={!!errors.contacts?.[index]?.number}
                                             helperText={errors.contacts?.[index]?.number}
+                                            disabled={index<disableContacts}
+
                                             onChange={(e) => {
                                                 const value = e.target.value.replace(/\D/g, "");
                                                 if (value.length <= 10) {
@@ -443,6 +497,7 @@ export default function AddMemberDialog({ addMember, setAddMember, }) {
                                             size="small"
                                             value={contact.relation}
                                             error={!!errors.contacts?.[index]?.relation}
+                                            disabled={index<disableContacts}
 
                                             onChange={(e) => handleContactChange(index, "relation", e.target.value)}
                                             displayEmpty

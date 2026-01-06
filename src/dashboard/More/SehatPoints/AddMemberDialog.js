@@ -10,7 +10,6 @@ import { Select, MenuItem, TextField, Button, Dialog, DialogTitle, IconButton, D
 import axios from "axios";
 import PlanDialog from "./Plandialog";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-;
 
 export default function AddMemberDialog({ addMember, setAddMember, }) {
     const history = useHistory();

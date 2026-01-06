@@ -6,7 +6,6 @@ import {
     OutlinedInput,
 } from "@mui/material";
 
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { BsLightbulbFill } from "react-icons/bs";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import { useEffect, useState, useCallback, useRef } from "react";
@@ -17,22 +16,8 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import {
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { toast, ToastContainer } from "react-toastify";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
-import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
-
-
-import Switch from "@mui/material/Switch";
 import Loader from "../../../componets/loader/Loader";
 import usePermissions, { hasPermission } from "../../../componets/permission";
 import Header from "../../Header";
@@ -66,30 +51,7 @@ const SehatMembersList = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isSearchLoading, setIsSearchLoading] = useState(false);
     const [totalRecords, setTotalRecords] = useState(0);
-    const [openEdit, setOpenEdit] = useState(false);
-    const [gstNumber, setGstnumber] = useState("");
-    const [distributerName, setDistributerName] = useState("");
-    const [email, setEmail] = useState("");
-    const [mobileNo, setMobileNo] = useState("");
-    const [phoneNo, setPhoneNo] = useState("");
-    const [whatsapp, setWhatsApp] = useState("");
-    const [address, setAddress] = useState("");
-    const [area, setArea] = useState("");
-    const [pincode, setPincode] = useState("");
-    const [state, setState] = useState("");
-    const [bankName, setBankName] = useState("");
-    const [accountNo, setAccountNo] = useState("");
-    const [ifscCode, setIfscCode] = useState("");
-    const [licenceNo, setLicenceNo] = useState("");
-    const [distributorDrugLicenseNo, setDistributorDrugLicenseNo] = useState("");
-    const [creditDuedays, setCreditDuedays] = useState("");
-    const [distributerId, setDistributerId] = useState(null);
-    const [errors, setErrors] = useState({});
-    const excelIcon = process.env.PUBLIC_URL + "/excel.png";
-    const [openUpload, setOpenUpload] = useState(false);
-    const [file, setFile] = useState(null);
-    const [switchCheck, setSwitchChecked] = useState(false);
-
+  
     const searchKeys = ["search_name", "search_email", "search_gst", "search_phone_number"];
 
     // Search state management (copied from PurchaseList.js)
@@ -211,33 +173,6 @@ const SehatMembersList = () => {
         }
     }, [currentPage]);
 
-    const resetAddDialog = () => {
-        setOpenEdit(false);
-    };
-
-    const handleEditOpen = (row) => {
-        setHeader("Edit Distributor");
-        setDistributerId(row.id);
-        setOpenEdit(true);
-        setGstnumber(row.gst);
-        setDistributerName(row.name);
-        setEmail(row.email);
-        setMobileNo(row.phone_number);
-        setWhatsApp(row.whatsapp_number);
-        setAddress(row.address);
-        setArea(row.area);
-        setPincode(row.pincode);
-        setState(row.state);
-
-        setBankName(row.bank_name);
-        setAccountNo(row.account_no);
-        setIfscCode(row.ifsc_code);
-        setLicenceNo(row.food_licence_number);
-        setDistributorDrugLicenseNo(row.distributer_drug_licence_no);
-        setCreditDuedays(row.payment_drug_days);
-    };
-
-
 
     const handleSearchChange = (index, value) => {
         const newSearchTerms = [...searchTerms];
@@ -271,119 +206,6 @@ const SehatMembersList = () => {
         if (e.key === "Enter") {
             e.preventDefault();
             handleSearchSubmit();
-        }
-    };
-
-    const handleChange = (e) => {
-        const value = e.target.value;
-        if (value.length <= 10) {
-            setMobileNo(value);
-        }
-    };
-
-    const editDistributor = async () => {
-        let data = new FormData();
-
-        data.append("id", distributerId);
-        data.append("gst_number", gstNumber);
-        data.append("distributor_name", distributerName);
-        data.append("email", email);
-        data.append("whatsapp", whatsapp);
-        data.append("mobile_no", mobileNo);
-        data.append("address", address);
-        data.append("area", area);
-        data.append("pincode", pincode);
-        data.append("state", state);
-        data.append("bank_name", bankName);
-        data.append("account_no", accountNo);
-        data.append("ifsc_code", ifscCode);
-        data.append("distributor_durg_distributor", distributorDrugLicenseNo);
-        data.append("payment_due_days", creditDuedays);
-        const params = {
-            id: distributerId,
-        };
-        try {
-            await axios
-                .post("update-distributer?", data, {
-                    params: params,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    DistList(currentPage);
-                    setOpenEdit(false);
-                    setGstnumber("");
-                    setDistributerName("");
-                    setEmail("");
-                    setMobileNo("");
-                    setPhoneNo("");
-                    setWhatsApp("");
-                    setAddress("");
-                    setArea("");
-                    setState("");
-                    setPincode("");
-                    setBankName("");
-                    setAccountNo("");
-                    setIfscCode("");
-                    setLicenceNo("");
-                    setDistributorDrugLicenseNo("");
-                    setCreditDuedays("");
-                    // setIsEditMode(false)
-                    toast.dismiss();
-                    toast.success(response.data.message);
-                });
-        } catch (error) {
-            setIsLoading(false);
-            toast.dismiss();
-            toast.error(error.message);
-        }
-    };
-
-    const handleFileChange = (e) => {
-        const selectedFile = e.target.files[0];
-        if (selectedFile) {
-            const fileType = selectedFile.type;
-            if (fileType === "text/csv") {
-                setFile(selectedFile);
-            } else {
-                toast.dismiss();
-                toast.error("Please select an Excel or CSV file.");
-            }
-        }
-    };
-
-    const handleDownload = () => {
-        const link = document.createElement("a");
-        link.href = "/distributor.csv";
-        link.download = "distributor.csv";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    };
-
-    const uploadDistributorFile = async () => {
-        let data = new FormData();
-        data.append("file", file);
-        try {
-            await axios
-                .post("import-distributer", data, {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    DistList(currentPage);
-                    setOpenUpload(false);
-                    toast.dismiss();
-                    toast.success(response.data.message);
-                });
-        } catch (error) {
-            if (error.response && error.response.status === 500) {
-                toast.dismiss();
-                toast.error("Please Select file");
-            }
-            console.error("API error:", error);
         }
     };
 
@@ -433,55 +255,7 @@ const SehatMembersList = () => {
 
         }
     };
-
-    const exportToExcel = async () => {
-        let data = new FormData();
-        setIsLoading(true);
-        data.append("page", currentPage);
-        data.append("iss_value", "download");
-        const params = {
-            page: currentPage,
-        };
-        try {
-            await axios
-                .post("list-distributer?", data, {
-                    params: params,
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                })
-                .then((response) => {
-                    const csvData = response.data.data;
-                    if (csvData) {
-                        const csvString = convertToCSV(csvData);
-                        const blob = new Blob([csvString], {
-                            type: "text/csv;charset=utf-8;",
-                        });
-                        saveAs(blob, "Distributor.csv");
-                    }
-
-                    setTableData(response.data.data);
-                    setIsLoading(false);
-                });
-        } catch (error) {
-            setIsLoading(false);
-            console.error("API error:", error);
-        }
-    };
-
-    const convertToCSV = (data) => {
-        const array = [Object.keys(data[0])].concat(data);
-
-        return array
-            .map((it) => {
-                return Object.values(it).toString();
-            })
-            .join("\n");
-    };
-
-    const openFilePopUP = () => {
-        setOpenUpload(true);
-    };
+   
     const handlePrevious = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -511,6 +285,7 @@ const SehatMembersList = () => {
         });
         setTableData(sortedData);
     };
+
     return (
         <>
             <Header />
@@ -716,15 +491,11 @@ const SehatMembersList = () => {
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
                                                                         onClick={() => {getMember(row?.id)}}
                                                                     />
-
                                                                     <BorderColorIcon
                                                                         style={{ color: "var(--color1)", cursor: "pointer" }}
                                                                     // onClick={() => handleEditOpen(row)}
-                                                                    />
-
-                                                                    
+                                                                    />                                                                   
                                                                 </div>
-
                                                             </td>
                                                         </tr>
                                                     ))

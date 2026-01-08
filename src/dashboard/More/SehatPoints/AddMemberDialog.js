@@ -54,6 +54,9 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
 
 
     const fetchMembersDetails = async () => {
+        if(customerId ==0){
+            return
+        }
 
         const data = new FormData();
         data.append("customer_id", customerId)
@@ -319,6 +322,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                         email: "",
                         contacts: []
                     });
+                    setAddMember(false)
                 });
         } catch (error) {
             console.error("API error:", error);
@@ -338,7 +342,8 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
         >
             {/* HEADER */}
             <DialogTitle id="alert-dialog-title" className="secondary">
-                Add Membership
+                
+                {customerId?"Edit Membership":"Add Membership"}
                 <IconButton
                     aria-label="close"
                     onClick={() => setAddMember(false)}

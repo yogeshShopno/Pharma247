@@ -142,7 +142,7 @@ export default function MemberView({ viewMember, setViewMember, memberDetails })
                                     </Typography>
                                 </Box>
                             </Stack>
-                            <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+                            {/* <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
                                 <Button
                                     variant="contained"
                                     sx={{
@@ -160,7 +160,7 @@ export default function MemberView({ viewMember, setViewMember, memberDetails })
                                 >
                                     Renew
                                 </Button>
-                            </Box>
+                            </Box> */}
                         </Paper>
 
                     </Grid>

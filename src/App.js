@@ -100,7 +100,6 @@ import LoginSignup from './componets/Login/LoginSignup';
 import OnlineDashboard from './OnlineOrders/OnlineDashboard';
 import DrugGroupView from './dashboard/More/DrugGroup/DrugGroupView/DrugGroupView';
 import TrialEnd from './componets/Login/TrialEnd';
-import SehatPoints from './dashboard/More/SehatPoints/SehatPoints';
 import SehatMembersList from './dashboard/More/SehatPoints/SehatMembersList';
 import SehatView from './dashboard/More/SehatPoints/SehatView';
 
@@ -468,17 +467,15 @@ function App() {
             </Route>
             <Route path='/more/sehatpoints'>
               <Protected>
-                {/* <SehatPoints /> */}
                 <SehatMembersList />
-
               </Protected>
             </Route>
-             <Route path='/more/sehatmemberslist'>
+            <Route path='/more/sehatmemberslist'>
               <Protected>
                 <SehatMembersList />
               </Protected>
             </Route>
-             <Route path='/more/SehatView'>
+            <Route path='/more/SehatView'>
               <Protected>
                 <SehatView />
               </Protected>

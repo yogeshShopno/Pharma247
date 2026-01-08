@@ -118,8 +118,8 @@ const Itemmaster = () => {
             },
           })
           .then((response) => {
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             setOpenFile(false);
             setIsLoading(false);
           });
@@ -342,8 +342,8 @@ toast.success(response.data.message);
           setDrugGroupName("");
           setIsLoading(false);
           listDrougGroup();
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
 
     } catch (error) {
@@ -391,21 +391,22 @@ toast.success(response.data.message);
       newErrors.searchItem = "Item name is required.";
       toast.dismiss();
       toast.error(newErrors.searchItem);
+      return;
     } else {
       const disallowedCharsRegex = /[@$]/;
       if (disallowedCharsRegex.test(searchItem)) {
         newErrors.searchItem = "Enter valid Item name.";
         toast.dismiss();
         toast.error("Enter valid Item name.");
+      return;
+
       }
     }
     if (weightage == 0) {
       newErrors.weightage = "Unit is required.";
       toast.dismiss();
       toast.error(newErrors.weightage);
-      newErrors.pack = "Enter Pack No.";
-      toast.dismiss();
-      toast.error(newErrors.pack);
+      return;
     }
     // if (packaging.length == 0) {
     //   newErrors.packaging = "Select any Packaging.";
@@ -421,6 +422,8 @@ toast.success(response.data.message);
       newErrors.selectedCompany = "Select any Company.";
       toast.dismiss();
       toast.error(newErrors.selectedCompany);
+      return;
+
     }
     // if (!selectedSuppliers) {
     //   newErrors.selectedSuppliers = 'Select any Supplier.'
@@ -429,13 +432,15 @@ toast.success(response.data.message);
       newErrors.drugGroup = "Drug Group is required.";
       toast.dismiss();
       toast.error(newErrors.drugGroup);
+      return;
+
     }
     // if (!selectedCategory) {
     //   newErrors.selectedCategory = "Category is required.";
     // toast.dismiss();
     // toast.error(newErrors.selectedCategory);
     // }
-    setError(newErrors);
+    // setError(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
     if (isValid) {
       submitItemRecord();
@@ -475,8 +480,8 @@ toast.success(response.data.message);
       });
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         setTimeout(() => {
           history.push("/inventory");
         }, 2000);

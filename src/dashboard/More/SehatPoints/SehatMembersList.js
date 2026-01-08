@@ -581,8 +581,7 @@ const SehatMembersList = () => {
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
             {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
             {viewMember && <MemberView viewMember={viewMember} setViewMember={setViewMember} memberDetails={memberDetails} />}
-
-
+            
         </>
     );
 };

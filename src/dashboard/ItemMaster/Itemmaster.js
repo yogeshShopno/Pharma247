@@ -386,6 +386,7 @@ const Itemmaster = () => {
   // }
 
   const handleSubmit = () => {
+
     const newErrors = {};
     if (!searchItem.trim()) {
       newErrors.searchItem = "Item name is required.";
@@ -450,6 +451,9 @@ const Itemmaster = () => {
 
   const submitItemRecord = async () => {
     let formData = new FormData();
+    
+    formData.append("item_id", value.id ? value.id : "");
+
     formData.append("item_name", searchItem ? searchItem : "");
     formData.append("packaging_id", packaging ? packaging : "");
     formData.append("old_unit", unit ? unit : "");

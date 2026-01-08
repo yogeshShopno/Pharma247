@@ -92,6 +92,10 @@ const Itemmaster = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [file, setFile] = useState(null);
   const [error, setError] = useState({ searchItem: "", unit: "", weightage: "", pack: "", packaging: "", selectedCompany: "", selectedSuppliers: "", drugGroup: "", selectedCategory: "", selectedFrontFile: "", selectedMRPFile: "", selectedBackFile: "", });
+
+  const [drugGroupSearch, setDrugGroupSearch] = useState("");
+
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
@@ -133,15 +137,15 @@ const Itemmaster = () => {
       toast.error("No file selected");
     }
   };
+
   useEffect(() => {
     listItemcatagory();
     listSuppliers();
     listOfGst();
     listOfPack();
-    listDrougGroup();
     listOfCompany();
     listLocation();
-  }, [1000]);
+  }, []);
 
   let listLocation = () => {
     axios
@@ -285,24 +289,6 @@ const Itemmaster = () => {
       });
   };
 
-  let listDrougGroup = () => {
-    axios
-      .post("drug-list", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setDrugGroupList(response.data.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-
-        console.error("API error:", error);
-
-
-      });
-  };
 
   const submitCategory = () => {
     let data = new FormData();
@@ -341,7 +327,6 @@ const Itemmaster = () => {
           setOpenDrugGroup(false);
           setDrugGroupName("");
           setIsLoading(false);
-          listDrougGroup();
           toast.dismiss();
           toast.success(response.data.message);
         });
@@ -399,7 +384,7 @@ const Itemmaster = () => {
         newErrors.searchItem = "Enter valid Item name.";
         toast.dismiss();
         toast.error("Enter valid Item name.");
-      return;
+        return;
 
       }
     }
@@ -451,7 +436,7 @@ const Itemmaster = () => {
 
   const submitItemRecord = async () => {
     let formData = new FormData();
-    
+
     formData.append("item_id", value.id ? value.id : "");
 
     formData.append("item_name", searchItem ? searchItem : "");
@@ -530,6 +515,28 @@ const Itemmaster = () => {
 
     }
   };
+
+  const handleDrugGroupSearch = async (keyword) => {
+    if (!keyword) return;
+
+    let data = new FormData();
+    data.append("search", keyword);
+    data.append("page", 1);
+
+
+    try {
+      const response = await axios.post("drug-list", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setDrugGroupList(response.data.data);
+    } catch (error) {
+      console.error("API error:", error);
+    }
+  };
+
 
   const showItemData = async (itemId) => {
     let data = new FormData();
@@ -851,145 +858,38 @@ const Itemmaster = () => {
                     <FormControl fullWidth>
                       <Autocomplete
                         disablePortal
-                        id="combo-box-demo"
                         options={drugGroupList}
                         size="small"
                         value={drugGroup}
-                        style={{ width: '100%' }}
+                        style={{ width: "100%" }}
                         onChange={(e, value) => setDrugGroup(value)}
+                        onInputChange={(e, newInputValue) => {
+                          setDrugGroupSearch(newInputValue);
+                          handleDrugGroupSearch(newInputValue);
+                        }}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => (
-                          <TextField {...params} placeholder="Select DrugGroup" />
+                          <TextField {...params} placeholder="Search Drug Group" />
                         )}
                         sx={{
                           "& .MuiOutlinedInput-root": {
                             "& .MuiOutlinedInput-notchedOutline": {
-                              borderColor: "rgba(0, 0, 0, 0.38) "
+                              borderColor: "rgba(0, 0, 0, 0.38)",
                             },
                             "&:hover fieldset": {
-                              borderColor: "var(--color1)", // Hover border color
+                              borderColor: "var(--color1)",
                             },
                             "&.Mui-focused fieldset": {
-                              borderColor: "var(--color1)", // Focused border color
+                              borderColor: "var(--color1)",
                             },
                           },
                         }}
                       />
+
                     </FormControl>
                   </div>
                 </div>
-                {/* <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
-                    <label className="label">Minimum</label>
-                    <TextField
-                      id="outlined-number"
-                      // label="Min"
-                      type="number"
-                      // style={{ width: "232px" }}
-                      size="small"
-                      value={min}
-                      onChange={(e) => {
-                        setMin(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                  <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
-                    <label className="label">Maximum</label>
-                    <TextField
-                      id="outlined-number"
-                      // label="Max."
-                      type="number"
-                      // style={{ width: "232px" }}
-                      size="small"
-                      value={max}
-                      onChange={(e) => {
-                        setMax(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                </div>
-                <div className="row item_fld_rw gap-3 md:pt-2">
-                  <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
-                    <label className="label">Disc.%</label>
-                    <TextField
-                      id="outlined-number"
-                      // label="Disc.%"
-                      // style={{ width: "232px" }}
-                      size="small"
-                      type="number"
-                      value={disc}
-                      onChange={(e) => {
-                        setDisc(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                  <div className="fields third_divv itm_divv_wid" style={{ width: '50%' }}>
-                    <label className="label">Margin%</label>
-                    <TextField
-                      id="outlined-number"
-                      // label="Margin%"
-                      // style={{ width: "232px" }}
-                      size="small"
-                      type="number"
-                      value={margin}
-                      onChange={(e) => {
-                        setMargin(e.target.value);
-                      }}
-                      sx={{
-                        "& .MuiOutlinedInput-root": {
-                          "& .MuiOutlinedInput-notchedOutline": {
-                            borderColor: "rgba(0, 0, 0, 0.38) "
-                          },
-                          "&:hover fieldset": {
-                            borderColor: "var(--color1)", // Hover border color
-                          },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "var(--color1)", // Focused border color
-                          },
-                        },
-                      }}
-                    />
-                  </div>
-                </div> */}
+
                 <div className="row item_fld_rw gap-3 md:pt-2">
                   <div className="fields four_divv" style={{ width: "100%" }}>
                     <label className="label">Packaging In</label>
@@ -1601,6 +1501,7 @@ const Itemmaster = () => {
         <DialogContent>
           <div className="dialog pt-4">
             <label className="mb-2">Drug Group Name</label>
+
             <TextField
               id="outlined-number"
               placeholder="Enter DrugGroup Name"
@@ -1611,6 +1512,7 @@ const Itemmaster = () => {
               onChange={(e) => {
                 const value = e.target.value;
                 const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+
                 setDrugGroupName(capitalized);
 
               }}

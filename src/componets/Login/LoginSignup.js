@@ -27,7 +27,7 @@ const LoginSignup = () => {
   const { referralCode } = useParams();
   const [userID, setUserID] = useState();
   const [errors, setErrors] = useState({});
-  const [showPasswordIcon, setShowPasswordIcon] = useState(true);
+  const [showPasswordIcon, setShowPasswordIcon] = useState(false);
   const [timer, setTimer] = useState(30);
   const [resendEnabled, setResendEnabled] = useState(false);
   const [resendDisabled, setResendDisabled] = useState(false);
@@ -141,26 +141,26 @@ const LoginSignup = () => {
     if (!registerData.pharmacy_name) {
       newErrors.pharmacy_name = "pharmacy Name is required";
       toast.dismiss();
-toast.error("Pharmacy Name is required");
+      toast.error("Pharmacy Name is required");
     }
     if (!registerData.mobile_number) {
       newErrors.mobile_number = "mobile No is required";
       toast.dismiss();
-toast.error("Mobile Number is required");
+      toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(registerData.mobile_number)) {
       newErrors.mobile_number = "Mobile number must 10 numbers";;
       toast.dismiss();
-toast.error("Mobile number must 10 numbers");
+      toast.error("Mobile number must 10 numbers");
     }
 
     if (!registerData.email) {
       newErrors.email = "Email Id is required";
       toast.dismiss();
-toast.error("Email Id is required");
+      toast.error("Email Id is required");
     } else if (!emailRegex.test(registerData.email)) {
       newErrors.email = "Enter a valid email address";
       toast.dismiss();
-toast.error("Enter a valid email address");
+      toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -186,23 +186,23 @@ toast.error("Enter a valid email address");
       data.append("type", registerData.type);
       const response = await axios.post("resgiter", data);
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         setUserID(response.data.data.id);
         setStep("otp");
         setPassword("");
 
       } else {
         toast.dismiss();
-toast.error(response.data.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
         toast.dismiss();
-toast.error("An unexpected error occurred. Please try again later.");
+        toast.error("An unexpected error occurred. Please try again later.");
         console.error("API error:", error);
       }
     }
@@ -214,36 +214,36 @@ toast.error("An unexpected error occurred. Please try again later.");
     if (!otp) {
       newErrors.otp = "OTP is required";
       toast.dismiss();
-toast.error(newErrors.otp);
+      toast.error(newErrors.otp);
     }
 
     if (!password) {
       newErrors.password = "Password is required";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     } else if (password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     } else if (!/[A-Z]/.test(password)) {
       newErrors.password =
         "Password must contain at least one uppercase letter";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     } else if (!/[a-z]/.test(password)) {
       newErrors.password =
         "Password must contain at least one lowercase letter";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     } else if (!/[0-9]/.test(password)) {
       newErrors.password = "Password must contain at least one digit";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
       newErrors.password =
         "Password must contain at least one special character";
       toast.dismiss();
-toast.error(newErrors.password);
+      toast.error(newErrors.password);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -267,8 +267,8 @@ toast.error(newErrors.password);
       const response = await axios.post("resgiter", data);
 
       if (response.data.status === 200 && response.data.message) {
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         localStorage.setItem("userId", userID);
         setPassword("");
         setOtp("")
@@ -277,11 +277,11 @@ toast.success(response.data.message);
         }, 3000);
       } else {
         toast.dismiss();
-toast.error(response.data.message || "Something went wrong");
+        toast.error(response.data.message || "Something went wrong");
       }
     } catch (error) {
       toast.dismiss();
-toast.error(error.response?.data?.message || "An error occurred");
+      toast.error(error.response?.data?.message || "An error occurred");
       console.error("API error:", error);
     }
   };
@@ -316,16 +316,16 @@ toast.error(error.response?.data?.message || "An error occurred");
     if (!mobile) {
       newErrors.mobile = "Mobile Number is required";
       toast.dismiss();
-toast.error("Mobile Number is required");
+      toast.error("Mobile Number is required");
     }
     if (!password) {
       newErrors.password = "Password is required";
       toast.dismiss();
-toast.error("Password is required");
+      toast.error("Password is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobileNumber = "Mobile Number must be 10 digits";
       toast.dismiss();
-toast.error("Mobile Number must be 10 digits");
+      toast.error("Mobile Number must be 10 digits");
     }
 
     setErrors(newErrors);
@@ -348,8 +348,8 @@ toast.error("Mobile Number must be 10 digits");
           localStorage.setItem("role", role);
           localStorage.setItem("email", email);
 
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
 
           await userPermission(token)
 
@@ -384,12 +384,12 @@ toast.success(response.data.message);
           }
         } else {
           toast.dismiss();
-toast.error(response.data.message);
+          toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
           toast.dismiss();
-toast.error(error.response.data.message);
+          toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }
@@ -408,20 +408,20 @@ toast.error(error.response.data.message);
     if (!mobile) {
       newErrors.mobile = "mobile No is required";
       toast.dismiss();
-toast.error("Mobile Number is required");
+      toast.error("Mobile Number is required");
     } else if (!/^\d{10}$/.test(mobile)) {
       newErrors.mobile = "Mobile number must be 10 digits";
       toast.dismiss();
-toast.error("Mobile number must be 10 digits");
+      toast.error("Mobile number must be 10 digits");
     }
     if (!email) {
       newErrors.email = "Email Id is required";
       toast.dismiss();
-toast.error("Email Id is required");
+      toast.error("Email Id is required");
     } else if (!emailRegex.test(email)) {
       newErrors.email = "Enter a valid email address";
       toast.dismiss();
-toast.error("Enter a valid email address");
+      toast.error("Enter a valid email address");
     }
 
     setErrors(newErrors);
@@ -436,8 +436,8 @@ toast.error("Enter a valid email address");
         const response = await axios.post("forget-password", userData);
         localStorage.setItem("userId", response.data.data.user_id);
         if (response.data.status === 200) {
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setShowOTP(true);
           setPassword("");
           setEmail("");
@@ -445,12 +445,12 @@ toast.success(response.data.message);
           setStep("ForgetOTP");
         } else {
           toast.dismiss();
-toast.error(response.data.message);
+          toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
           toast.dismiss();
-toast.error(error.response.data.message);
+          toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }
@@ -466,27 +466,27 @@ toast.error(error.response.data.message);
     if (!password) {
       errors.password = "Password is required";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     } else if (password.length < 8) {
       errors.password = "Password must be at least 8 characters";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     } else if (!/[A-Z]/.test(password)) {
       errors.password = "Password must contain at least one uppercase letter";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     } else if (!/[a-z]/.test(password)) {
       errors.password = "Password must contain at least one lowercase letter";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     } else if (!/[0-9]/.test(password)) {
       errors.password = "Password must contain at least one digit";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     } else if (!/[!@#$%^&*]/.test(password)) {
       errors.password = "Password must contain at least one special character";
       toast.dismiss();
-toast.error(errors.password);
+      toast.error(errors.password);
     }
     setErrors(errors);
     const isValid = Object.keys(errors).length === 0;
@@ -500,20 +500,20 @@ toast.error(errors.password);
       try {
         const response = await axios.post("forget-password", userData);
         if (response.data.status === 200) {
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setShowOTP(true);
           setTimeout(() => {
             history.push("/");
           }, 3000);
         } else {
           toast.dismiss();
-toast.error(response.data.message);
+          toast.error(response.data.message);
         }
       } catch (error) {
         if (error.response && error.response.status === 400) {
           toast.dismiss();
-toast.error(error.response.data.message);
+          toast.error(error.response.data.message);
         }
         console.error("API error:", error);
       }

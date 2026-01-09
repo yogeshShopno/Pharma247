@@ -1419,8 +1419,14 @@ const Addsale = () => {
 
     let data = new FormData();
     // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
-    const calculatedPreviousLoyaltyPoint =
-      Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0;
+
+    
+  const prevPoints = Number(previousLoyaltyPoints) || 0;
+  const redeemPoints = Number(loyaltyVal) || 0;
+  
+  const calculatedPreviousLoyaltyPoint = Math.max(0, prevPoints - redeemPoints);
+
+  const calculatedTodayPoint = Number(todayLoyltyPoint) || 0;
 
     data.append("bill_no", billNo);
     data.append("customer_id", customer?.id ? customer?.id : "");
@@ -1469,7 +1475,7 @@ const Addsale = () => {
     data.append("total_gst", totalgst || "");
     data.append("roylti_point", loyaltyVal || 0);
     data.append("previous_loylti_point", calculatedPreviousLoyaltyPoint || 0);
-    data.append("today_loylti_point", todayLoyltyPoint || 0);
+    data.append("today_loylti_point", calculatedTodayPoint || 0);
     data.append("draft_save", !draft ? "1" : draft);
 
     try {

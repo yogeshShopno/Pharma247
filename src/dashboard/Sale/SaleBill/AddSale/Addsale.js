@@ -435,6 +435,8 @@ const Addsale = () => {
   const updateTodayPoints = async () => {
     let data = new FormData();
     data.append("net_amount", netAmount || 0);
+    data.append("customer_id", customer?.id ? customer?.id : "");
+
 
     try {
       const response = await axios.post("sales-update-today-points", data, {
@@ -836,8 +838,8 @@ const Addsale = () => {
       });
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         setOpenAddItemPopUp(false);
         resetAddDialog();
       } else if (response.data.status === 400) {
@@ -1058,8 +1060,8 @@ toast.success(response.data.message);
           setOpenAddPopUp(false);
           setDoctorName("");
           setClinic("");
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
@@ -1095,8 +1097,8 @@ toast.success(response.data.message);
       setOpenCustomer(false);
       setCustomerName("");
       setMobileNo("");
-       toast.dismiss();
-toast.success(response.data.message);
+      toast.dismiss();
+      toast.success(response.data.message);
     } catch (error) {
       setIsLoading(false);
       if (error.response?.data?.status === 400) {
@@ -1478,8 +1480,8 @@ toast.success(response.data.message);
       });
       if (response.data.status === 200) {
         setBillNo(billNo + 1);
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         localStorage.removeItem("RandomNumber");
 
         const lowStockItems = ItemSaleList.sales_item.filter(
@@ -1755,7 +1757,7 @@ toast.success(response.data.message);
       setIsEditMode(false);
 
       //  toast.dismiss();
-toast.success(response.data.message);
+      toast.success(response.data.message);
 
       // if (quantityDifference === 1) {
       //     bulkOrderData();
@@ -1952,8 +1954,8 @@ toast.success(response.data.message);
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -2030,8 +2032,8 @@ toast.success(response.data.meassage);
           },
         });
         if (response.data.status === 200) {
-           toast.dismiss();
-toast.success("Reminder(s) set successfully");
+          toast.dismiss();
+          toast.success("Reminder(s) set successfully");
           setOpenReminderPopUp(false);
 
 

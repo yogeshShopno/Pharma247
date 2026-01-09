@@ -511,6 +511,8 @@ const EditSaleBill = () => {
   const updateTodayPoints = async (netAmount) => {
     let data = new FormData();
     data.append("net_amount", netAmount);
+    data.append("customer_id", customer?.id ? customer?.id : "");
+
 
     try {
       const response = await axios.post("sales-update-today-points", data, {
@@ -898,8 +900,8 @@ const EditSaleBill = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-       toast.dismiss();
-toast.success("Item deleted successfully!");
+      toast.dismiss();
+      toast.success("Item deleted successfully!");
       setUnsavedItems(true);
       localStorage.setItem("unsavedItems", "true");
       saleBillGetBySaleID();
@@ -1102,8 +1104,8 @@ toast.success("Item deleted successfully!");
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           handlePdf(PDFURL);
         });
     } catch (error) {
@@ -1199,8 +1201,8 @@ toast.success(response.data.meassage);
         },
       });
 
-       toast.dismiss();
-toast.success(response.data.message);
+      toast.dismiss();
+      toast.success(response.data.message);
       setTimeout(() => {
         history.push("/salelist");
       }, 2000);

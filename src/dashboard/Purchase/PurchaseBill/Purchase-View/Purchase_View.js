@@ -427,7 +427,7 @@ toast.success(response.data.meassage);
             </div>
             <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
               <label className="font-bold">Total Net Rate : </label>
-              <span style={{ fontWeight: 600 }}>₹ {data?.total_net_rate} </span>
+              <span style={{ fontWeight: 600 }}>&#8377; {data?.total_net_rate} </span>
             </div>
           </div>
 

@@ -2181,7 +2181,7 @@ toast.error("Only 0%,5%,18%, GST is allowed");
               >
                 <label className="font-bold">Total Net Profit : </label>
                 <span style={{ fontWeight: 600 }}>
-                  ₹ {purchase?.total_net_rate}
+                  &#8377; {purchase?.total_net_rate}
                 </span>
               </div>
             </div>

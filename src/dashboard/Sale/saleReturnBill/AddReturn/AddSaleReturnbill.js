@@ -1302,11 +1302,11 @@ toast.error(`Quantity should not be less than 0`);
                                         </div>
                                         <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                             <label className="font-bold">Profit : </label>
-                                            <span style={{ fontWeight: 600 }}>₹ {marginNetProfit} ({Number(totalMargin).toFixed(2)} %) </span>
+                                            <span style={{ fontWeight: 600 }}>&#8377; {marginNetProfit} ({Number(totalMargin).toFixed(2)} %) </span>
                                         </div>
                                         <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
                                             <label className="font-bold">Total Net Rate : </label>
-                                            <span style={{ fontWeight: 600 }}>₹ {totalNetRate} </span>
+                                            <span style={{ fontWeight: 600 }}>&#8377; {totalNetRate} </span>
                                         </div>
                                     </div>
 

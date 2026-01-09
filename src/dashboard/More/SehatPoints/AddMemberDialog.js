@@ -390,7 +390,7 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                                     <MenuItem value="" disabled>Select Plan <span className="text-red-600 ">*</span></MenuItem>
                                     {planList.map(plan => (
                                         <MenuItem key={plan.id} value={plan.id}>
-                                            {plan.plan_name} ₹{plan.price}
+                                            {plan.plan_name} &#8377;{plan.price}
                                         </MenuItem>
                                     ))}
                                 </Select>

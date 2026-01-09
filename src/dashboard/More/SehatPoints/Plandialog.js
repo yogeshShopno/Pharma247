@@ -60,7 +60,7 @@ export default function PlanDialog({ showPlans, setShowPlans, plans ,setAddMembe
               <h3 style={{ marginBottom: 10 }}>{plan.name}</h3>
 
               <div style={{ fontSize: 42, fontWeight: 800 }}>
-                ₹{plan.price}
+                &#8377;{plan.price}
                 <span style={{ fontSize: 16 }}> / Year</span>
               </div>
 

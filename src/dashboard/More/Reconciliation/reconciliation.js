@@ -227,7 +227,7 @@ toast.success("Data submitted successfully");
                           <p className="inline text-gray-400 text-sm font-normal">
                             1 pack of {item.weightage ? item.weightage : 0} unit
                           </p>
-                          <p className="inline text-gray-600 text-sm font-bold">₹ {item.mrp ? item.mrp : 0}</p>
+                          <p className="inline text-gray-600 text-sm font-bold">&#8377; {item.mrp ? item.mrp : 0}</p>
                         </span>
                         <span className="flex justify-between items-center w-full gap-2">
                           <p className="">

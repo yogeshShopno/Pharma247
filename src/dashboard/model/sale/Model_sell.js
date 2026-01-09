@@ -34,7 +34,7 @@ const Model_sell = () => {
                                         <span className='text-blue-500 font-semibold mx-2'>OR</span>
                                         <div className='border-b-2 border-gray-400 relative'>
                                             <input type="text" id="currencyInput" disabled className="w-20 outline-0" />
-                                            <span className='absolute left-0'>₹</span>
+                                            <span className='absolute left-0'>&#8377;</span>
                                         </div>
                                         <button type="submit" className="py-2 min-w-16 px-5 h-8 bg-blue-500 text-white rounded bg-blue-900 ml-2"> <FaCheck /></button>
                                     </div>
@@ -55,11 +55,11 @@ const Model_sell = () => {
                                 </div>
                                 <div className='bg-blue-100 p-4 mt-4 flex justify-between'>
                                     <p className='cursor-pointer  mb-2'>GST</p>
-                                    <span className='text-blue-400'>₹0</span>
+                                    <span className='text-blue-400'>&#8377;0</span>
                                     <p className='cursor-pointer  mb-2'>CESS</p>
-                                    <span className=' text-blue-400'>₹0</span>
+                                    <span className=' text-blue-400'>&#8377;0</span>
                                     <p className='cursor-pointer  mb-2'>Margin</p>
-                                    <span className=' text-blue-400'>(₹0.00)%</span>
+                                    <span className=' text-blue-400'>(&#8377;0.00)%</span>
                                 </div>
                             </div>
                             <div className='w-1/2 ml-4 cursor-pointer'>
@@ -68,7 +68,7 @@ const Model_sell = () => {
                                         <p>
                                             MRP Total
                                         </p>
-                                        <h6>₹0</h6>
+                                        <h6>&#8377;0</h6>
                                     </div>
                                     <div className='flex justify-between pb-2'>
                                         <a href=''>Total Discount</a>

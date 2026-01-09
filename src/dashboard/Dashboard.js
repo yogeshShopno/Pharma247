@@ -532,7 +532,7 @@ const Dashboard = () => {
                                   </p>
                                 </div>
                                 <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                                  ₹{customer.balance.toLocaleString()}
+                                  &#8377;{customer.balance.toLocaleString()}
                                 </div>
                               </div>
                             ))}
@@ -689,7 +689,7 @@ const Dashboard = () => {
                           <p className="text-sm text-gray-500">GST: {item.gst_number}</p>
                         </div>
                         <div className="bg-green-100 text-green-800 font-medium px-3 py-1 rounded-full text-sm shadow-inner">
-                          ₹{item.due_amount === 0 ? "0" : item.due_amount.toLocaleString()}
+                          &#8377;{item.due_amount === 0 ? "0" : item.due_amount.toLocaleString()}
                         </div>
                       </div>
                     ))}
@@ -791,7 +791,7 @@ const Dashboard = () => {
                               <div className="px-4 py-3 text-center">{item.name}</div>
                               <div className="px-4 py-3 text-center">{item.phone_number || "--"}</div>
                               <div className="px-4 py-3 text-center font-medium">
-                                ₹ {item.total_amount || 0}
+                                &#8377; {item.total_amount || 0}
                               </div>
                             </div>
                           ))}
@@ -907,7 +907,7 @@ const Dashboard = () => {
                                 >
                                   <p className="text-gray-800 font-medium">{item.lable}</p>
                                   <p className="text-green-700 font-semibold">
-                                    ₹ {Number(item.value).toLocaleString()}
+                                    &#8377; {Number(item.value).toLocaleString()}
                                   </p>
                                 </div>
                               ))}

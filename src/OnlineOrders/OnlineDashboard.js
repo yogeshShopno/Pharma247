@@ -260,7 +260,7 @@ const OnlineDashboard = () => {
                               </td>
                               <td className="px-6 py-2 text-right">
                                 <div>
-                                  <div className="font-semibold text-gray-900">₹{order.total_amount}</div>
+                                  <div className="font-semibold text-gray-900">&#8377;{order.total_amount}</div>
                                 </div>
                               </td>
                             </tr>

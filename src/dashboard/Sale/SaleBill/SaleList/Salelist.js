@@ -223,7 +223,7 @@ toast.success(response.data.meassage);
         setIsLoading(false);
         setPDFURL(PDFURL);
 
-        const message = `Dear ${bill.name},\n\nYour invoice for ₹${bill.net_amt
+        const message = `Dear ${bill.name},\n\nYour invoice for &#8377;${bill.net_amt
           } is ready.\n\nClick the link below to download:\n${PDFURL}\n\nFor any queries, contact us: ${localStorage.getItem(
             "contact"
           )}\n\nThank you,\n${localStorage.getItem("UserName")}`;

@@ -462,7 +462,7 @@ toast.success(response.data.meassage);
                   >
                     <label className="font-bold">Profit : </label>
                     <span style={{ fontWeight: 600 }}>
-                      ₹ {tableData?.margin_net_profit} (
+                      &#8377; {tableData?.margin_net_profit} (
                       {Number(tableData?.total_margin).toFixed(2)}%){" "}
                     </span>
                   </div>
@@ -472,7 +472,7 @@ toast.success(response.data.meassage);
                   >
                     <label className="font-bold">Total Net Rate : </label>
                     <span style={{ fontWeight: 600 }}>
-                      ₹ {tableData?.total_net_rate}{" "}
+                      &#8377; {tableData?.total_net_rate}{" "}
                     </span>
                   </div>
                 </div>

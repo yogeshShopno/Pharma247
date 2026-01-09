@@ -1693,11 +1693,11 @@ const EditSaleBill = () => {
                                     // primary={`${option.iteam_name} - ${option.stock}`}
                                     // secondary={`weightage: ${option.weightage}`}
                                     primary={`${option.iteam_name},(${option.company})`}
-                                    secondary={`Stock:${option.stock}, ₹:${option.mrp},Location:${option.location}`}
+                                    secondary={`Stock:${option.stock}, &#8377;:${option.mrp},Location:${option.location}`}
                                     // secondary={
                                     //   <>
                                     //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                    //     ₹: {option.mrp || 0},
+                                    //     &#8377;: {option.mrp || 0},
                                     //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
                                     //   </>
                                     // }
@@ -2127,7 +2127,7 @@ const EditSaleBill = () => {
               >
                 <label className="font-bold">Total GST : </label>
 
-                <span style={{ fontWeight: 600 }}>₹{totalgst} </span>
+                <span style={{ fontWeight: 600 }}>&#8377;{totalgst} </span>
               </div>
               <div
                 className="gap-2 invoice_total_fld"
@@ -2142,7 +2142,7 @@ const EditSaleBill = () => {
               >
                 <label className="font-bold">Profit : </label>
                 <span style={{ fontWeight: 600 }}>
-                  ₹{marginNetProfit} ({Number(margin).toFixed(2)}%){" "}
+                  &#8377;{marginNetProfit} ({Number(margin).toFixed(2)}%){" "}
                 </span>
               </div>
               <div
@@ -2150,7 +2150,7 @@ const EditSaleBill = () => {
                 style={{ display: "flex" }}
               >
                 <label className="font-bold">Total Net Rate : </label>
-                <span style={{ fontWeight: 600 }}>₹{netRateAmount} </span>
+                <span style={{ fontWeight: 600 }}>&#8377;{netRateAmount} </span>
               </div>
             </div>
             <hr

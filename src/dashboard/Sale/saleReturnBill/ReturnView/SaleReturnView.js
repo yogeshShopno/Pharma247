@@ -356,8 +356,8 @@ toast.success(response.data.meassage);
                                         <div className="totals mr-5" style={{ display: 'flex', gap: '25px', flexDirection: 'column', alignItems: "end" }}>
                                             <span style={{ fontWeight: 600 }}> {tableData?.total_gst} </span>
                                             <span style={{ fontWeight: 600 }}> {tableData?.total_base} </span>
-                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
-                                            <span style={{ fontWeight: 600 }}>  ₹ {tableData?.total_net_rate} </span>
+                                            <span style={{ fontWeight: 600 }}>  &#8377; {tableData?.margin_net_profit}({Number(tableData?.total_margin).toFixed(2)} %)   </span>
+                                            <span style={{ fontWeight: 600 }}>  &#8377; {tableData?.total_net_rate} </span>
                                         </div>
 
                                         <div style={{ display: 'flex', gap: '25px', flexDirection: 'column' }}>
@@ -426,7 +426,7 @@ toast.success(response.data.meassage);
                       <label className="font-bold">Profit : </label>
                       <span style={{ fontWeight: 600 }}>
                         {" "}
-                        ₹ {tableData?.margin_net_profit}(
+                        &#8377; {tableData?.margin_net_profit}(
                         {Number(tableData?.total_margin).toFixed(2)} %){" "}
                       </span>
                     </div>
@@ -437,7 +437,7 @@ toast.success(response.data.meassage);
                       <label className="font-bold">Total Net Rate : </label>
                       <span style={{ fontWeight: 600 }}>
                         {" "}
-                        ₹ {tableData?.total_net_rate}{" "}
+                        &#8377; {tableData?.total_net_rate}{" "}
                       </span>
                     </div>
                   </div>

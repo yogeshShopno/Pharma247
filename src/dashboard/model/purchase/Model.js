@@ -35,7 +35,7 @@ const Model = () => {
                                         <span className='text-blue-500 font-semibold mx-2'>OR</span>
                                         <div className='border-b-2 border-gray-400 relative'>
                                             <input type="text" id="currencyInput" disabled className="w-20 outline-0" />
-                                            <span className='absolute left-0'>₹</span>
+                                            <span className='absolute left-0'>&#8377;</span>
                                         </div>
                                         <button type="submit" className="py-2 min-w-16 px-5 h-8 bg-blue-500 text-white rounded bg-blue-900 ml-2"> <FaCheck /></button>
                                     </div>
@@ -51,7 +51,7 @@ const Model = () => {
                                 </div>
                                 <div className='bg-blue-100 p-4 mt-4'>
                                     <p className='cursor-pointer flex mb-2'>Mrp Total</p>
-                                    <span className='flex text-blue-400'>₹0</span>
+                                    <span className='flex text-blue-400'>&#8377;0</span>
                                 </div>
                             </div>
                             <div className='w-1/2 mr-10 cursor-pointer'>
@@ -60,7 +60,7 @@ const Model = () => {
                                         <p>
                                             PTR Total
                                         </p>
-                                        <h6>₹0</h6>
+                                        <h6>&#8377;0</h6>
                                     </div>
                                     <div className='flex justify-between pb-2'>
                                         <a href=''>Total Discount</a>

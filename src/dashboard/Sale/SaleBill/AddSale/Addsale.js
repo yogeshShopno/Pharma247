@@ -3369,7 +3369,7 @@ const Addsale = () => {
               >
                 <label className="font-bold">Profit : </label>
                 <span style={{ fontWeight: 600 }}>
-                  ₹ {marginNetProfit || 0} (
+                  &#8377; {marginNetProfit || 0} (
                   {Number(totalMargin || 0).toFixed(2)}%)
                 </span>
               </div>
@@ -3378,7 +3378,7 @@ const Addsale = () => {
                 style={{ display: "flex" }}
               >
                 <label className="font-bold">Total Net Rate : </label>
-                <span style={{ fontWeight: 600 }}>₹ {totalNetRate}</span>
+                <span style={{ fontWeight: 600 }}>&#8377; {totalNetRate}</span>
               </div>
             </div>
             <hr
@@ -4349,7 +4349,7 @@ const Addsale = () => {
                               <td>{sale.bill_no}</td>
                               <td>{sale.bill_date}</td>
                               <td>{sale.payment_mode}</td>
-                              <td>₹{sale.amt}</td>
+                              <td>&#8377;{sale.amt}</td>
                             </tr>
                           ))
                         ) : (

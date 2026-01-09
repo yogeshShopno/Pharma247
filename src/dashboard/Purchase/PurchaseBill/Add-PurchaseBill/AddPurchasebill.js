@@ -3056,7 +3056,7 @@ toast.success(response.data.message);
                 >
                   <label className="font-bold">Total Net Rate : </label>
                   <span style={{ fontWeight: 600 }}>
-                    ₹ {totalNetRate ? totalNetRate : 0}
+                    &#8377; {totalNetRate ? totalNetRate : 0}
                   </span>
                 </div>
               </div>

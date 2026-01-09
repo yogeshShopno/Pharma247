@@ -16,6 +16,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import ScienceIcon from "@mui/icons-material/Science";
+import MedicationIcon from '@mui/icons-material/Medication';
+import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 
 export default function MemberView({ viewMember, setViewMember, memberDetails }) {
     return (
@@ -258,76 +260,160 @@ export default function MemberView({ viewMember, setViewMember, memberDetails })
                                 >
                                     Usage Benefits
                                 </Typography>
-                                <Stack spacing={2}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 2,
-                                            p: 2,
-                                            backgroundColor: "#f9fafb",
-                                            borderRadius: 1.5,
-                                            border: "1px solid #e5e7eb",
-                                        }}
-                                    >
+                                <Grid container spacing={2}>
+                                    {/* Card 1 */}
+                                    <Grid item xs={12} sm={6}>
                                         <Box
                                             sx={{
-                                                width: 44,
-                                                height: 44,
-                                                borderRadius: "50%",
-                                                backgroundColor: "#f0f4e8",
                                                 display: "flex",
                                                 alignItems: "center",
-                                                justifyContent: "center",
-                                                flexShrink: 0,
+                                                gap: 2,
+                                                p: 2,
+                                                backgroundColor: "#f9fafb",
+                                                borderRadius: 1.5,
+                                                border: "1px solid #e5e7eb",
                                             }}
                                         >
-                                            <LocalHospitalIcon sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#f0f4e8",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <LocalHospitalIcon sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="body1" fontWeight={700} color="#3f6212">
+                                                    {memberDetails.medicine_delivery}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                                                    Free Medicine Deliveries
+                                                </Typography>
+                                            </Box>
                                         </Box>
-                                        <Box>
-                                            <Typography variant="body1" fontWeight={700} color="#3f6212">
-                                                {memberDetails.medicine_delivery}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
-                                                Free Medicine Deliveries
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "center",
-                                            gap: 2,
-                                            p: 2,
-                                            backgroundColor: "#f9fafb",
-                                            borderRadius: 1.5,
-                                            border: "1px solid #e5e7eb",
-                                        }}
-                                    >
+                                    </Grid>
+
+                                    {/* Card 2 */}
+                                    <Grid item xs={12} sm={6}>
                                         <Box
                                             sx={{
-                                                width: 44,
-                                                height: 44,
-                                                borderRadius: "50%",
-                                                backgroundColor: "#f0f4e8",
                                                 display: "flex",
                                                 alignItems: "center",
-                                                justifyContent: "center",
-                                                flexShrink: 0,
+                                                gap: 2,
+                                                p: 2,
+                                                backgroundColor: "#f9fafb",
+                                                borderRadius: 1.5,
+                                                border: "1px solid #e5e7eb",
                                             }}
                                         >
-                                            <ScienceIcon sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#f0f4e8",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <ScienceIcon sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="body1" fontWeight={700} color="#3f6212">
+                                                    {memberDetails.lab_test_discount}% OFF
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                                                    On Lab Tests
+                                                </Typography>
+                                            </Box>
                                         </Box>
-                                        <Box>
-                                            <Typography variant="body1" fontWeight={700} color="#3f6212">
-                                                {memberDetails.lab_test_discount}% OFF
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
-                                                On Lab Tests
-                                            </Typography>
+                                    </Grid>
+
+                                    {/* Card 3 */}
+                                    <Grid item xs={12} sm={6}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 2,
+                                                p: 2,
+                                                backgroundColor: "#f9fafb",
+                                                borderRadius: 1.5,
+                                                border: "1px solid #e5e7eb",
+                                            }}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#f0f4e8",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <MedicationIcon sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="body1" fontWeight={700} color="#3f6212">
+                                                    {memberDetails.lab_home_visit}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                                                    Lab Home Visits
+                                                </Typography>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                </Stack>
+                                    </Grid>
+
+                                    {/* Card 4 */}
+                                    <Grid item xs={12} sm={6}>
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                alignItems: "center",
+                                                gap: 2,
+                                                p: 2,
+                                                backgroundColor: "#f9fafb",
+                                                borderRadius: 1.5,
+                                                border: "1px solid #e5e7eb",
+                                            }}
+                                        >
+                                            <Box
+                                                sx={{
+                                                    width: 44,
+                                                    height: 44,
+                                                    borderRadius: "50%",
+                                                    backgroundColor: "#f0f4e8",
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center",
+                                                    flexShrink: 0,
+                                                }}
+                                            >
+                                                <MedicalServicesIcon  sx={{ fontSize: 22, color: "#3f6212" }} />
+                                            </Box>
+                                            <Box>
+                                                <Typography variant="body1" fontWeight={700} color="#3f6212">
+                                                    {memberDetails.doctor_consult}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.85rem" }}>
+                                                    Doctor Consult
+                                                </Typography>
+                                            </Box>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+
                             </Paper>
                         </Stack>
                     </Grid>

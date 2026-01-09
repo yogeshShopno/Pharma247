@@ -579,7 +579,7 @@ const SehatMembersList = () => {
             )}
 
             {addMember && <AddMemberDialog addMember={addMember} setAddMember={setAddMember} customerId={customerId} />}
-            {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} />}
+            {showPlans && <PlanDialog showPlans={showPlans} setShowPlans={setShowPlans} plans={planList} setAddMember={setAddMember} />}
             {viewMember && <MemberView viewMember={viewMember} setViewMember={setViewMember} memberDetails={memberDetails} />}
             
         </>

@@ -8,11 +8,11 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 
 
-export default function PlanDialog({ showPlans, setShowPlans, plans }) {
+export default function PlanDialog({ showPlans, setShowPlans, plans ,setAddMember }) {
   return (
     <Dialog
       open={showPlans}
-      onClose={() => setShowPlans(false)}
+      onClose={() =>{ setShowPlans(false) }}
       maxWidth="lg"
       fullWidth
     >
@@ -90,7 +90,7 @@ export default function PlanDialog({ showPlans, setShowPlans, plans }) {
                     boxShadow: "none",
                   }
                 }}
-                onClick={()=>setShowPlans(false)}
+                onClick={()=>{setShowPlans(false) ; setAddMember(true)}}
               >
                 {plan.plan_name}
               </Button>

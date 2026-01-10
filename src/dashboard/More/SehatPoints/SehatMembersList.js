@@ -165,12 +165,7 @@ const SehatMembersList = () => {
         };
     }, []);
 
-    // Effect for pagination
-    useEffect(() => {
-        if (currentPage > 0) {
-            DistList(currentPage);
-        }
-    }, [currentPage]);
+
 
 
     const handleSearchChange = (index, value) => {
@@ -208,52 +203,50 @@ const SehatMembersList = () => {
         }
     };
 
-    const DistList = async (page, isSearch = false) => {
-        if (!page) return;
+    const DistList = async (page) => {
+    if (!page) return;
 
-        let data = new FormData();
-        data.append("page", page);
-
-        // Add search parameters when any search term has a value
-        currentSearchTerms.current.forEach((term, index) => {
-            if (term && term.trim()) {
-                data.append(searchKeys[index], term.trim());
-            }
-        });
-
-        // Use different loading states for search vs regular operations
-
-        setIsSearchLoading(true);
-
-        try {
-            const response = await axios.get("customer-sehat-membership-plan-list?", data, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            const responseData = response.data.data;
-
-            if (response.data.status === 401) {
-                history.push("/");
-                localStorage.clear();
-                return;
-            }
-
-            // Set the table data directly from backend (paginated and filtered data)
-            setTableData(responseData || []);
-
-            // Extract and set total count for pagination
-            const totalCount = response.data.total_records
-            setTotalRecords(totalCount);
-
-        } catch (error) {
-            console.error("API error:", error);
-            setTableData([]);
-            setTotalRecords(0);
-        } finally {
-            setIsSearchLoading(false);
-
-        }
+    const params = {
+        page: page,
     };
+
+    currentSearchTerms.current.forEach((term, index) => {
+        if (term && term.trim()) {
+            params[searchKeys[index]] = term.trim();
+        }
+    });
+
+    setIsSearchLoading(true);
+
+    try {
+        const response = await axios.get(
+            "customer-sehat-membership-plan-list?",
+            {
+                params,
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
+        );
+
+        if (response.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+            return;
+        }
+
+        setTableData(response.data.data || []);
+        setTotalRecords(response.data.total_records || 0);
+
+    } catch (error) {
+        console.error("API error:", error);
+        setTableData([]);
+        setTotalRecords(0);
+    } finally {
+        setIsSearchLoading(false);
+    }
+};
+
 
     const handlePrevious = () => {
         if (currentPage > 1) {

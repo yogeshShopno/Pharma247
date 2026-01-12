@@ -235,7 +235,7 @@ const EditPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList,purchase]); // Dependencies only affect Alt+S
+  }, [distributor, billNo, ItemPurchaseList, purchase]); // Dependencies only affect Alt+S
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -247,6 +247,23 @@ const EditPurchaseBill = () => {
       }
     }
   };
+
+  /*<================================================================= Search Item Debouncing ========================================================> */
+
+  useEffect(() => {
+
+    const SearchTimer = setTimeout(() => {
+      if (searchItem)
+        handleSearch(searchItem.toUpperCase());
+
+    }, 1500);
+
+    return () => {
+
+      clearTimeout(SearchTimer);
+
+    };
+  }, [searchItem]);
 
   /*<================================================================================== handle Leave page  =========================================================================> */
 
@@ -572,13 +589,13 @@ const EditPurchaseBill = () => {
           // setCnTotalAmount(response.data.data.total_amount)
 
           //  toast.dismiss();
-toast.success(response.data.message);
+          toast.success(response.data.message);
         });
     } catch (error) {
       // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -687,25 +704,25 @@ toast.error(error.response.data.message);
     const numericFree = parseFloat(free) || 0;
     if (numericQty === 0 && numericFree === 0) {
       toast.dismiss();
-toast.error("Free and Qty cannot both be 0");
+      toast.error("Free and Qty cannot both be 0");
       newErrors.qty = "Free and Qty cannot both be 0";
     }
     if (!unit) {
       newErrors.unit = "Unit is required";
       toast.dismiss();
-toast.error(newErrors.unit);
+      toast.error(newErrors.unit);
     }
 
     if (!batch) {
       newErrors.batch = "Batch is required";
       toast.dismiss();
-toast.error(newErrors.batch);
+      toast.error(newErrors.batch);
     }
 
     if (!expiryDate) {
       newErrors.expiryDate = "Expiry date is required";
       toast.dismiss();
-toast.error(newErrors.expiryDate);
+      toast.error(newErrors.expiryDate);
     } else {
       const [expMonth, expYear] = expiryDate.split("/").map(Number);
       const currentDate = new Date();
@@ -719,7 +736,7 @@ toast.error(newErrors.expiryDate);
         newErrors.expiryDate =
           "Expiry date must be in the future and cannot be the current month";
         toast.dismiss();
-toast.error(newErrors.expiryDate);
+        toast.error(newErrors.expiryDate);
       }
     }
     if (!mrp) newErrors.mrp = "MRP is required";
@@ -728,22 +745,22 @@ toast.error(newErrors.expiryDate);
     // } else if (ptr && parseFloat(ptr) > parseFloat(mrp)) {
     //   newErrors.ptr = "PTR must be less than or equal to MRP";
     //   toast.dismiss();
-// toast.error("PTR must be less than or equal to MRP");
+    // toast.error("PTR must be less than or equal to MRP");
     // }
 
     if (!gst) {
       newErrors.gst = "GST is required";
       toast.dismiss();
-toast.error(newErrors.gst);
+      toast.error(newErrors.gst);
     }
     if (!searchItem) {
       toast.dismiss();
-toast.error("Please Select any Item Name");
+      toast.error("Please Select any Item Name");
       newErrors.searchItem = "Select any Item Name";
     }
     // if (!ItemTotalAmount) {
     //   toast.dismiss();
-// toast.error("Total amount is not available");
+    // toast.error("Total amount is not available");
     //   newErrors.searchItem = "Total amount is not available";
     // }
     setErrors(newErrors);
@@ -1052,7 +1069,7 @@ toast.error("Please Select any Item Name");
     }
     if (purchase?.item_list?.length === 0) {
       toast.dismiss();
-toast.error("Please add atleast one item");
+      toast.error("Please add atleast one item");
       newErrors.item = "Please add atleast one item";
 
     }
@@ -1109,8 +1126,8 @@ toast.error("Please add atleast one item");
         })
         .then((response) => {
           if (response?.data?.status === 200) {
-             toast.dismiss();
-toast.success(response?.data?.message);
+            toast.dismiss();
+            toast.success(response?.data?.message);
             setTimeout(() => {
               history.push("/purchase/purchasebill");
             }, 2000)
@@ -1118,7 +1135,7 @@ toast.success(response?.data?.message);
         })
     } catch (error) {
       toast.dismiss();
-toast.error(error.data.message);
+      toast.error(error.data.message);
       console.error("API error:", error);
     }
   };
@@ -1164,7 +1181,7 @@ toast.error(error.data.message);
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    // handleSearch(newInputValue);
 
   };
 
@@ -1366,7 +1383,7 @@ toast.error(error.data.message);
       newErrors.finalTotalAmount =
         "You cannot adjust CN more than the total invoice amount";
       toast.dismiss();
-toast.error("You cannot adjust CN more than the total invoice amount");
+      toast.error("You cannot adjust CN more than the total invoice amount");
       setError(newErrors);
       setError(newErrors);
       setSelectedRows([]);
@@ -1711,7 +1728,7 @@ toast.error("You cannot adjust CN more than the total invoice amount");
                           } else if (isTab || isEnter) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Unit is Required");
+                            toast.error("Unit is Required");
                           }
                         }}
                         inputRef={(el) => (inputRefs.current[3] = el)}
@@ -1736,7 +1753,7 @@ toast.error("Unit is Required");
                           } else if (e.key === "Tab" || e.key === "Enter") {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("Batch is Required");
+                            toast.error("Batch is Required");
                           }
                         }}
                       />
@@ -1763,13 +1780,13 @@ toast.error("Batch is Required");
                             if (!expiryDate) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("Expiry is required");
+                              toast.error("Expiry is required");
                               return;
                             }
                             if (!expiryDateRegex.test(expiryDate)) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("Expiry must be in MM/YY format");
+                              toast.error("Expiry must be in MM/YY format");
                               return;
                             }
                             const [month, year] = expiryDate.split("/").map(Number);
@@ -1780,7 +1797,7 @@ toast.error("Expiry must be in MM/YY format");
                             if (expiry < now) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("Product has expired");
+                              toast.error("Product has expired");
                             } else if (expiry < sixMonthsLater) {
                               e.preventDefault();
                               toast.warning("Product will expire within 6 months");
@@ -1818,7 +1835,7 @@ toast.error("Product has expired");
                           if ((e.key === "Enter" || e.key === "Tab") && (!mrp || mrp === 0)) {
                             e.preventDefault();
                             toast.dismiss();
-toast.error("MRP is required and must be greater than 0");
+                            toast.error("MRP is required and must be greater than 0");
                             return;
                           }
                           handleKeyDown(e, 6);
@@ -1881,7 +1898,7 @@ toast.error("MRP is required and must be greater than 0");
                             const isFreeEmptyOrZero = !free || Number(free) === 0;
                             if (isQtyEmptyOrZero && isFreeEmptyOrZero) {
                               toast.dismiss();
-toast.error("Quantity and free quantity both can't be empty or zero");
+                              toast.error("Quantity and free quantity both can't be empty or zero");
                               return;
                             }
                             handleKeyDown(e, 8);
@@ -1920,13 +1937,13 @@ toast.error("Quantity and free quantity both can't be empty or zero");
                             // if (!ptr || ptr === 0) {
                             //   e.preventDefault();
                             //   toast.dismiss();
-// toast.error("PTR is required and must be greater than 0");
+                            // toast.error("PTR is required and must be greater than 0");
                             //   return;
                             // }
                             if (Number(mrp) && Number(ptr) >= Number(mrp)) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("PTR must be less than MRP");
+                              toast.error("PTR must be less than MRP");
                               return;
                             }
                           }
@@ -2000,13 +2017,13 @@ toast.error("PTR must be less than MRP");
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("GST is required");
+                              toast.error("GST is required");
                               return;
                             }
                             if (!allowedGST.includes(Number(gst))) {
                               e.preventDefault();
                               toast.dismiss();
-toast.error("Only 0%,5%,18%, GST is allowed");
+                              toast.error("Only 0%,5%,18%, GST is allowed");
                               return;
                             }
                           }

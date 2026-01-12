@@ -113,7 +113,6 @@ const AddPurchaseBill = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [purchaseReturnPending, setPurchaseReturnPending] = useState([]);
   const [finalPurchaseReturnList, setFinalPurchaseReturnList] = useState([]);
-  // const [adjustCnAmount, setAdjustCnAmount] = useState("")
   const [cnTotalAmount, setCnTotalAmount] = useState({});
   const [netAmount, setNetAmount] = useState(0);
   const [finalTotalAmount, setFinalTotalAmount] = useState(0);
@@ -307,7 +306,7 @@ const AddPurchaseBill = () => {
       }
     }
   };
-  /*<================================================================================ handle popup =======================================================================> */
+  /*<===================================================================== handle popup ============================================================> */
 
   useEffect(() => {
     if (openAddItemPopUp) {
@@ -326,6 +325,23 @@ const AddPurchaseBill = () => {
       }
     };
   }, [submitTimeout]);
+
+  /*<================================================================= Search Item Debouncing ========================================================> */
+
+  useEffect(() => {
+
+    const SearchTimer = setTimeout(() => {
+      if (searchItem)
+        handleSearch(searchItem.toUpperCase());
+
+    }, 1500);
+
+    return () => {
+
+      clearTimeout(SearchTimer);
+
+    };
+  }, [searchItem]);
   /*<================================================================= PTR and MRP validation ========================================================> */
 
   useEffect(() => {
@@ -545,7 +561,7 @@ const AddPurchaseBill = () => {
     }
   };
 
-  /*<========================================================================== upload selected file ==============================================================> */
+  /*<============================================================ upload selected file ================================================> */
 
   const handleFileUpload = async () => {
     generateRandomNumber();
@@ -576,8 +592,8 @@ const AddPurchaseBill = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response?.data?.status === 200) {
-         toast.dismiss();
-toast.success(response?.data?.message);
+        toast.dismiss();
+        toast.success(response?.data?.message);
         setUnsavedItems(true);
       }
       itemPurchaseList();
@@ -1292,8 +1308,8 @@ toast.success(response?.data?.message);
         setAddDistributorMobile("");
         setAddDistributorName("");
         setAddDistributorNo("");
-         toast.dismiss();
-toast.success("Distributor Added successfully");
+        toast.dismiss();
+        toast.success("Distributor Added successfully");
         setOpenAddDistributorPopUp(false);
         setTimeout(() => {
           if (inputRefs.current[0]) {
@@ -1366,8 +1382,8 @@ toast.success("Distributor Added successfully");
         setAddBarcode("");
         setAddUnit("");
         inputRefs.current[2]?.focus();
-         toast.dismiss();
-toast.success("Item added successfully");
+        toast.dismiss();
+        toast.success("Item added successfully");
       } else {
         toast.dismiss();
         toast.error(response?.data?.message || "Something went wrong");
@@ -1384,7 +1400,7 @@ toast.success("Item added successfully");
 
   /*<======================================================================= search item name  ==================================================================> */
 
-  const handleSearch = async () => {
+  const handleSearch = async (searchItem) => {
     let data = new FormData();
     data.append("search", searchItem);
     const params = {
@@ -1529,8 +1545,8 @@ toast.success("Item added successfully");
       setbillNo("")
       setSelectedDate(new Date())
       setUnsavedItems(false);
-       toast.dismiss();
-toast.success(response.data.message);
+      toast.dismiss();
+      toast.success(response.data.message);
 
       // Add cooldown period
       const timeout = setTimeout(() => {
@@ -1673,7 +1689,7 @@ toast.success(response.data.message);
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue.toUpperCase());
-    handleSearch(newInputValue.toUpperCase());
+    // handleSearch(newInputValue.toUpperCase());
   };
 
   const handleOptionChange = (event, newValue) => {

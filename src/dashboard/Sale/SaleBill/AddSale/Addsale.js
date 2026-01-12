@@ -343,8 +343,6 @@ const Addsale = () => {
           resetValue();
           setExpiryDate("");
           setMRP("");
-          console.log(mrp, "mrp at :343")
-
           setBase("");
           setGst("");
           setQty("");
@@ -648,8 +646,6 @@ const Addsale = () => {
       setBatch(selectedEditItem.batch);
       setExpiryDate(selectedEditItem.exp);
       setMRP(selectedEditItem.mrp);
-      console.log(mrp, "mrp at :657")
-
       setQty(selectedEditItem.qty);
       setBase(selectedEditItem.base);
       setGst(selectedEditItem.gst_name);
@@ -738,8 +734,6 @@ const Addsale = () => {
     if (!itemName) {
       setExpiryDate("");
       setMRP("");
-      console.log(mrp, "mrp at :731")
-
       setBase("");
       setGst("");
       setQty("");
@@ -775,8 +769,6 @@ const Addsale = () => {
     setUnit(event.unit);
     setExpiryDate(event.expiry_date);
     setMRP(event.mrp);
-    console.log(mrp, "mrp at :768")
-
     setMaxQty(event.stock);
     setBase(event.mrp);
     setGst(event.gst_name);
@@ -1354,8 +1346,6 @@ const Addsale = () => {
               setBatch("");
               setExpiryDate("");
               setMRP("");
-              console.log(mrp, "mrp at :1334")
-
               setQty("");
               setBase("");
               setGst("");
@@ -1767,9 +1757,7 @@ const Addsale = () => {
       setBatch("");
       setExpiryDate("");
       setMRP("");
-      console.log(mrp, "mrp at :1738")
-
-      setQty("");
+   setQty("");
       setBase("");
       setGst("");
       setBatch("");
@@ -1829,8 +1817,6 @@ const Addsale = () => {
     setSearchItem("");
     setExpiryDate("");
     setMRP("");
-    console.log(mrp, "mrp at :1808")
-
     setBase("");
     setGst("");
     setQty("");
@@ -3102,8 +3088,6 @@ const Addsale = () => {
                       value={mrp}
                       onChange={(e) => {
                         setMRP(e.target.value);
-                        console.log(mrp, "mrp at :3049")
-
                       }}
                     />
                   </td>

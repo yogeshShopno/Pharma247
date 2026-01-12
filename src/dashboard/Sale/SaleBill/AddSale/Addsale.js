@@ -667,9 +667,25 @@ const Addsale = () => {
     };
   }, [submitTimeout]);
 
+  /*<================================================================= Search Item Debouncing ========================================================> */
+
+  useEffect(() => {
+
+    const SearchTimer = setTimeout(() => {
+      if (searchItem)
+        handleSearch(searchItem.toUpperCase());
+
+    }, 1500);
+
+    return () => {
+
+      clearTimeout(SearchTimer);
+
+    };
+  }, [searchItem]);
   /*<========================================================================= search add item   ====================================================================> */
 
-  const handleSearch = async (searchItem) => {
+  const handleSearch = async () => {
     let data = new FormData();
     data.append("search", searchItem);
     try {
@@ -704,7 +720,7 @@ const Addsale = () => {
   const handleInputChange = (event, newInputValue) => {
     setUnsavedItems(true);
     setSearchItem(newInputValue.toUpperCase());
-    handleSearch(newInputValue.toUpperCase());
+    // handleSearch(newInputValue.toUpperCase());
   };
 
 

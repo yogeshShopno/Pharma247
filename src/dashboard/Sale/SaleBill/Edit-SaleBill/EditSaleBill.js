@@ -508,6 +508,23 @@ const EditSaleBill = () => {
     updateTodayPoints()
   }, [netAmount])
 
+  /*<================================================================= Search Item Debouncing ========================================================> */
+  
+    useEffect(() => {
+  
+      const SearchTimer = setTimeout(() => {
+        if (searchItem)
+          handleSearch(searchItem.toUpperCase());
+  
+      }, 1500);
+  
+      return () => {
+  
+        clearTimeout(SearchTimer);
+  
+      };
+    }, [searchItem]);
+    
   const updateTodayPoints = async (netAmount) => {
     let data = new FormData();
     data.append("net_amount", netAmount);
@@ -680,7 +697,7 @@ const EditSaleBill = () => {
     setUnsavedItems(true);
 
     setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    // handleSearch(newInputValue);
   };
 
   const handleOptionChange = (event, newValue) => {

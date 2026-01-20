@@ -925,7 +925,7 @@ const Dashboard = () => {
                   {/* Footer - pushed to bottom with mt-auto */}
                   <div className="mt-auto flex justify-end">
                     <Link
-                      to="/staff/overview"
+                      to="/Staff-sessions/staff-member"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                     >
                       View all <ChevronRightIcon className="w-4 h-4" />

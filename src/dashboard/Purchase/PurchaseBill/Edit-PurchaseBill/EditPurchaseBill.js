@@ -932,14 +932,10 @@ const EditPurchaseBill = () => {
     if (!barcode) {
       return;
     }
-    let data = new FormData();
-    // data.append("barcode", barcode);
 
-    const params = {
-      random_number: localStorage.getItem("RandomNumber"),
-    };
+
     try {
-      const res = axios
+      const response = await axios
         .post(
           "barcode-batch-list?",
           { barcode: barcode },
@@ -951,36 +947,46 @@ const EditPurchaseBill = () => {
             },
           }
         )
-        .then((response) => {
-          setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
-          setHSN(response?.data?.data[0]?.batch_list[0]?.hsn_code);
-          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);
-          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date);
-          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp);
-          setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty);
-          setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty);
-          setPTR(response?.data?.data[0]?.batch_list[0]?.ptr);
-          setDisc(response?.data?.data[0]?.batch_list[0]?.discount);
-          setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account);
-          setBase(response?.data?.data[0]?.batch_list[0]?.base);
-          setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
-          setLoc(response?.data?.data[0]?.batch_list[0]?.location);
-          setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
-          setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate);
-          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name);
 
-          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
 
-          setSelectedEditItemId(response?.data?.data[0]?.id);
-          setItemEditID(response.data.data[0]?.id);
+      if (response.status !== 200) {
+        return;
+      }
 
-          // setIsEditMode(true)
 
-          // handleAddBarcodeItem(data)
-        });
+      setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
+      setHSN(response?.data?.data[0]?.batch_list[0]?.hsn_code);
+      setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);
+      setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date);
+      setMRP(response?.data?.data[0]?.batch_list[0]?.mrp);
+      setQty(response?.data?.data[0]?.batch_list[0]?.purchase_qty);
+      setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty);
+      setPTR(response?.data?.data[0]?.batch_list[0]?.ptr);
+      setDisc(response?.data?.data[0]?.batch_list[0]?.discount);
+      setSchAmt(response?.data?.data[0]?.batch_list[0]?.scheme_account);
+      setBase(response?.data?.data[0]?.batch_list[0]?.base);
+      setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+      setLoc(response?.data?.data[0]?.batch_list[0]?.location);
+      setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
+      setNetRate(response?.data?.data[0]?.batch_list[0]?.net_rate);
+      setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name);
+
+      setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
+
+      setSelectedEditItemId(response?.data?.data[0]?.id);
+      setItemEditID(response.data.data[0]?.id);
+
+      // setIsEditMode(true)
+
+      // handleAddBarcodeItem(data)
+
+
     } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
+      if (error.response?.status === 400) {
+        toast.error(error.response?.data?.message || "This barcode has no items");
+      }
     }
   };
   /*<================================================================= expiry date validation ==============================================================> */

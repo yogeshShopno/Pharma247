@@ -509,22 +509,22 @@ const EditSaleBill = () => {
   }, [netAmount])
 
   /*<================================================================= Search Item Debouncing ========================================================> */
-  
-    useEffect(() => {
-  
-      const SearchTimer = setTimeout(() => {
-        if (searchItem)
-          handleSearch(searchItem.toUpperCase());
-  
-      }, 1500);
-  
-      return () => {
-  
-        clearTimeout(SearchTimer);
-  
-      };
-    }, [searchItem]);
-    
+
+  useEffect(() => {
+
+    const SearchTimer = setTimeout(() => {
+      if (searchItem)
+        handleSearch(searchItem.toUpperCase());
+
+    }, 1500);
+
+    return () => {
+
+      clearTimeout(SearchTimer);
+
+    };
+  }, [searchItem]);
+
   const updateTodayPoints = async (netAmount) => {
     let data = new FormData();
     data.append("net_amount", netAmount);
@@ -941,14 +941,9 @@ const EditSaleBill = () => {
     if (!barcode) {
       return;
     }
-    let data = new FormData();
-    // data.append("barcode", barcode);
 
-    const params = {
-      random_number: localStorage.getItem("RandomNumber"),
-    };
     try {
-      const res = axios
+      const response = await axios
         .post(
           "barcode-batch-list?",
           { barcode: barcode },
@@ -959,29 +954,36 @@ const EditSaleBill = () => {
               Authorization: `Bearer ${token}`,
             },
           }
-        )
-        .then((response) => {
-          setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
-          setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);
-          setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date);
-          setMRP(response?.data?.data[0]?.batch_list[0]?.mrp);
-          setQty(response?.data?.data[0]?.batch_list[0]?.qty);
-          setTempQty(response?.data?.data[0]?.batch_list[0]?.stock);
-          // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
-          // setFinalDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
-          setBase(response?.data?.data[0]?.batch_list[0]?.base);
-          setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
-          setLoc(response?.data?.data[0]?.batch_list[0]?.location);
-          setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
-          setNetRateAmount(response?.data?.data[0]?.batch_list[0]?.net_rate);
-          setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name);
+        );
 
-          setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
+      if (response.status !== 200) {
+        return;
+      }
 
-          setSelectedEditItemId(response?.data?.data[0]?.id);
-          setItemEditID(response.data.data[0]?.id);
-        });
+      setUnit(response?.data?.data[0]?.batch_list[0]?.unit);
+      setBatch(response?.data?.data[0]?.batch_list[0]?.batch_name);
+      setExpiryDate(response?.data?.data[0]?.batch_list[0]?.expiry_date);
+      setMRP(response?.data?.data[0]?.batch_list[0]?.mrp);
+      setQty(response?.data?.data[0]?.batch_list[0]?.qty);
+      setTempQty(response?.data?.data[0]?.batch_list[0]?.stock);
+      // setFree(response?.data?.data[0]?.batch_list[0]?.purchase_free_qty)
+      // setFinalDiscount(response?.data?.data[0]?.batch_list[0]?.discount)
+      setBase(response?.data?.data[0]?.batch_list[0]?.base);
+      setGst(response?.data?.data[0]?.batch_list[0]?.gst_name);
+      setLoc(response?.data?.data[0]?.batch_list[0]?.location);
+      setMargin(response?.data?.data[0]?.batch_list[0]?.margin);
+      setNetRateAmount(response?.data?.data[0]?.batch_list[0]?.net_rate);
+      setSearchItem(response?.data?.data[0]?.batch_list[0]?.iteam_name);
+
+      setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
+
+      setSelectedEditItemId(response?.data?.data[0]?.id);
+      setItemEditID(response.data.data[0]?.id);
+
     } catch (error) {
+      if (error.response?.status === 400) {
+        toast.error(error.response?.data?.message || "This barcode has no items");
+      }
       console.error("API error:", error);
     }
   };

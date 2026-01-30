@@ -1213,163 +1213,168 @@ const Addsale = () => {
   };
   /*<========================================================================= handle barcode  ====================================================================> */
 
-  const handleBarcode = async () => {
-    if (!barcode) {
+const handleBarcode = async () => {
+  if (!barcode) {
+    return;
+  }
+  
+  try {
+    const response = await axios.post(
+      "barcode-batch-list?",
+      { barcode: barcode },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (response.status !== 200) {
       return;
     }
-    try {
-      const res = axios
-        .post(
-          "barcode-batch-list?",
-          { barcode: barcode },
-          {
-            // params: params,
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((response) => {
-          setTimeout(() => {
-            handleBarcodeItem();
-            // handleAddItem()
-          }, 100);
 
-          const handleBarcodeItem = async () => {
-            setUnsavedItems(true);
-            let data = new FormData();
+    setTimeout(() => {
+      handleBarcodeItem();
+    }, 100);
 
-            data.append("random_number", localStorage.getItem("RandomNumber"));
-            // data.append("iteam_name", response?.data?.data[0]?.iteam_name);
+    const handleBarcodeItem = async () => {
+      setUnsavedItems(true);
+      let data = new FormData();
+      data.append("random_number", localStorage.getItem("RandomNumber"));
+      data.append(
+        "unit",
+        Number(response?.data?.data[0]?.batch_list[0]?.unit)
+      );
+      data.append(
+        "batch",
+        response?.data?.data[0]?.batch_list[0]?.batch_name
+          ? response?.data?.data[0]?.batch_list[0]?.batch_name
+          : 0
+      );
+      data.append(
+        "exp",
+        response?.data?.data[0]?.batch_list[0]?.expiry_date
+      );
+      data.append(
+        "mrp",
+        Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+          : 0
+      );
+      data.append(
+        "qty",
+        Number(response?.data?.data[0]?.batch_list[0]?.qty)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.qty)
+          : 0
+      );
+      data.append(
+        "free_qty",
+        Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
+          : 0
+      );
+      data.append(
+        "ptr",
+        Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+          : 0
+      );
+      data.append(
+        "discount",
+        Number(response?.data?.data[0]?.batch_list[0]?.discount)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.discount)
+          : 0
+      );
+      data.append(
+        "base",
+        Number(response?.data?.data[0]?.batch_list[0]?.base)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+          : 0
+      );
+      data.append(
+        "gst",
+        Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
+          : 0
+      );
+      data.append(
+        "location",
+        response?.data?.data[0]?.batch_list[0]?.location
+          ? response?.data?.data[0]?.batch_list[0]?.location
+          : 0
+      );
+      data.append(
+        "margin",
+        Number(response?.data?.data[0]?.batch_list[0]?.margin)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+          : 0
+      );
+      data.append(
+        "net_rate",
+        Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+          : 0
+      );
+      data.append(
+        "item_id",
+        Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+          : 0
+      );
+      data.append(
+        "id",
+        Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+          ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+          : 0
+      );
+      data.append("user_id", userId);
+      data.append("unit_id", Number(0));
 
-            data.append(
-              "unit",
-              Number(response?.data?.data[0]?.batch_list[0]?.unit)
-            );
-            data.append(
-              "batch",
-              response?.data?.data[0]?.batch_list[0]?.batch_name
-                ? response?.data?.data[0]?.batch_list[0]?.batch_name
-                : 0
-            );
-            data.append(
-              "exp",
-              response?.data?.data[0]?.batch_list[0]?.expiry_date
-            );
-
-            data.append(
-              "mrp",
-              Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                : 0
-            );
-            data.append(
-              "qty",
-              Number(response?.data?.data[0]?.batch_list[0]?.qty)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.qty)
-                : 0
-            );
-            data.append(
-              "free_qty",
-              Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
-                : 0
-            );
-            data.append(
-              "ptr",
-              Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                : 0
-            );
-            data.append(
-              "discount",
-              Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                : 0
-            );
-            data.append(
-              "base",
-              Number(response?.data?.data[0]?.batch_list[0]?.base)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-                : 0
-            );
-            data.append(
-              "gst",
-              Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
-                : 0
-            );
-            data.append(
-              "location",
-              response?.data?.data[0]?.batch_list[0]?.location
-                ? response?.data?.data[0]?.batch_list[0]?.location
-                : 0
-            );
-            data.append(
-              "margin",
-              Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                : 0
-            );
-            data.append(
-              "net_rate",
-              Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                : 0
-            );
-            data.append(
-              "item_id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
-
-            data.append(
-              "id",
-              Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                : 0
-            );
-            data.append("user_id", userId);
-            data.append("unit_id", Number(0));
-
-            try {
-              const response = axios.post("sales-item-add", data, {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              });
-              setTotalAmount(0);
-              saleItemList();
-              setUnit("");
-              setBatch("");
-              setExpiryDate("");
-              setMRP("");
-              setQty("");
-              setBase("");
-              setGst("");
-              setBatch("");
-              setBarcode("");
-              setLoc("");
-              setOrder("");
-
-              setIsEditMode(false);
-              setSelectedEditItemId(null);
-              setBarcode("");
-              setValue("");
-              setSearchItem("");
-              if (response.data.status === 401) {
-                history.push("/");
-                localStorage.clear();
-              }
-            } catch (error) { }
-          };
+      try {
+        const addResponse = await axios.post("sales-item-add", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
-    } catch (error) {
-      console.error("API error:", error);
+        
+        setTotalAmount(0);
+        saleItemList();
+        setUnit("");
+        setBatch("");
+        setExpiryDate("");
+        setMRP("");
+        setQty("");
+        setBase("");
+        setGst("");
+        setBatch("");
+        setBarcode("");
+        setLoc("");
+        setOrder("");
+        setIsEditMode(false);
+        setSelectedEditItemId(null);
+        setBarcode("");
+        setValue("");
+        setSearchItem("");
+        
+        if (addResponse.data.status === 401) {
+          history.push("/");
+          localStorage.clear();
+        }
+      } catch (error) {
+        console.error("Sales item add error:", error);
+        setUnsavedItems(false);
+      }
+    };
+    
+  } catch (error) {
+    console.error("Barcode API error:", error);
+    if (error.response?.status === 400) {
+      toast.error(error.response?.data?.message || "This barcode has no items");
     }
-  };
+    setUnsavedItems(false);
+  }
+};
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

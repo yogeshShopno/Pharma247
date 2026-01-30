@@ -658,199 +658,206 @@ const AddPurchaseBill = () => {
 
   /*<============================================================= barcode functionality ==========================================================> */
 
+  /*<=========================================================================== get barcode batch list ========================================================================> */
+
   const handleBarcode = async () => {
     setIsEditMode(false);
     if (!barcode) {
       return;
     }
 
-    /*<=========================================================================== get barcode batch list ========================================================================> */
-
     try {
-      const res = axios
-        .post(
-          "barcode-batch-list?",
-          { barcode: barcode },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
+      const response = await axios.post(
+        "barcode-batch-list?",
+        { barcode: barcode },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status !== 200) {
+        return;
+      }
+
+      // Rest of your existing code for handleBarcodeItem...
+      setTimeout(() => {
+        const handleBarcodeItem = async () => {
+          setUnsavedItems(true);
+          let data = new FormData();
+
+          data.append(
+            "random_number",
+            localStorage.getItem("RandomNumber")
+          );
+          data.append(
+            "weightage",
+            Number(response?.data?.data[0]?.batch_list[0]?.unit) || 1
+          );
+          data.append(
+            "batch_number",
+            response?.data?.data[0]?.batch_list[0]?.batch_name
+              ? response?.data?.data[0]?.batch_list[0]?.batch_name
+              : 0
+          );
+          data.append(
+            "expiry",
+            response?.data?.data[0]?.batch_list[0]?.expiry_date
+          );
+          data.append(
+            "mrp",
+            Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+              : 0
+          );
+          data.append(
+            "qty",
+            Number(response?.data?.data[0]?.batch_list[0]?.unit)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
+              : 0
+          );
+          data.append(
+            "free_qty",
+            Number(
+              response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+            )
+              ? Number(
+                response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
+              )
+              : 0
+          );
+          data.append(
+            "ptr",
+            Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+              : 0
+          );
+          data.append(
+            "discount",
+            Number(response?.data?.data[0]?.batch_list[0]?.discount)
+              ? Number(
+                response?.data?.data[0]?.batch_list[0]?.scheme_account
+              )
+              : 0
+          );
+          data.append(
+            "scheme_account",
+            Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
+              ? Number(
+                response?.data?.data[0]?.batch_list[0]?.scheme_account
+              )
+              : 0
+          );
+          data.append(
+            "base_price",
+            Number(response?.data?.data[0]?.batch_list[0]?.base)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+              : 0
+          );
+          const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
+          const gstValue = Number(
+            response?.data?.data[0]?.batch_list[0]?.gst
+          );
+          data.append("gst", gstMapping[gstValue] ?? gstValue);
+
+          data.append(
+            "location",
+            response?.data?.data[0]?.batch_list[0]?.location
+              ? response?.data?.data[0]?.batch_list[0]?.location
+              : 0
+          );
+          data.append(
+            "margin",
+            Number(response?.data?.data[0]?.batch_list[0]?.margin)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+              : 0
+          );
+          data.append(
+            "net_rate",
+            Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+              : 0
+          );
+
+          data.append(
+            "item_id",
+            Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+              : 0
+          );
+          data.append("unit", Number(1) || 1);
+          data.append("user_id", userId);
+
+          data.append(
+            "id",
+            Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+              : 0
+          );
+
+          data.append(
+            "total_amount",
+            Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+              ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
+              : 0
+          );
+
+          const params = {
+            id: selectedEditItemId,
+          };
+          /*<======================================================================= call add item api to add barcode item  ================================================================> */
+
+          try {
+            const response = await axios.post("item-purchase", data, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+            setItemTotalAmount(0);
+            setDeleteAll(true);
+            itemPurchaseList();
+            setUnit("");
+            setBatch("");
+            setHSN("");
+            setExpiryDate("");
+            setMRP("");
+            setQty("");
+            setFree("");
+            setPTR("");
+            setGst("");
+            setDisc("");
+            setBase("");
+            setNetRate("");
+            setSchAmt("");
+            setMargin("");
+            setLoc("");
+            setIsEditMode(false);
+            setSelectedEditItemId(null);
+            setBarcode("");
+            setValue("");
+            setValue("");
+            setSearchItem("");
+
+            if (ItemTotalAmount <= finalCnAmount) {
+              setFinalCnAmount(0);
+              setSelectedRows([]);
+              setCnTotalAmount({});
+            }
+          } catch (e) {
+            setUnsavedItems(false);
           }
-        )
-        .then((response) => {
-          setTimeout(() => {
-            const handleBarcodeItem = async () => {
-              setUnsavedItems(true);
-              let data = new FormData();
+        };
+        handleBarcodeItem();
+      }, 100);
 
-              data.append(
-                "random_number",
-                localStorage.getItem("RandomNumber")
-              );
-              data.append(
-                "weightage",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit) || 1
-              );
-              data.append(
-                "batch_number",
-                response?.data?.data[0]?.batch_list[0]?.batch_name
-                  ? response?.data?.data[0]?.batch_list[0]?.batch_name
-                  : 0
-              );
-              data.append(
-                "expiry",
-                response?.data?.data[0]?.batch_list[0]?.expiry_date
-              );
-              data.append(
-                "mrp",
-                Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-                  : 0
-              );
-              data.append(
-                "qty",
-                Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.unit)
-                  : 0
-              );
-              data.append(
-                "free_qty",
-                Number(
-                  response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                )
-                  ? Number(
-                    response?.data?.data[0]?.batch_list[0]?.purchase_free_qty
-                  )
-                  : 0
-              );
-              data.append(
-                "ptr",
-                Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-                  : 0
-              );
-              data.append(
-                "discount",
-                Number(response?.data?.data[0]?.batch_list[0]?.discount)
-                  ? Number(
-                    response?.data?.data[0]?.batch_list[0]?.scheme_account
-                  )
-                  : 0
-              );
-              data.append(
-                "scheme_account",
-                Number(response?.data?.data[0]?.batch_list[0]?.scheme_account)
-                  ? Number(
-                    response?.data?.data[0]?.batch_list[0]?.scheme_account
-                  )
-                  : 0
-              );
-              data.append(
-                "base_price",
-                Number(response?.data?.data[0]?.batch_list[0]?.base)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-                  : 0
-              );
-              const gstMapping = { 28: 6, 18: 4, 12: 3, 5: 2, 0: -1 };
-              const gstValue = Number(
-                response?.data?.data[0]?.batch_list[0]?.gst
-              );
-              data.append("gst", gstMapping[gstValue] ?? gstValue);
-
-              data.append(
-                "location",
-                response?.data?.data[0]?.batch_list[0]?.location
-                  ? response?.data?.data[0]?.batch_list[0]?.location
-                  : 0
-              );
-              data.append(
-                "margin",
-                Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-                  : 0
-              );
-              data.append(
-                "net_rate",
-                Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-                  : 0
-              );
-
-              data.append(
-                "item_id",
-                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  : 0
-              );
-              data.append("unit", Number(1) || 1);
-              data.append("user_id", userId);
-
-              data.append(
-                "id",
-                Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-                  : 0
-              );
-
-              data.append(
-                "total_amount",
-                Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                  ? Number(response?.data?.data[0]?.batch_list[0]?.total_amount)
-                  : 0
-              );
-
-              const params = {
-                id: selectedEditItemId,
-              };
-              /*<======================================================================= call add item api to add barcode item  ================================================================> */
-
-              try {
-                const response = await axios.post("item-purchase", data, {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                });
-                setItemTotalAmount(0);
-                setDeleteAll(true);
-                itemPurchaseList();
-                setUnit("");
-                setBatch("");
-                setHSN("");
-                setExpiryDate("");
-                setMRP("");
-                setQty("");
-                setFree("");
-                setPTR("");
-                setGst("");
-                setDisc("");
-                setBase("");
-                setNetRate("");
-                setSchAmt("");
-                setMargin("");
-                setLoc("");
-                setIsEditMode(false);
-                setSelectedEditItemId(null);
-                setBarcode("");
-                setValue("");
-                setValue("");
-                setSearchItem("");
-
-                if (ItemTotalAmount <= finalCnAmount) {
-                  setFinalCnAmount(0);
-                  setSelectedRows([]);
-                  setCnTotalAmount({});
-                }
-              } catch (e) {
-                setUnsavedItems(false);
-              }
-            };
-
-            handleBarcodeItem();
-          }, 100);
-        });
     } catch (error) {
-      console.error("API error:", error);
+      console.error("Barcode API error:", error);
+      // Optionally show user-friendly message
+      if (error.response?.status === 400) {
+        toast.error(error.response?.data?.message || "This barcode has no items");
+      }
       setUnsavedItems(false);
     }
   };

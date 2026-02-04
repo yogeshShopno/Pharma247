@@ -28,11 +28,11 @@ const Plans = () => {
     { id: "description", label: "Description", minWidth: 150 },
   ];
 
-  useEffect( () =>  {
-    if(togglePage){
+  useEffect(() => {
+    if (togglePage) {
       getPlan()
     }
-  },[togglePage]);
+  }, [togglePage]);
 
   /*<=========================================================== get various dynamic plans details  to render table ===========================================================> */
 
@@ -41,7 +41,7 @@ const Plans = () => {
 
     try {
       const response = await axios.post("list-plan?", {}, {
-      
+
       });
 
       if (response.status == 200) {
@@ -56,7 +56,7 @@ const Plans = () => {
     }
   };
 
-/*<====================================================================== Call razorpay API to get payment ======================================================================> */
+  /*<====================================================================== Call razorpay API to get payment ======================================================================> */
 
   const loadRazorpay = async (plan) => {
     try {
@@ -71,7 +71,7 @@ const Plans = () => {
       script.onload = () => {
         if (!key) {
           toast.dismiss();
-toast.error("Payment key not available");
+          toast.error("Payment key not available");
           return;
         }
         // const remainingTime = Math.floor((timer - Date.now()) / 1000);
@@ -112,7 +112,7 @@ toast.error("Payment key not available");
       document.body.appendChild(script);
     } catch (error) {
       toast.dismiss();
-toast.error(
+      toast.error(
         error.response?.data?.message || "Failed to fetch payment key"
       );
     }
@@ -121,7 +121,7 @@ toast.error(
   /*<========================================================= call backend API to store plans Details after getting success response frm razorpay ====================================> */
 
   const submitPlan = async (PaymentId, amount) => {
-    
+
     let data = new FormData();
     data.append("payment_id", PaymentId);
     data.append("payment_date", format(new Date(), "yyyy-MM-dd"));
@@ -154,9 +154,9 @@ toast.error(
 
 
   const getPurchaseHistory = async () => {
-   
+
     try {
-      const response = await axios.get("payment-history?",{}, {
+      const response = await axios.get("payment-history?", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -164,7 +164,7 @@ toast.error(
 
       if (response.status == 200) {
         setTableData(response.data.data);
-      setIsLoading(false);
+        setIsLoading(false);
 
       }
     } catch (error) {
@@ -176,7 +176,7 @@ toast.error(
   return (
     <>
       <Header />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -261,11 +261,11 @@ toast.error(
                 </div>
               </div>
             ) : (
-              <section className="py-8 bg-gray-50">
+              <section className="py-8">
                 <div className="container mx-auto px-4">
                   <div className="text-center mb-8">
                     <h2 className="text-3xl secondary font-bold plans_hdr_txtsss">
-                      Selecting the Best Pricing Plan for Your Pharmacy
+                      Select the Best Pricing Plan for Your Pharmacy
                     </h2>
                   </div>
                   <div
@@ -278,38 +278,58 @@ toast.error(
                     }}
                   ></div>
                   <div className="flex justify-around mt-5 gap-6 plns_cds">
-                    {plansDetails.map((plan) => (
-                      <div
-                        key={plan.id}
-                        className="border rounded-lg shadow-md bg-white text-center p-6" style={{ width: '100%' }}>
-                        <div className="mb-4" style={{ borderBottom: '1px solid lightgray' }}>
-                          <h5 className="text-xl font-semibold ">{plan.name}</h5>
-                          <h2 className="text-2xl my-1 secondary font-bold">
-                            {plan.annual_price} / Year
-                          </h2>
-                        </div>
+                    {/* Replace the existing pricing cards section with this */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto plns_cds">
+                      {plansDetails.map((plan) => (
+                        <div
+                          key={plan.id}
+                          className="border rounded-lg shadow-md bg-white p-6 flex flex-col"
+                          style={{ minHeight: '400px' }}
+                        >
+                          {/* Header Section */}
+                          <div className="mb-4 pb-4" style={{ borderBottom: '1px solid #e5e7eb' }}>
+                            <h5 className="text-xl font-semibold mb-2">{plan.name}</h5>
+                            <h2 className="text-xl secondary font-bold">
 
-                        <div className="flex flex-col justify-between" style={{ height: "86%" }}>
+                            </h2>
+                          </div>
+
+                          {/* Features List - Scrollable */}
                           <ul
-                            className="text-sm text-gray-600 space-y-2 "
+                            className="text-sm text-gray-600 space-y-2 mb-6 flex-grow"
                             style={{
-                              maxHeight: "450px",
+                              maxHeight: "280px",
                               overflowY: "auto",
                               paddingRight: "8px",
                             }}
                           >
                             {plan.enable_modules.map((feature, index) => (
-                              <li key={index}>{feature}</li>
+                              <li key={index} className="py-1">{feature}</li>
                             ))}
                           </ul>
-                          <div className="mt-6" onClick={() => loadRazorpay(plan)}>
-                            <a className="px-4 py-2 border border-[var(--color1)] primary rounded-lg font-medium hover:bg-[var(--color2)] hover:text-white cursor-pointer">
-                              Buy Plan
-                            </a>
+
+                          {/* Button - Fixed at Bottom */}
+                          <div className="mt-auto">
+                            <Button
+                              fullWidth
+                              onClick={() => loadRazorpay(plan)}
+                              style={{
+                                padding: '10px 16px',
+                                border: '1px solid var(--color1)',
+                                color: 'var(--color1)',
+                                borderRadius: '8px',
+                                fontWeight: '500',
+                                textTransform: 'none',
+                                transition: 'all 0.3s ease'
+                              }}
+                              className="hover:bg-[var(--color2)] hover:text-white"
+                            >
+                              Buy @ {plan.annual_price}/-
+                            </Button>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </section>

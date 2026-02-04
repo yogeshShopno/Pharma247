@@ -47,7 +47,7 @@ const AdjustStock = () => {
   const [openAddPopUp, setOpenAddPopUp] = useState(false);
   const [selectedItem, setSelectedItem] = useState();
   const [batch, setBatch] = useState();
-  const [batchList, setBatchList] = useState([]);
+
   const token = localStorage.getItem("token");
   const [tableData, setTableData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -269,15 +269,31 @@ const AdjustStock = () => {
   const filteredList = Array.isArray(adjustStockListData) ? adjustStockListData : [];
 
   const handleOptionChange = (event, newValue) => {
-    const itemName = newValue ? newValue.iteam_name : "";
-    setSelectedItem(itemName);
-    setItemId(newValue?.id);
-    ItemvisebatchList(newValue?.id);
+    setSelectedItem(newValue || null);
+    setItemId(newValue?.id || null);
+
+    // HARD reset batch + dependent fields
+    setBatch(null);
+    setBatchListData([]);
+    setUnit("");
+    setExpiry("");
+    setMrp("");
+    setStock("");
+    setRemainingStock("");
+    setSelectedCompany(null);
+    setStockAdjust("");
+
+
+    if (newValue?.id) {
+      ItemvisebatchList(newValue.id);
+    }
   };
 
+
   const handleBatchData = (event, newValue) => {
-    const batch = newValue ? newValue.batch_name : "";
-    setBatch(batch);
+
+
+    setBatch(newValue);
     setUnit(newValue?.unit);
     setExpiry(newValue?.expiry_date);
     setMrp(newValue?.mrp);
@@ -315,15 +331,15 @@ const AdjustStock = () => {
     if (!selectedItem) {
       newErrors.selectedItem = "select any Item Name.";
       toast.dismiss();
-toast.error(newErrors.selectedItem);
+      toast.error(newErrors.selectedItem);
     } else if (!batch) {
       newErrors.batch = "Batch Number is required";
       toast.dismiss();
-toast.error(newErrors.batch);
+      toast.error(newErrors.batch);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
       toast.dismiss();
-toast.error(newErrors.stockAdjust);
+      toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -341,7 +357,7 @@ toast.error(newErrors.stockAdjust);
       adjustmentDate ? format(adjustmentDate, "yyyy-MM-dd") : ""
     );
     data.append("item_name", selectedItem ? selectedItem : "");
-    data.append("batch", batch ? batch : "");
+    data.append("batch", batch ? batch.batch_name : "");
     data.append("company", selectedCompany?.id ? selectedCompany?.id : "");
     data.append("unit", unit ? unit : "");
     data.append("expiry", expiry ? expiry : "");
@@ -361,8 +377,8 @@ toast.error(newErrors.stockAdjust);
           setIsLoading(false);
           setOpenAddPopUp(false);
           setBatch();
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setSelectedCompany(null);
           adjustStockList(currentPage);
           setSelectedItem();
@@ -516,7 +532,7 @@ toast.success(response.data.message);
                           <th key={column.id} style={{ minWidth: column.minWidth, padding: '8px' }}>
                             <div className="headerStyle" style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: 1 }}>
                               <span>{column.label}</span>
-                              <div style={{ display: 'flex', alignItems: 'center'}}>
+                              <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <SwapVertIcon
                                   style={{ cursor: 'pointer' }}
                                   onClick={() => sortByColumn(column.id)}
@@ -705,11 +721,13 @@ toast.success(response.data.message);
                       disablePortal
                       options={purchaseItemData}
                       size="small"
-                      value={selectedItem}
+                      value={selectedItem || null}
                       onChange={handleOptionChange}
                       getOptionLabel={(option) => option.iteam_name}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
+
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name"/>
+                        <TextField autoComplete="off" {...params} placeholder="Enter Item Name" />
                       )}
                     />
                   </div>
@@ -725,7 +743,7 @@ toast.success(response.data.message);
                       getOptionLabel={(option) => option.company_name}
                       disabled
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name"/>
+                        <TextField autoComplete="off" {...params} placeholder="Enter Company Name" />
                       )}
                     />
                   </div>
@@ -741,7 +759,9 @@ toast.success(response.data.message);
                       onChange={(newDate) => setAdjustDate(newDate)}
                       dateFormat="dd/MM/yyyy"
                       minDate={subDays(new Date(), 15)}
+                      disabled
                     />
+
                   </div>
 
                   <div className="w-full">
@@ -750,13 +770,15 @@ toast.success(response.data.message);
                       disablePortal
                       options={batchListData}
                       size="small"
-                      value={batch}
+                      value={batch || null}
                       onChange={handleBatchData}
-                      getOptionLabel={(option) => option.batch_number}
+                      getOptionLabel={(option) => option?.batch_number || ""}
+                      isOptionEqualToValue={(option, value) => option.id === value.id}
                       renderInput={(params) => (
-                        <TextField autoComplete="off" {...params} />
+                        <TextField {...params} autoComplete="off" />
                       )}
                     />
+
                   </div>
 
                   <div className="w-full">

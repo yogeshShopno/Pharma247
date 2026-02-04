@@ -93,7 +93,7 @@ Pharma247/
    ```
 3. **Start the development server:**
    ```sh
-   npm start
+   npm run dev
    ```
    The app will run at [http://localhost:3000](http://localhost:3000) by default.
  

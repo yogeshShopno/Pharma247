@@ -85,6 +85,8 @@ const AdjustStock = () => {
   const [expiry, setExpiry] = useState("");
   const [mrp, setMrp] = useState("");
 
+  const [adjustType, setAdjustType] = useState(true)
+
   // Search functionality - using common search field
   const [search, setSearch] = useState("");
 
@@ -148,10 +150,19 @@ const AdjustStock = () => {
     }
   }, [currentPage]);
 
+
   useEffect(() => {
-    const x = parseFloat(stock) + parseFloat(stockAdjust);
-    setRemainingStock(x);
-  }, [stockAdjust]);
+    
+    let y;
+
+    if (adjustType === true) {
+      y = parseFloat(stock) - parseFloat(stockAdjust)
+      setRemainingStock(y);
+    } else if (adjustType === false) {
+      y = parseFloat(stock) + parseFloat(stockAdjust)
+      setRemainingStock(y);
+    }
+  }, [stockAdjust, adjustType]);
 
   let listOfCompany = () => {
     axios
@@ -833,14 +844,31 @@ const AdjustStock = () => {
 
                   <div className="w-full">
                     <span className="title primary mb-2">Stock Adjusted</span>
-                    <TextField
-                      autoComplete="off"
-                      type="number"
-                      size="small"
-                      value={stockAdjust}
-                      onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
-                      className="w-full"
-                    />
+                    <div className="flex flex-row gap-3">
+
+
+                      <Button
+                        style={{
+                          background: "var(--COLOR_UI_PHARMACY)",
+                        }}
+                        autoFocus
+                        variant="contained"
+                        className=""
+                        onClick={() => setAdjustType((prev) => (!prev))}
+
+                      >
+                        {adjustType ? "-" : "+"}
+                      </Button>
+                      <TextField
+                        autoComplete="off"
+                        type="number"
+                        size="small"
+                        value={stockAdjust}
+                        onChange={(e) => setStockAdjust(parseFloat(e.target.value))}
+                        className="w-full"
+                      />
+                    </div>
+
                   </div>
 
                   <div className="w-full">

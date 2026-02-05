@@ -26,6 +26,7 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { toast, ToastContainer } from "react-toastify";
 import Search from "./Search";
 import { Typography } from "@mui/material";
+import { encryptData } from "../componets/cryptoUtils";
 
 const Header = () => {
   const history = useHistory();
@@ -47,12 +48,38 @@ const Header = () => {
 
   /*<=============================================================================== get permissions  ======================================================================> */
 
+
+
+
+  const userPermission = async (token) => {
+    let data = new FormData();
+    try {
+      await axios.post("user-permission", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+        .then((response) => {
+          const permission = response.data.data;
+          const encryptedPermission = encryptData(permission);
+          localStorage.setItem("permissions", encryptedPermission);
+        });
+    } catch (error) {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+      }
+    }
+  };
+
   useEffect(() => {
     fetchNotification(); // Fetch notifications when the component mounts
+
   }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
+   userPermission(token)
+
   }, [token]);
 
   // Add this useEffect after your other useEffects
@@ -85,9 +112,9 @@ const Header = () => {
       })
       .catch((error) => {
         console.error("API Error:", error);
-         if(error.response.status == 401) { 
+        if (error.response.status == 401) {
           setIsClear(true)
-         }
+        }
       });
   };
 
@@ -116,7 +143,7 @@ const Header = () => {
       setIsClear(true);
     }
   };
-  
+
   const LogoutOpen = (categoryId) => {
     setIsLogout(true);
   };

@@ -576,9 +576,6 @@ function App() {
             <Route path='/SaleReturn/Edit/:id'>
               <EditSaleReturn />
             </Route>
-            <Route path='/profile'>
-              <ProfileView />
-            </Route>
             <Route path='/OrderList'>
               <OrderList />
             </Route>

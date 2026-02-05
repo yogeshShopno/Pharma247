@@ -3,15 +3,13 @@ import Loader from "../../../componets/loader/Loader"
 import Header from "../../Header"
 import ProfileView from "../ProfileView";
 
-import { Box, TablePagination, TableContainer, Paper } from "@mui/material";
+import { Box, TablePagination } from "@mui/material";
 import { BsLightbulbFill } from "react-icons/bs";
-import { Button } from "flowbite-react";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import axios from "axios";
 
 const LogActivity = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const history = useHistory();
+
     const [logAllData, setLogAllData] = useState([])
     const token = localStorage.getItem("token");
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -63,7 +61,7 @@ const LogActivity = () => {
     return (
         <>
             <Header />
-            
+
             {isLoading ? <div className="loader-container ">
                 <Loader />
             </div> :
@@ -78,60 +76,60 @@ const LogActivity = () => {
                                     </h1>
                                 </div>
                             </div>
-                           
-                                <div className="overflow-x-auto border-t pt-4 mt-4" style={{ overflowX: "auto" }}>
-                                    <table className="w-full border-collapse custom-table" style={{
-                                        whiteSpace: "nowrap",
-                                        borderCollapse: "separate",
-                                        borderSpacing: "0 6px",
-                                    }}>
-                                        <thead>
-                                            <tr>
-                                                <th>No</th>
-                                                {logactivityColumn.map((column) => (
-                                                    <th key={column.id} style={{ minWidth: column.minWidth }}>
-                                                        {column.label}
-                                                    </th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody style={{ background: "#3f621217" }}>
-                                            {logAllData?.map((item, index) => (
-                                                <tr key={index} >
-                                                    <td style={{ borderRadius: "10px 0 0 10px" }}>
-                                                        {index + 1}</td>
-                                                    {logactivityColumn.map((column, colIndex) => (
-                                                        <>
-                                                            <td key={column.id} style={
-                                                                colIndex === logactivityColumn.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}
-                                                            }
-                                                            // style={{
-                                                            //     color: (item.status === 'Active' ? 'green' : 'red')
-                                                            // }}
-                                                            >
-                                                                {/* {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive ' :  */}
-                                                                {item[column.id]}
-                                                                {/* // } */}
-                                                            </td>
 
-                                                        </>
-                                                    ))}
-
-                                                </tr>
+                            <div className="overflow-x-auto border-t pt-4 mt-4" style={{ overflowX: "auto" }}>
+                                <table className="w-full border-collapse custom-table" style={{
+                                    whiteSpace: "nowrap",
+                                    borderCollapse: "separate",
+                                    borderSpacing: "0 6px",
+                                }}>
+                                    <thead>
+                                        <tr>
+                                            <th>No</th>
+                                            {logactivityColumn.map((column) => (
+                                                <th key={column.id} style={{ minWidth: column.minWidth }}>
+                                                    {column.label}
+                                                </th>
                                             ))}
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        </tr>
+                                    </thead>
+                                    <tbody style={{ background: "#3f621217" }}>
+                                        {logAllData?.map((item, index) => (
+                                            <tr key={index} >
+                                                <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                                    {index + 1}</td>
+                                                {logactivityColumn.map((column, colIndex) => (
+                                                    <>
+                                                        <td key={column.id} style={
+                                                            colIndex === logactivityColumn.length - 1 ? { borderRadius: '0 10px 10px 0' } : {}
+                                                        }
+                                                        // style={{
+                                                        //     color: (item.status === 'Active' ? 'green' : 'red')
+                                                        // }}
+                                                        >
+                                                            {/* {item.status == 1 ? item.status = 'Active' : item.status == 0 ? item.status = 'Disactive ' :  */}
+                                                            {item[column.id]}
+                                                            {/* // } */}
+                                                        </td>
 
-                                <TablePagination
-                                    rowsPerPageOptions={[5, 10, 12]}
-                                    component="div"
-                                    count={logAllData?.[0]?.count}
-                                    rowsPerPage={rowsPerPage}
-                                    page={page}
-                                    onPageChange={handleChangePage}
-                                    onRowsPerPageChange={handleChangeRowsPerPage}
-                                />
+                                                    </>
+                                                ))}
+
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <TablePagination
+                                rowsPerPageOptions={[5, 10, 12]}
+                                component="div"
+                                count={logAllData?.[0]?.count}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
 
                         </div>
                     </Box >

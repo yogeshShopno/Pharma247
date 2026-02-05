@@ -5,10 +5,9 @@ import { BsLightbulbFill } from "react-icons/bs"
 import AddIcon from '@mui/icons-material/Add';
 import BorderColorIcon from '@mui/icons-material/BorderColor';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import DeleteIcon from '@mui/icons-material/Delete';
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
-import { Box, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel, Select, MenuItem, Tooltip } from "@mui/material"
+import { Box, Button, Dialog, DialogContent, DialogContentText, DialogTitle, IconButton, Tooltip } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 import axios from "axios";
 import Loader from "../../../componets/loader/Loader";
@@ -19,26 +18,17 @@ const ManageStaffRole = () => {
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
     const [header, setHeader] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [buttonLabel, setButtonLabel] = useState('');
     const token = localStorage.getItem("token");
     const [openAddPopUpDeactive, setOpenAddPopUpDeactive] = useState(false);
     const ManageStaffRole = [
-        // { id: 'no', label: 'No', minWidth: 100 },
+
         { id: 'role', label: 'Role', minWidth: 100 },
         { id: 'status', label: 'Status', minWidth: 100 },
     ];
-    const [manageId, setManageId] = useState(null)
     const [manageStaffRoleData, setManageStaffRoleData] = useState([])
     const [roleHistory, setRoleHistory] = useState([]);
     const [id, setId] = useState('');
-    // const permissions = [
-    //     "user-manage", "user-create", "user-edit", "user-delete", "role-manage",
-    //     "role-create", "role-edit", "role-delete", "agent-manage", "agent-create",
-    //     "agent-edit", "agent-delete", "ledger-head-manage", "ledger-head-create",
-    //     "user-manage", "user-create", "user-edit", "user-delete", "role-manage",
-    //     "role-create", "role-edit", "role-delete", "agent-manage", "agent-create",
-    //     "agent-edit", "agent-delete", "ledger-head-manage", "ledger-head-create"
-    // ];
+
     const resetAddDialog = () => {
         setOpenAddPopUp(false);
     }
@@ -97,7 +87,6 @@ const ManageStaffRole = () => {
     const handelAddOpen = (id) => {
         setOpenAddPopUp(true);
         setHeader('Roles');
-        setManageId(id)
         viewRoleHistory(id)
     }
     const viewRoleHistory = async (manageId) => {

@@ -15,10 +15,8 @@ const ReconciliationManage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(0);
-  const [reconciliationData, setReconciliationData] = useState({});
   const [toggle, setToggle] = useState(false);
 
-  const label = { inputProps: { 'aria-label': 'Switch demo' } };
 
   useEffect(() => {
     getData()
@@ -38,7 +36,6 @@ const ReconciliationManage = () => {
 
       const data = response.data.data;
 
-      setReconciliationData(data);
       setCount(Number(data.iteam_count));
 
       // Explicitly convert to boolean
@@ -71,8 +68,8 @@ const ReconciliationManage = () => {
       });
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success("Updated successfully");
+        toast.dismiss();
+        toast.success("Updated successfully");
         getData(); // Refresh data after update
       }
     } catch (error) {
@@ -93,8 +90,8 @@ toast.success("Updated successfully");
           Authorization: `Bearer ${token}`,
         },
       });
-       toast.dismiss();
-toast.success("reconciliation restarted")
+      toast.dismiss();
+      toast.success("reconciliation restarted")
       if (response.data.status === 401) {
         history.push('/');
         localStorage.clear();
@@ -109,7 +106,7 @@ toast.success("reconciliation restarted")
   return (
     <>
       <Header />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -158,7 +155,7 @@ toast.success("reconciliation restarted")
                       const newCount = Number(e.target.value);
                       if (newCount > 24) {
                         toast.dismiss();
-toast.error("can not set more than 24")
+                        toast.error("can not set more than 24")
                       } else {
                         setCount(newCount);
                       }

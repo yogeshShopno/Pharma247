@@ -11,15 +11,10 @@ import {
 import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
-import dayjs from 'dayjs';
+
 
 const OnlineOrders = () => {
   const token = localStorage.getItem("token");
-  const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
 
   const [settings, setSettings] = useState({
@@ -76,8 +71,8 @@ const OnlineOrders = () => {
       });
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success("Updated successfully");
+        toast.dismiss();
+        toast.success("Updated successfully");
         getSettingData();
       }
     } catch (error) {
@@ -109,7 +104,7 @@ toast.success("Updated successfully");
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Accept Online Orders :</span>
                     <Switch
-                      checked={settings.accept_online_orders == 1}
+                      checked={settings.accept_online_orders === 1}
                       sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
@@ -136,7 +131,7 @@ toast.success("Updated successfully");
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Home Delivery Online Orders :</span>
                     <Switch
-                     sx={{
+                      sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
                         },
@@ -150,7 +145,7 @@ toast.success("Updated successfully");
                           backgroundColor: "var(--color1)",
                         },
                       }}
-                      checked={settings.delivery_online_orders == 1}
+                      checked={settings.delivery_online_orders === 1}
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,
@@ -163,7 +158,7 @@ toast.success("Updated successfully");
                   <div className="flex flex-row justify-between items-center w-full mb-4">
                     <span className="text-gray-700 font-medium">Store Pickup Online Orders :</span>
                     <Switch
-                     sx={{
+                      sx={{
                         "& .MuiSwitch-track": {
                           backgroundColor: "lightgray",
                         },
@@ -177,7 +172,7 @@ toast.success("Updated successfully");
                           backgroundColor: "var(--color1)",
                         },
                       }}
-                      checked={settings.pickup_online_orders == 1}
+                      checked={settings.pickup_online_orders === 1}
                       onChange={(e) =>
                         setSettings((prev) => ({
                           ...prev,

@@ -12,7 +12,6 @@ import { toast, ToastContainer } from "react-toastify";
 
 const CreateRole = () => {
     const [roleName, setRoleName] = useState('');
-    const [createRoleData, setCreateRoleData] = useState([])
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     const history = useHistory();
     const { id } = useParams();
@@ -21,8 +20,7 @@ const CreateRole = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [errors, setErrors] = useState({});
     const [roleChecked, setRoleChecked] = useState({})
-    const [selectedPermission, setSelectedPermission] = useState({});
-    const [permissionValue, setPermissionValue] = useState([]);
+
     const [expandedRoles, setExpandedRoles] = useState({});
 
     useEffect(() => {
@@ -55,8 +53,7 @@ const CreateRole = () => {
             });
             const responseData = response.data.data;
             setRoleName(responseData.role);
-            setPermissionValue(responseData.permission);
-            setSelectedPermission(responseData.permission);
+
 
             const roleCheckedState = {};
             Object.entries(responseData.permission).forEach(([category, perms]) => {
@@ -110,9 +107,9 @@ const CreateRole = () => {
                             Authorization: `Bearer ${token}`,
                         },
                     }).then((response) => {
-                        setCreateRoleData(response.data.data);
-                         toast.dismiss();
-toast.success(response.data.message, 'success')
+
+                        toast.dismiss();
+                        toast.success(response.data.message, 'success')
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);
@@ -137,9 +134,9 @@ toast.success(response.data.message, 'success')
                             Authorization: `Bearer ${token}`,
                         },
                     }).then((response) => {
-                        setCreateRoleData(response.data.data);
-                         toast.dismiss();
-toast.success(response.data.message, 'success')
+
+                        toast.dismiss();
+                        toast.success(response.data.message, 'success')
                         setTimeout(() => {
                             history.push('/Staff-sessions/manage-staffrole');
                         }, 3000);
@@ -175,7 +172,7 @@ toast.success(response.data.message, 'success')
         <>
             <div>
                 <Header />
-                  <ToastContainer
+                <ToastContainer
 
                     position="top-right"
                     autoClose={5000}

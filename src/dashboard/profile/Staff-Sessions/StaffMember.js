@@ -1,24 +1,21 @@
 import { BsLightbulbFill } from "react-icons/bs"
 import Header from "../../Header"
-import { Box, Button, Input, InputAdornment, OutlinedInput, Tooltip } from "@mui/material"
+import { Box, Button, InputAdornment, OutlinedInput, } from "@mui/material"
 import ProfileView from "../ProfileView"
 import { useEffect, useState } from "react"
-import GetAppIcon from '@mui/icons-material/GetApp';
+
 import AddIcon from '@mui/icons-material/Add';
-import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, InputLabel, Select, MenuItem } from "@mui/material"
+import { TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, FormControl, Select, MenuItem } from "@mui/material"
 import CloseIcon from '@mui/icons-material/Close';
 import Loader from "../../../componets/loader/Loader"
 import axios from "axios"
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import { Visibility, VisibilityOff } from "@mui/icons-material"
 import BorderColorIcon from '@mui/icons-material/BorderColor';
-import { FaCheckCircle } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify"
 import usePermissions, { hasPermission } from "../../../componets/permission"
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 const StaffMember = () => {
-    const history = useHistory()
+
 
     const token = localStorage.getItem("token");
     const [openAddPopUp, setOpenAddPopUp] = useState(false);
@@ -40,7 +37,7 @@ const StaffMember = () => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [manageStaffRoleData, setManageStaffRoleData] = useState([])
     const [openAddPopUpDeactive, setOpenAddPopUpDeactive] = useState(false);
-    const [roleId, setRoleId] = useState('');
+
     const permissions = usePermissions();
 
     const handleMouseDownPassword = (event) => {
@@ -221,15 +218,15 @@ const StaffMember = () => {
                 setPassword('');
                 setReEnterPassword('');
                 setOpenAddPopUp(false)
-                 toast.dismiss();
-toast.success(response.data.message);
+                toast.dismiss();
+                toast.success(response.data.message);
                 setErrors({});
 
             })
         } catch (error) {
             if (error.response && error.response.status === 400) {
                 toast.dismiss();
-toast.error(error.response.data.message);
+                toast.error(error.response.data.message);
             }
             console.error("API error:", error);
 
@@ -268,8 +265,8 @@ toast.error(error.response.data.message);
                 setOpenAddPopUp(false)
                 setIsEditMode(false)
                 setErrors({});
-                 toast.dismiss();
-toast.success(response.data.message);
+                toast.dismiss();
+                toast.success(response.data.message);
 
             })
         } catch (error) {
@@ -279,10 +276,7 @@ toast.success(response.data.message);
         // }
     }
 
-    const handleDeactive = (id) => {
-        setOpenAddPopUpDeactive(true)
-        setRoleId(id);
-    }
+
 
     const resetAddDialogDeactive = () => {
         setOpenAddPopUpDeactive(false)
@@ -298,7 +292,7 @@ toast.success(response.data.message);
     const handleDeactiveRole = () => {
         let data = new FormData();
         const params = {
-            id: roleId,
+
         }
         axios.post("status-change?", data, {
             params: params,
@@ -435,7 +429,7 @@ toast.success(response.data.message);
                         position: "absolute",
                         right: 8,
                         top: 8,
-                       
+
                     }}
                 >
                     <CloseIcon />

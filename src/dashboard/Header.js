@@ -44,12 +44,7 @@ const Header = () => {
   const [notificationsList, setNotificationsList] = useState([],);
   const hoverTimeoutRef = useRef(null);
 
-
-
   /*<=============================================================================== get permissions  ======================================================================> */
-
-
-
 
   const userPermission = async (token) => {
     let data = new FormData();

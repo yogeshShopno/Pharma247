@@ -216,7 +216,7 @@ toast.success(response.data.message)
                                                         <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrl} alt="Uploaded Image 1" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
+                                                    <img src={uploadUrl} alt="Uploaded  1" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -274,7 +274,7 @@ toast.success(response.data.message)
                                                         <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlTwo} alt="Uploaded Image 2" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
+                                                    <img src={uploadUrlTwo} alt="Uploaded  2" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -332,7 +332,7 @@ toast.success(response.data.message)
                                                         <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlThree} alt="Uploaded Image 3" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
+                                                    <img src={uploadUrlThree} alt="Uploaded  3" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>
@@ -387,7 +387,7 @@ toast.success(response.data.message)
                                                         <p className="text-sm text-gray-500 mt-5">Click to upload</p>
                                                     </div>
                                                 ) : (
-                                                    <img src={uploadUrlFour} alt="Uploaded Image 4" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
+                                                    <img src={uploadUrlFour} alt="Uploaded  4" className="w-44 h-28 border-dashed rounded-lg" style={{ minWidth: "200px", minHeight: "200px", objectFit: "contain" }} />
                                                 )}
                                             </label>
                                         </div>

@@ -2001,7 +2001,7 @@ const InventoryList = () => {
             <div>
               <div className="vector-image">
                 <div className="inventory-gif">
-                  <img src="../inventory_screen.png"></img>
+                  <img src="../inventory_screen.png" alt="screen"></img>
                 </div>
                 <span className="text-gray-500 font-medium mt-5">
                   Apply filters and explore your inventory

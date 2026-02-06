@@ -1309,7 +1309,7 @@ const Itemmaster = () => {
                     />
                     {selectedBackFile == null ? (
                       <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%" style={{
+                        <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
                           marginTop: "18px",
                           height: "200px",
                           width: "250px",
@@ -1365,7 +1365,7 @@ const Itemmaster = () => {
                     />
                     {selectedMRPFile == null ? (
                       <div className="UploadClass mt-4" style={{ justifyContent: "flex-end" }}>
-                        <img src="./tablet_2.png" width="40%" height="40%" style={{
+                        <img src="./tablet_2.png" alt="tablet" width="40%" height="40%" style={{
                           marginTop: "18px",
                           height: "200px",
                           width: "250px",

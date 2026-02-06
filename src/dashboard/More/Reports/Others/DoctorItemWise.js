@@ -565,7 +565,7 @@ toast.error("Apply filter and then after download records.");
                 <div>
                   <div className="vector-image">
                     <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                      <img src="../empty_image.png"></img>
+                      <img src="../empty_image.png" alt="empty"></img>
                     </div>
                     <span className="text-gray-500 font-semibold">Oops !</span>
                     <p className="text-gray-500 font-semibold">

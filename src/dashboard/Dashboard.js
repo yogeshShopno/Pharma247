@@ -396,6 +396,7 @@ const Dashboard = () => {
                   <img
                     src={stockByCustomer}
                     className="w-full h-full object-contain"
+                    alt="customer"
                   />
                 </div>
               </div>
@@ -415,6 +416,8 @@ const Dashboard = () => {
                   <img
                     src={stockByDistributor}
                     className="w-full h-full object-contain"
+                    alt="distributro"
+
                   />
                 </div>
               </div>

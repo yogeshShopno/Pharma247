@@ -502,6 +502,7 @@ toast.error(error.response.data.message);
                                 href={`/purchase/view/${item.purches_id}`}
                                 target="_blank"
                                 className="primary"
+                                rel="noopener"
                               >
                                 {item[column.id]}
                               </a>

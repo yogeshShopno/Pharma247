@@ -451,7 +451,7 @@ toast.success("CSV downloaded successfully!");
                       <img
                         src="/csv-file.png"
                         className="report-icon absolute mr-10"
-                        alt="csv"
+                        alt="download"
                       />
                     </div>
                     Download
@@ -632,7 +632,7 @@ toast.success("CSV downloaded successfully!");
                   <div>
                     <div className="vector-image">
                       <div style={{ maxWidth: "200px", marginBottom: "20px" }}>
-                        <img src="../empty_image.png"></img>
+                        <img src="../empty_image.png" alt="empty"></img>
                       </div>
                       <span className="text-gray-500 font-semibold">
                         Oops !

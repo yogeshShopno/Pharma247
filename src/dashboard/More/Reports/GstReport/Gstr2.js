@@ -178,7 +178,7 @@ toast.error('Apply filter and then after download records.');
                             <div>
                                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                                     <div className="img_gst">
-                                        <img src="../imgpsh_fullsize_anim.png" ></img>
+                                        <img src="../imgpsh_fullsize_anim.png" alt="anim"></img>
                                     </div>
                                 </div>
                             </div>

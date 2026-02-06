@@ -153,7 +153,7 @@ toast.error(newErrors.nonMovingDate);
               <div>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <div className="img_gst">
-                    <img src="../imgpsh_fullsize_anim.png"></img>
+                    <img src="../imgpsh_fullsize_anim.png" alt="its a full anim" />
                   </div>
                 </div>
               </div>
@@ -195,7 +195,7 @@ toast.error(newErrors.nonMovingDate);
                       <img
                         src="/csv-file.png"
                         className="report-icon absolute mr-10"
-                        alt="csv"
+                        alt="its a file "
                       />
                     </div>
                     Download

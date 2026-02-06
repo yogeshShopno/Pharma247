@@ -451,7 +451,7 @@ toast.success("CSV downloaded successfully!");
                       <img
                         src="/csv-file.png"
                         className="report-icon absolute mr-10"
-                        alt="csv Icon"
+                        alt="csv"
                       />
                     </div>
                     Download
@@ -604,7 +604,7 @@ toast.success("CSV downloaded successfully!");
                                                   <img
                                                     src="/approve.png"
                                                     className="report-icon inline mr-2"
-                                                    alt="csv Icon"
+                                                    alt="csv"
                                                   />
 
                                                   {rsImpact}

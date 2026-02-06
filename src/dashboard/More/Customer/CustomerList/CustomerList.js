@@ -634,7 +634,7 @@ toast.error("Please select an Excel or CSV file.");
                   <img
                     src="/csv-file.png"
                     className="report-icon absolute"
-                    alt="csv Icon"
+                    alt="csv "
                   />
                 </div>
                 Download

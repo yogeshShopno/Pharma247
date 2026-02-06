@@ -208,7 +208,7 @@
 //                                 <BsLightbulbFill className=" w-6 h-6 secondary hover-yellow" />
 //                             </div>
 //                             <div className="headerList" style={{ marginBottom: "10px" }}>
-//                                 <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />Download</Button>
+//                                 <Button variant="contained" style={{ background: 'rgb(12 246 75 / 16%)', fontWeight: 900, color: 'black', textTransform: 'none', paddingLeft: "35px" }} onClick={exportToCSV}> <img src={csvIcon} className="report-icon absolute mr-10" alt="csv" />Download</Button>
 //                             </div>
 //                         </div>
 //                         <div className="bg-white ">

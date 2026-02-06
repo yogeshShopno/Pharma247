@@ -344,7 +344,7 @@ const SehatView = () => {
                                         <img
                                             src="/csv-file.png"
                                             className=" report-icon absolute "
-                                            alt="csv Icon"
+                                            alt="csv"
                                         />
                                     </div>
                                     Download Compony List

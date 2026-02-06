@@ -71,7 +71,7 @@ const PurchaseRegister = () => {
                                     display: "flex",
                                 }} >
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <img src={csvIcon} className="report-icon absolute mr-10" alt="csv Icon" />
+                                    <img src={csvIcon} className="report-icon absolute mr-10" alt="csv " />
                                 </div>
                                 Download</Button>
                         </div>

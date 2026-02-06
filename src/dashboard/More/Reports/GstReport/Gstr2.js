@@ -228,7 +228,7 @@ toast.error('Apply filter and then after download records.');
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <img src="/csv-file.png"
                                                 className="report-icon absolute mr-10"
-                                                alt="csv Icon" />
+                                                alt="csv " />
 
                                         </div>
 

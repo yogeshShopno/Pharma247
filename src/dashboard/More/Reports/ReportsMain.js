@@ -239,7 +239,7 @@ const ReportsMain = () => {
                   <Box
                     component="img"
                     src={AccouaccountingIcon}
-                    alt="Accounting Icon"
+                    alt="Accounting "
                     sx={{
                       position: "absolute",
                       left: 0,
@@ -318,7 +318,7 @@ const ReportsMain = () => {
                   <Box
                     component="img"
                     src={StockIcon}
-                    alt="Stock Icon"
+                    alt="Stock "
                     sx={{
                       position: "absolute",
                       left: 0,
@@ -391,7 +391,7 @@ const ReportsMain = () => {
                   <Box
                     component="img"
                     src={MarginIcon}
-                    alt="Margin Icon"
+                    alt="Margin "
                     sx={{
                       position: "absolute",
                       left: 0,
@@ -633,7 +633,7 @@ const ReportsMain = () => {
                   <Box
                     component="img"
                     src={OtherIcon}
-                    alt="Other Icon"
+                    alt="Other "
                     sx={{
                       position: "absolute",
                       left: 0,
@@ -718,7 +718,7 @@ const ReportsMain = () => {
                           <img
                             src={report?.icon}
                             className="w-1/2"
-                            alt="Report Icon"
+                            alt="Report "
                           />
                           <span className="font-semibold text-sm">
                             {favorite}

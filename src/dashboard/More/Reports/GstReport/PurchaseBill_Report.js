@@ -228,7 +228,7 @@ toast.error(newErrors.purchaseType);
                     <img
                       src="/csv-file.png"
                       className="report-icon absolute mr-10"
-                      alt="csv Icon"
+                      alt="csv "
                     />
                   </div>
                   Download

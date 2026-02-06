@@ -195,7 +195,7 @@ const [imageUrls,setImageUrls] =useState([])
                 <img
                   key={url.id || idx}
                   src={url.image}
-                  alt={`Image ${idx + 1}`}
+                  alt={`${idx + 1}`}
                   className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 object-cover rounded-xl shadow-md cursor-pointer flex-shrink-0 transition-transform hover:scale-105 border border-gray-200 bg-white"
                   onClick={() => openModal(idx)}
                   loading="lazy"

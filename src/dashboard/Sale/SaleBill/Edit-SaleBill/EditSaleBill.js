@@ -167,14 +167,6 @@ const EditSaleBill = () => {
   const focusBase = () => focusByIndex(1);
   const focusQty = () => focusByIndex(2);
 
-  // NEW: detect if the currently active element is one of the item-row inputs (Item/Base/Qty/Order)
-  const isActiveItemRowInput = () => {
-    const ae = document.activeElement;
-    return itemRowInputOrder.some(ref => {
-      const el = ref?.current;
-      return el && (ae === el || el.contains?.(ae));
-    });
-  };
 
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
   // Move selection (clamped) globally. Focus the target row directly (no table focus).
@@ -650,7 +642,10 @@ const EditSaleBill = () => {
       setCustomerDetails(response.data.data);
       // setCustomer(response.data.data[0] || '');
       setIsLoading(false);
-
+     if (response.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+      }
       if (customer.length > 0) {
         const firstCustomer = customer[0];
         setCustomer(firstCustomer);
@@ -658,10 +653,7 @@ const EditSaleBill = () => {
       }
       return customerData;
 
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
+ 
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
@@ -1584,48 +1576,7 @@ const EditSaleBill = () => {
               tabIndex={0}
               onBlur={() => setSelectedIndex(-1)}
               style={{ background: "#F5F5F5", padding: "10px 15px" }}
-            // onKeyDown={(e) => {
-            //   const rows = saleAllData?.sales_item || [];
-            //   if (!rows.length) return;
-
-            //   const ae = document.activeElement;
-
-            //   const isTableContainerFocused = ae === tableRef1.current;
-            //   if (!isTableContainerFocused) return;
-
-            //   const isAutocompleteFocused =
-            //     inputRef1?.current && ae === inputRef1.current;
-
-            //   const isTypingField =
-            //     ae?.tagName === "INPUT" ||
-            //     ae?.tagName === "TEXTAREA" ||
-            //     ae?.isContentEditable === true ||
-            //     ae?.getAttribute?.("role") === "combobox";
-
-            //   const inAutocompleteUI =
-            //     autoCompleteOpen ||
-            //     ae?.closest?.('[role="listbox"]') ||
-            //     document.querySelector('.MuiAutocomplete-popper [role="listbox"]');
-
-            //   if (isAutocompleteFocused || isTypingField || inAutocompleteUI) return;
-
-            //   if (e.key === "ArrowDown") {
-            //     e.preventDefault();
-            //     setSelectedIndex((prev) =>
-            //       Math.min(prev === -1 ? 0 : prev + 1, rows.length - 1)
-            //     );
-            //   } else if (e.key === "ArrowUp") {
-            //     e.preventDefault();
-            //     setSelectedIndex((prev) => Math.max(prev === -1 ? 0 : prev - 1, 0));
-            //   } else if (e.key === "Enter" && selectedIndex !== -1) {
-            //     e.preventDefault();
-            //     const selectedRow = rows[selectedIndex];
-            //     if (selectedRow) {
-            //       handleEditClick(selectedRow);
-            //     }
-            //   }
-            // }}
-
+           
             >
               <thead>
                 <tr

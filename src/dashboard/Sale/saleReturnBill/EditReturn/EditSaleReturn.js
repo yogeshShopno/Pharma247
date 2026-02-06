@@ -378,13 +378,13 @@ const EditSaleReturn = () => {
       setCustomerDetails(response.data.data);
       setCustomer(response.data.data[0] || "");
 
-      setIsLoading(false);
-      return customerData;
-
       if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
       }
+      setIsLoading(false);
+      return customerData;
+
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);

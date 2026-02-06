@@ -833,7 +833,7 @@ toast.success(response.data.message);
                   <span className="primary">Start Date</span>
                   <DatePicker
                     label="Start Date"
-                    className="custom-datepicker_mn"
+                    className="custom-datepicker"
                     selected={startDate}
                     onChange={handleStartDate}
                     dateFormat="dd/MM/yyyy"
@@ -844,7 +844,7 @@ toast.success(response.data.message);
                   <span className="primary">End Date</span>
                   <DatePicker
                     label="End Date"
-                    className="custom-datepicker_mn"
+                    className="custom-datepicker"
                     selected={endDate}
                     onChange={handleEndDate}
                     dateFormat="dd/MM/yyyy"
@@ -1069,7 +1069,7 @@ toast.error("Opening Balance is Required");
                     <div className="detail">
                       <div style={{ width: "100%" }}>
                         <DatePicker
-                          className="custom-datepicker_mn"
+                          className="custom-datepicker"
                           selected={asOfDate}
                           onChange={(newDate) => setAsOfDate(newDate)}
                           dateFormat="dd/MM/yyyy"
@@ -1446,7 +1446,7 @@ toast.error("Account Holder Name is Required");
                                             </LocalizationProvider> */}
                       <div style={{ width: "100%" }}>
                         <DatePicker
-                          className="custom-datepicker_mn "
+                          className="custom-datepicker "
                           selected={adjustDate}
                           onChange={(newDate) => setAdjustDate(newDate)}
                           dateFormat="dd/MM/yyyy"

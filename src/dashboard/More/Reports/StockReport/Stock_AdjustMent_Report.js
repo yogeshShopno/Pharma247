@@ -280,7 +280,7 @@ toast.error("Apply filter and then after download records.");
                         <span className="primary">Start Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker_mn"
+                            className="custom-datepicker"
                             selected={startDate}
                             onChange={(newDate) => setStartDate(newDate)}
                             dateFormat="dd/MM/yyyy"
@@ -291,7 +291,7 @@ toast.error("Apply filter and then after download records.");
                         <span className="primary">End Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker_mn"
+                            className="custom-datepicker"
                             selected={endDate}
                             onChange={(newDate) => setEndDate(newDate)}
                             dateFormat="dd/MM/yyyy"

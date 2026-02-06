@@ -284,7 +284,7 @@ toast.error("Apply filter, then download records.");
                     <span className="primary">Start Date</span>
                     <div style={{ width: "100%" }}>
                       <DatePicker
-                        className="custom-datepicker_mn "
+                        className="custom-datepicker "
                         selected={lastMonth}
                         onChange={(newDate) => setLastMonth(newDate)}
                         dateFormat="MM/yyyy"

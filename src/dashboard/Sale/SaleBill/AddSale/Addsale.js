@@ -1772,7 +1772,7 @@ const handleBarcode = async () => {
       setIsEditMode(false);
 
       //  toast.dismiss();
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
 
       // if (quantityDifference === 1) {
       //     bulkOrderData();

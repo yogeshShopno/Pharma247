@@ -221,7 +221,7 @@ toast.error("Apply filter and then after download records.");
                   <div className="detail_report detail_report_sss flex flex-col detailrep_100">
                     <div style={{ width: "100%" }}>
                       <DatePicker
-                        className="custom-datepicker_mn "
+                        className="custom-datepicker "
                         selected={monthDate}
                         onChange={(newDate) => setMonthDate(newDate)}
                         dateFormat="MM-yyyy"

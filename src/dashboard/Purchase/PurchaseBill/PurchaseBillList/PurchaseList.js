@@ -76,7 +76,7 @@ const Purchasebill = () => {
     if (tableData.length > 0) {
       localStorage.setItem("Purchase_SrNo", tableData[0].count + 1);
     } else {
-      localStorage.setItem("Purchase_SrNo", 1);
+      localStorage.setItem("Purchase_SrNoPurchase_SrNo", 1);
     }
   }, [tableData, currentPage]);
 
@@ -311,8 +311,8 @@ const Purchasebill = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
 
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -354,8 +354,8 @@ toast.success(response.data.meassage);
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setIsLoading(false);
           handlePdf(PDFURL);
           if (response.data.status === 401) {
@@ -471,7 +471,7 @@ toast.success(response.data.meassage);
                 <span className="text-gray-500 block">Start Date</span>
                 <div className="" style={{ width: "100%" }}>
                   <DatePicker
-                    className="custom-datepicker_mn"
+                    className="custom-datepicker"
                     selected={startDate}
                     onChange={(newDate) => setStartDate(newDate)}
                     dateFormat="dd/MM/yyyy"
@@ -482,7 +482,7 @@ toast.success(response.data.meassage);
                 <span className="text-gray-500 block">End Date</span>
                 <div className="" style={{ width: "100%" }}>
                   <DatePicker
-                    className="custom-datepicker_mn"
+                    className="custom-datepicker"
                     selected={endDate}
                     onChange={(newDate) => setEndDate(newDate)}
                     dateFormat="dd/MM/yyyy"
@@ -544,7 +544,7 @@ toast.success(response.data.meassage);
                             label="Type Here"
                             id="filled-basic"
                             size="small"
-                            sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' }}
+                            sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' ,zIndex:-1 }}
                             value={searchTerms[index + 1]}
                             onChange={(e) => handleSearchChange(index + 1, e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -635,7 +635,7 @@ toast.success(response.data.meassage);
             </table>
           </div>
         </div>
-      {/*<=================================================================================== pagination ===================================================================================> */}
+        {/*<=================================================================================== pagination ===================================================================================> */}
 
         <div
           className="flex justify-center mt-4"
@@ -764,7 +764,7 @@ toast.success(response.data.meassage);
           id="alert-dialog-title"
           style={{ fontWeight: 700 }}
         >
-          Generate PDF
+          Generate PDF 
         </DialogTitle>
         <IconButton
           aria-label="close"
@@ -800,7 +800,7 @@ toast.success(response.data.meassage);
                         <span className="primary block">Start Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker_mn"
+                            className="custom-datepicker"
                             selected={PdfstartDate}
                             onChange={(newDate) => setPdfStartDate(newDate)}
                             dateFormat="dd/MM/yyyy"
@@ -812,7 +812,7 @@ toast.success(response.data.meassage);
                         <span className="primary block">End Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker_mn"
+                            className="custom-datepicker"
                             selected={PdfendDate}
                             onChange={(newDate) => setPdfEndDate(newDate)}
                             dateFormat="dd/MM/yyyy"

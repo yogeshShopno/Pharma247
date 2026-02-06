@@ -1556,7 +1556,7 @@ const EditPurchaseBill = () => {
                 <span className="title mb-2">Due Date</span>
                 <DatePicker
                   disabled
-                  className="custom-datepicker_mn "
+                  className="custom-datepicker "
                   selected={dueDate}
                   onChange={(newDate) => setDueDate(newDate)}
                   dateFormat="dd/MM/yyyy"

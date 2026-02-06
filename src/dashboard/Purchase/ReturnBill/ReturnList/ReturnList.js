@@ -904,7 +904,7 @@ toast.success(response.data.meassage);
                         <div className="w-full">
                           <span className="primary block">Start Date</span>
                           <DatePicker
-                            className="custom-datepicker_mn w-full"
+                            className="custom-datepicker w-full"
                             selected={PdfstartDate}
                             onChange={(newDate) => setPdfStartDate(newDate)}
                             dateFormat="dd/MM/yyyy"
@@ -913,7 +913,7 @@ toast.success(response.data.meassage);
                         <div className="w-full">
                           <span className="primary block">End Date</span>
                           <DatePicker
-                            className="custom-datepicker_mn w-full"
+                            className="custom-datepicker w-full"
                             selected={PdfendDate}
                             onChange={(newDate) => setPdfEndDate(newDate)}
                             dateFormat="dd/MM/yyyy"

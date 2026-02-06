@@ -237,7 +237,7 @@ toast.error("Apply filter and then after download records.");
                   <span className="flex  secondary text-lg">Choose Date</span>
 
                   <DatePicker
-                    className="custom-datepicker_mn mb-3"
+                    className="custom-datepicker mb-3"
                     selected={monthDate}
                     onChange={(newDate) => setMonthDate(newDate)}
                     dateFormat="MM/yyyy"

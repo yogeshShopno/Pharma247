@@ -264,7 +264,7 @@ toast.error("No data available for download.");
                   <span className="flex  secondary text-lg">Start Date</span>
 
                   <DatePicker
-                    className="custom-datepicker_mn mb-3"
+                    className="custom-datepicker mb-3"
                     selected={startDate}
                     onChange={(newDate) => setStartDate(newDate)}
                     dateFormat="yyyy-MM-dd"
@@ -273,7 +273,7 @@ toast.error("No data available for download.");
                   <span className="flex  secondary text-lg">End Date</span>
 
                   <DatePicker
-                    className="custom-datepicker_mn mb-5"
+                    className="custom-datepicker mb-5"
                     selected={endDate}
                     onChange={(newDate) => setEndDate(newDate)}
                     dateFormat="yyyy-MM-dd"

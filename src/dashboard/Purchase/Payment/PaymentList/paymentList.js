@@ -997,7 +997,7 @@ toast.success(response.data.meassage);
                                                 </LocalizationProvider> */}
 
                     <DatePicker
-                      className="custom-datepicker_mn "
+                      className="custom-datepicker "
                       selected={paymentDate}
                       onChange={(newDate) => setPaymentDate(newDate)}
                       dateFormat="dd/MM/yyyy"

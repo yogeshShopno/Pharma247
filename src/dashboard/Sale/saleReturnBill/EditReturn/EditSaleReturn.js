@@ -570,9 +570,9 @@ toast.success(response.data.message);
     setUnsavedItems(false);
 
     const newErrors = {};
-    if (!customer) {
-      newErrors.customer = "Please select customer";
-    }
+    // if (!customer) {
+    //   newErrors.customer = "Please select customer";
+    // }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
       return;

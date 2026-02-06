@@ -765,7 +765,7 @@ const AdjustStock = () => {
                   <div className="w-full">
                     <span className="title primary mb-2">Adjustment Date</span>
                     <DatePicker
-                      className="custom-datepicker_mn w-full"
+                      className="custom-datepicker w-full"
                       selected={adjustmentDate}
                       onChange={(newDate) => setAdjustDate(newDate)}
                       dateFormat="dd/MM/yyyy"

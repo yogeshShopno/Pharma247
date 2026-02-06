@@ -239,7 +239,7 @@ const Salereturn = () => {
             if (key === "s") {
                 if (!customer || !customer.id) {
                     toast.dismiss();
-toast.error('Please select customer');
+                    toast.error('Please select customer');
                     setError({ customer: "Please select customer" });
                     return;
                 }
@@ -427,12 +427,18 @@ toast.error('Please select customer');
     const validfilter = () => {
         setUnsavedItems(true)
         const newErrors = {};
-        if (!customer || !customer.id) { newErrors.customer = 'Customer is required'; toast.dismiss();
-toast.error('Customer is required'); }
-        if (!startDate) { newErrors.startDate = 'startDate is required'; toast.dismiss();
-toast.error('Start Date is required'); }
-        if (!endDate) { newErrors.endDate = 'endDate is required'; toast.dismiss();
-toast.error('End Date is required'); }
+        // if (!customer || !customer.id) {
+        //     newErrors.customer = 'Customer is required'; toast.dismiss();
+        //     toast.error('Customer is required');
+        // }
+        if (!startDate) {
+            newErrors.startDate = 'startDate is required'; toast.dismiss();
+            toast.error('Start Date is required');
+        }
+        if (!endDate) {
+            newErrors.endDate = 'endDate is required'; toast.dismiss();
+            toast.error('End Date is required');
+        }
 
         // setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
@@ -489,7 +495,7 @@ toast.error('End Date is required'); }
         if (Number(tempQty) < Number(qty)) {
             newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
             toast.dismiss();
-toast.error('Quantity should not be greater than purchase quantity ')
+            toast.error('Quantity should not be greater than purchase quantity ')
             return
         }
 
@@ -582,14 +588,14 @@ toast.error('Quantity should not be greater than purchase quantity ')
         if (!customer || !customer.id) {
             newErrors.customer = 'Please select customer';
             toast.dismiss();
-toast.error('Please select customer');
+            toast.error('Please select customer');
             setError(newErrors);
             return;
         }
         if (!saleItems || !Array.isArray(saleItems.sales_item) || saleItems.sales_item.length === 0) {
             newErrors.sales_item = 'Please add at least one item';
             toast.dismiss();
-toast.error('Please add at least one item');
+            toast.error('Please add at least one item');
             setError(newErrors);
             return;
         }
@@ -601,7 +607,7 @@ toast.error('Please add at least one item');
         const hasUncheckedItems = saleItems?.sales_item.every(item => item.iss_check === false)
         if (hasUncheckedItems) {
             toast.dismiss();
-toast.error('Please select at least one item');;
+            toast.error('Please select at least one item');;
 
         } else {
             let data = new FormData();
@@ -638,8 +644,8 @@ toast.error('Please select at least one item');;
                     },
                 }
                 ).then((response) => {
-                     toast.dismiss();
-toast.success(response.data.message);
+                    toast.dismiss();
+                    toast.success(response.data.message);
                     setUnsavedItems(false);
 
                     setTimeout(() => {
@@ -733,11 +739,11 @@ toast.success(response.data.message);
         if (newQty > tempQty) {
             setQty(tempQty);
             toast.dismiss();
-toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${tempQty}`);
         } else if (newQty < 0) {
             setQty(tempQty);
             toast.dismiss();
-toast.error(`Quantity should not be less than 0`);
+            toast.error(`Quantity should not be less than 0`);
         } else {
             setQty(newQty)
         }

@@ -121,7 +121,7 @@ toast.error(newErrors.reportType)
                                     <span className="flex secondary text-lg" >Bill Date:</span>
 
                                     <DatePicker
-                                        className='custom-datepicker_mn mb-4'
+                                        className='custom-datepicker mb-4'
                                         selected={monthDate}
                                         onChange={(newDate) => setMonthDate(newDate)}
                                         dateFormat="MM/yyyy"

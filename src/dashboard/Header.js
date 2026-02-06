@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import { FaPlusCircle, FaTelegramPlane, FaUserAlt } from "react-icons/fa";
+import { FaPlusCircle, FaUserAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { FaChevronDown } from "react-icons/fa6";
-import { IoQrCode, IoSearch } from "react-icons/io5";
-import { IoIosBicycle, IoMdSettings } from "react-icons/io";
+import { IoSearch } from "react-icons/io5";
 import { FaBell } from "react-icons/fa";
 import { IoCaretDown } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
@@ -18,11 +17,10 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import CloseIcon from "@mui/icons-material/Close";
 import axios from "axios";
-import { IconButton, TextField, } from "@mui/material";
+import { IconButton, } from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import { MdWatchLater } from "react-icons/md";
 import usePermissions, { hasPermission } from "../componets/permission";
-import DoneAllIcon from "@mui/icons-material/DoneAll";
 import { toast, ToastContainer } from "react-toastify";
 import Search from "./Search";
 import { Typography } from "@mui/material";
@@ -31,14 +29,12 @@ import { encryptData } from "../componets/cryptoUtils";
 const Header = () => {
   const history = useHistory();
   const permissions = usePermissions();
-  const [openModal, setOpenModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const [IsLogout, setIsLogout] = useState(false);
   const [IsClear, setIsClear] = useState(false);
   const dropdownRef = useRef(null);
   const [token, setToken] = useState(localStorage.getItem("token"));
-  // const token = localStorage.getItem("token");
   const [searchPage, setSearchPage] = useState(false);
   const [notifications, setNotifications] = useState(false);
   const [notificationsList, setNotificationsList] = useState([],);
@@ -67,17 +63,16 @@ const Header = () => {
   };
 
   useEffect(() => {
-    fetchNotification(); // Fetch notifications when the component mounts
-
+    fetchNotification();
   }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-   userPermission(token)
+    userPermission(token)
 
   }, [token]);
 
-  // Add this useEffect after your other useEffects
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -139,7 +134,7 @@ const Header = () => {
     }
   };
 
-  const LogoutOpen = (categoryId) => {
+  const LogoutOpen = () => {
     setIsLogout(true);
   };
 

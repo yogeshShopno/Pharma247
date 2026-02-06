@@ -493,7 +493,7 @@ toast.success(response.data.message);
                       <span className="text-gray-500 py-2">Start Date</span>
                       <div>
                         <DatePicker
-                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
+                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
                           selected={startDate}
                           onChange={handleStartDate}
                           dateFormat="dd/MM/yyyy"
@@ -504,7 +504,7 @@ toast.success(response.data.message);
                       <span className="text-gray-500">End Date</span>
                       <div>
                         <DatePicker
-                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn"
+                          className="md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker"
                           selected={endDate}
                           onChange={handleEndDate}
                           dateFormat="dd/MM/yyyy"
@@ -794,7 +794,7 @@ toast.success(response.data.message);
                             Expense Date
                           </span>
                           <DatePicker
-                            className="custom-datepicker_mn w-[170px]"
+                            className="custom-datepicker w-[170px]"
                             selected={expenseDate}
                             onChange={(newDate) => setExpenseDate(newDate)}
                             dateFormat="dd/MM/yyyy"
@@ -811,7 +811,7 @@ toast.success(response.data.message);
                             Payment Date
                           </span>
                           <DatePicker
-                            className="custom-datepicker_mn w-[170px]"
+                            className="custom-datepicker w-[170px]"
                             selected={paymentdate}
                             onChange={(newDate) => setPaymentDate(newDate)}
                             dateFormat="dd/MM/yyyy"

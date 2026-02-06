@@ -257,7 +257,7 @@ const CashManage = () => {
                     <div className="detail flex flex-col">
                       <span className="text-gray-500">Start Date</span>
                       <DatePicker
-                        className="custom-datepicker_mn dst_fld_odr"
+                        className="custom-datepicker dst_fld_odr"
                         selected={startdate}
                         onChange={(newDate) => setStartDate(newDate)}
                         dateFormat="dd/MM/yyyy"
@@ -266,7 +266,7 @@ const CashManage = () => {
                     <div className="detail flex flex-col">
                       <span className="text-gray-500">End Date</span>
                       <DatePicker
-                        className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker_mn dst_fld_odr"
+                        className="mt-4 md:mt-0 min-h-[41px] h-[41px] flex items-center justify-center custom-datepicker dst_fld_odr"
                         selected={enddate}
                         onChange={(newDate) => setEndDate(newDate)}
                         dateFormat="dd/MM/yyyy"

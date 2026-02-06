@@ -888,7 +888,7 @@ toast.success(response.data.meassage);
               </DialogContent>
             </Dialog>
 
-            <Dialog className=" custom-dialog" open={openAddPopUpPlaceOrder}>
+            <Dialog className=" custom-dialog " open={openAddPopUpPlaceOrder}>
               <DialogTitle
                 id="alert-dialog-title"
                 style={{ fontWeight: 700 }}
@@ -909,7 +909,7 @@ toast.success(response.data.meassage);
               </IconButton>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
-                  <div className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-5" style={{ width: "100%" }}>
                     <FormControl size="small" style={{ width: "100%" }}>
                       <InputLabel id="demo-select-small-label">
                         Item Name

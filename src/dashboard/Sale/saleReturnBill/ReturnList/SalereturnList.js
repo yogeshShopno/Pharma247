@@ -671,7 +671,7 @@ toast.success(response.data.meassage);
                             </span>
                             <div className="" style={{ width: "100%" }}>
                               <DatePicker
-                                className="custom-datepicker_mn"
+                                className="custom-datepicker"
                                 selected={PdfstartDate}
                                 onChange={(newDate) =>
                                   setPdfStartDate(newDate)
@@ -686,7 +686,7 @@ toast.success(response.data.meassage);
                             </span>
                             <div className="" style={{ width: "100%" }}>
                               <DatePicker
-                                className="custom-datepicker_mn "
+                                className="custom-datepicker "
                                 selected={PdfendDate}
                                 onChange={(newDate) =>
                                   setPdfEndDate(newDate)

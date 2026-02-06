@@ -192,7 +192,7 @@ toast.success(response.data.message)
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
 
-                                                    className="custom-datepicker_mn"
+                                                    className="custom-datepicker"
                                                     selected={licenseExpiryDate}
                                                     onChange={() => setLicenseExpiryDate()}
                                                     dateFormat="dd/MM/yyyy"
@@ -250,7 +250,7 @@ toast.success(response.data.message)
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker_mn"
+                                                    className="custom-datepicker"
                                                     selected={licenseExpiryDateTwo}
                                                     onChange={(newDate) => setLicenseExpiryDateTwo(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -308,7 +308,7 @@ toast.success(response.data.message)
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker_mn"
+                                                    className="custom-datepicker"
                                                     selected={licenseExpiryDateThree}
                                                     onChange={(newDate) => setLicenseExpiryDateThree(newDate)}
                                                     dateFormat="dd/MM/yyyy"
@@ -362,7 +362,7 @@ toast.success(response.data.message)
                                             <div>
                                                 <span className="primary flex">License Expiry Date</span>
                                                 <DatePicker
-                                                    className="custom-datepicker_mn"
+                                                    className="custom-datepicker"
                                                     selected={licenseExpiryDateFour}
                                                     onChange={(newDate) => setLicenseExpiryDateFour(newDate)}
                                                     dateFormat="dd/MM/yyyy"

@@ -360,7 +360,7 @@ toast.success(response.data.meassage);
                     <span className="text-gray-500 block">Start Date</span>
                     <div className="" style={{ width: "100%" }}>
                       <DatePicker
-                        className="custom-datepicker_mn"
+                        className="custom-datepicker"
                         selected={PdfstartDate}
                         onChange={(newDate) => setPdfStartDate(newDate)}
                         dateFormat="dd/MM/yyyy"
@@ -371,7 +371,7 @@ toast.success(response.data.meassage);
                     <span className="text-gray-500 block">End Date</span>
                     <div className="" style={{ width: "100%" }}>
                       <DatePicker
-                        className="custom-datepicker_mn"
+                        className="custom-datepicker"
                         selected={PdfendDate}
                         onChange={(newDate) => setPdfEndDate(newDate)}
                         dateFormat="dd/MM/yyyy"
@@ -638,7 +638,7 @@ toast.success(response.data.meassage);
                               <span className="primary block">Start Date</span>
                               <div style={{ width: "100%" }}>
                                 <DatePicker
-                                  className="custom-datepicker_mn"
+                                  className="custom-datepicker"
                                   selected={PdfstartDate}
                                   onChange={(newDate) =>
                                     setPdfStartDate(newDate)
@@ -651,7 +651,7 @@ toast.success(response.data.meassage);
                               <span className="primary block">End Date</span>
                               <div style={{ width: "100%" }}>
                                 <DatePicker
-                                  className="custom-datepicker_mn"
+                                  className="custom-datepicker"
                                   selected={PdfendDate}
                                   onChange={(newDate) => setPdfEndDate(newDate)}
                                   dateFormat="dd/MM/yyyy"

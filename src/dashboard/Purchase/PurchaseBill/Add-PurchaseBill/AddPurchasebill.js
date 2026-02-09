@@ -1046,7 +1046,7 @@ const AddPurchaseBill = () => {
             setFree(batchData[0].purchase_free_qty);
             setPTR(batchData[0].ptr);
             setDisc(batchData[0].discount);
-            setLoc(batchData[0].location);
+            setLoc(batchData[0].location.toUpperCase());
             setGst(batchData[0].gst_name);
             // setUnit()
           } else {
@@ -1207,7 +1207,7 @@ const AddPurchaseBill = () => {
     data.append("scheme_account", schAmt ? schAmt : 0);
     data.append("base_price", base ? base : 0);
     data.append("gst", gstMapping[gst] ?? gst);
-    data.append("location", loc ? loc : "");
+    data.append("location", loc ? loc.toUpperCase() : "");
     data.append("margin", margin ? margin : 0);
     data.append("net_rate", netRate ? netRate : 0);
     data.append("id", selectedEditItemId ? selectedEditItemId : 0);
@@ -1624,7 +1624,7 @@ const AddPurchaseBill = () => {
       setSchAmt(selectedEditItem.scheme_account);
       setBase(selectedEditItem.base_price);
       setGst(selectedEditItem.gst);
-      setLoc(selectedEditItem.location);
+      setLoc(selectedEditItem.location.toUpperCase());
       setMargin(selectedEditItem.margin);
       setNetRate(selectedEditItem.net_rate);
     }
@@ -2872,7 +2872,7 @@ const AddPurchaseBill = () => {
                         value={loc?.toUpperCase()}
                         sx={{ width: "100px" }}
                         onChange={(e) => {
-                          setLoc(e.target.value);
+                          setLoc(e.target.value.toUpperCase());
                         }}
                         inputRef={(el) => (inputRefs.current[12] = el)}
                         onKeyDown={async (e) => {

@@ -819,7 +819,7 @@ const EditPurchaseBill = () => {
     data.append("scheme_account", !schAmt ? 0 : schAmt);
     data.append("base_price", !base ? 0 : base);
     data.append("gst", gstMapping[gst] ?? gst);
-    data.append("location", !loc ? 0 : loc);
+    data.append("location", !loc ? "" : loc.toUpperCase());
     data.append("margin", !margin ? 0 : margin);
     data.append("net_amount", !netAmount ? 0 : netAmount);
     data.append("cn_amount", !finalCnAmount ? 0 : finalCnAmount);
@@ -2046,7 +2046,7 @@ const EditPurchaseBill = () => {
                         value={loc?.toUpperCase()}
                         sx={{ width: "100px" }}
                         onChange={(e) => {
-                          setLoc(e.target.value);
+                          setLoc(e.target.value.toUpperCase());
                         }}
                         inputRef={(el) => (inputRefs.current[12] = el)}
                         onKeyDown={async (e) => {

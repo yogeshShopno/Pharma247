@@ -769,7 +769,6 @@ useEffect(() => {
       return items;
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.log('Search request aborted');
         return;
       }
       console.error("API error:", error);
@@ -1760,7 +1759,7 @@ useEffect(() => {
       setIsAlternative(isAlternative);
     } catch (error) {
       if (error.name === 'AbortError') {
-        console.log('Batch request aborted');
+      
         return;
       }
       console.error("API error:", error);

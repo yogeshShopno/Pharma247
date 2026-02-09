@@ -643,33 +643,7 @@ const Itemmaster = () => {
     }
   };
 
-  // const resetData = () => {
-  //   console.log("joi")
-  //   setPackaging([]);
-  //   setWeightage(1);
-  //   setPack(`1 * 1`);
-  //   setMin(null);
-  //   setMax(null);
-  //   setMRP("");
-  //   setGST(null);
-  //   setBarcode(generateRandomBarcode()); 
-  //   setSelectedBackFile(null);
-  //   setBackImgUrl(null);
-  //   setFrontImgUrl(null);
-  //   setSelectedFrontFile(null);
-  //   setSelectedMRPFile(null);
-  //   setMrpImgUrl(null);
-  //   setMessage(null);
-  //   setSelectedCategory(null);
-  //   setDrugGroup(null);
-  //   setSelectedCompany(null);
-  //   setSelectedSuppliers(null);
-  //   setLocationValue(null);
-  //   setLocation(""); 
-  //   setDisc(null);
-  //   setMargin(null);
-  //   sethsnCode(null);
-  // }
+  
   const handleOptionChange = async (event, newValue) => {
 
     setValue(newValue);

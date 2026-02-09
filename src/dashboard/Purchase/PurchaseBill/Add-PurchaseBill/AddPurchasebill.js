@@ -3670,7 +3670,11 @@ const AddPurchaseBill = () => {
                           autoComplete="off"
                           size="small"
                           value={addDistributorAddress}
-                          onChange={(e) => setAddDistributorAddress(e.target.value)}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            const capitalized = value.charAt(0).toUpperCase() + value.slice(1);
+                            setAddDistributorAddress(capitalized);
+                          }}
                           inputRef={(el) => (inputRefs.current[19] = el)}
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {

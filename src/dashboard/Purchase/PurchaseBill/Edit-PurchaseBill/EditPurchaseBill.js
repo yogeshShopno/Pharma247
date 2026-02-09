@@ -116,23 +116,15 @@ const EditPurchaseBill = () => {
   const [nextPath, setNextPath] = useState("");
   const [barcode, setBarcode] = useState("");
   const [batchListData, setBatchListData] = useState([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [purchase, setPurchase] = useState([]);
-
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-
-
 
   /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
   const tableRef = useRef(null); // Reference for table container
-
   const inputRefs = useRef([]);
-
   const [errors, setErrors] = useState({});
 
   let defaultDate = new Date();

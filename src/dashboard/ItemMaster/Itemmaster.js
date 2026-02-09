@@ -42,7 +42,7 @@ const Itemmaster = () => {
   const [max, setMax] = useState(null);
   const [min, setMin] = useState(null);
   const [pack, setPack] = useState(`1 * ${unit}`);
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState("");
   const [drugGroup, setDrugGroup] = useState(null);
   const [searchItem, setSearchItem] = useState("");
   const [value, setValue] = useState(null);
@@ -95,6 +95,7 @@ const Itemmaster = () => {
 
   const [drugGroupSearch, setDrugGroupSearch] = useState("");
 
+  const [loading, setLoading] = useState(false);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -146,6 +147,8 @@ const Itemmaster = () => {
     listOfCompany();
     listLocation();
   }, []);
+
+
 
   let listLocation = () => {
     axios
@@ -313,6 +316,7 @@ const Itemmaster = () => {
 
     }
   };
+
   const submitDrugGroup = () => {
     let data = new FormData();
     data.append("name", drugGroupName);
@@ -369,6 +373,7 @@ const Itemmaster = () => {
   // const handle = () => {
   //   setOnlineOrderChecked(!onlineorderChecked)
   // }
+
 
   const handleSubmit = () => {
 
@@ -491,16 +496,35 @@ const Itemmaster = () => {
     }
   };
 
+  useEffect(() => {
+    const SearchTimer = setTimeout(() => {
+      if(!searchItem){
+        resetData()
+      }
+        handleSearch(searchItem.toUpperCase());
+
+    }, 1500);
+
+    return () => {
+
+      clearTimeout(SearchTimer);
+
+    };
+  }, [searchItem]);
+
   const handleSearch = async () => {
+    if (loading) return;
+    setLoading(true)
     let data = new FormData();
     data.append("search", searchItem);
-    const params = {
-      search: searchItem,
-    };
+    // const params = {
+    //   search: searchItem,
+    // };
+
     try {
       const res = await axios
         .post("item-search?", data, {
-          params: params,
+          // params: params,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -512,6 +536,9 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
+    } finally {
+      setLoading(false)
 
     }
   };
@@ -616,14 +643,43 @@ const Itemmaster = () => {
     }
   };
 
-  const handleOptionChange = (event, newValue) => {
+  // const resetData = () => {
+  //   console.log("joi")
+  //   setPackaging([]);
+  //   setWeightage(1);
+  //   setPack(`1 * 1`);
+  //   setMin(null);
+  //   setMax(null);
+  //   setMRP("");
+  //   setGST(null);
+  //   setBarcode(generateRandomBarcode()); 
+  //   setSelectedBackFile(null);
+  //   setBackImgUrl(null);
+  //   setFrontImgUrl(null);
+  //   setSelectedFrontFile(null);
+  //   setSelectedMRPFile(null);
+  //   setMrpImgUrl(null);
+  //   setMessage(null);
+  //   setSelectedCategory(null);
+  //   setDrugGroup(null);
+  //   setSelectedCompany(null);
+  //   setSelectedSuppliers(null);
+  //   setLocationValue(null);
+  //   setLocation(""); 
+  //   setDisc(null);
+  //   setMargin(null);
+  //   sethsnCode(null);
+  // }
+  const handleOptionChange = async (event, newValue) => {
+
     setValue(newValue);
     if (newValue) {
+      await resetData();
       const itemName = newValue.iteam_name;
-      const itemId = newValue.id; // Assuming `id` is part of the option object
+      const itemId = newValue.id;
       setSearchItem(itemName);
-      handleSearch(itemName);
-      showItemData(itemId);
+      // await handleSearch(itemName);
+      await showItemData(itemId);
     }
   };
 
@@ -632,8 +688,9 @@ const Itemmaster = () => {
   };
 
   const handleInputChange = (event, newInputValue) => {
+
     setSearchItem(newInputValue);
-    handleSearch(newInputValue);
+    // handleSearch(newInputValue);
 
   };
 
@@ -700,6 +757,7 @@ const Itemmaster = () => {
   const openFileUpload = () => {
     setOpenFile(true);
   };
+
   return (
     <div>
       <Header />

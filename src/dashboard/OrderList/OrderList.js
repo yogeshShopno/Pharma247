@@ -887,7 +887,7 @@ toast.success(response.data.meassage);
                 </DialogContentText>
               </DialogContent>
             </Dialog>
-
+          {/*<=============================================== order dialog  ==============================================> */}
             <Dialog className=" custom-dialog " open={openAddPopUpPlaceOrder}>
               <DialogTitle
                 id="alert-dialog-title"

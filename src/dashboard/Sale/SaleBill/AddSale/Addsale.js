@@ -1,5 +1,5 @@
 import Header from "../../../Header";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 // import "../../../../App.css";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -70,6 +70,15 @@ const Addsale = () => {
   const inputRef8 = useRef(null);
   const inputRef9 = useRef(null);
   const inputRef10 = useRef(null);
+
+  const batchCache = useRef(new Map());
+  const itemCache = useRef(new Map());
+  const searchAbortController = useRef(null);
+  const batchAbortController = useRef(null);
+  const lastSearchTerm = useRef("");
+
+  const lastInputTime = useRef(Date.now());
+
   const [item, setItem] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [isLoading, setIsLoading] = useState(false);
@@ -429,6 +438,35 @@ const Addsale = () => {
   useEffect(() => {
     updateTodayPoints()
   }, [netAmount])
+
+  // Cleanup abort controllers on unmount
+  useEffect(() => {
+    return () => {
+      if (searchAbortController.current) {
+        searchAbortController.current.abort();
+      }
+      if (batchAbortController.current) {
+        batchAbortController.current.abort();
+      }
+    };
+  }, []);
+
+  const clearItemCache = useCallback(() => {
+    itemCache.current.clear();
+  }, []);
+
+  const clearBatchCache = useCallback((itemId = null) => {
+    if (itemId) {
+      batchCache.current.delete(itemId);
+    } else {
+      batchCache.current.clear();
+    }
+  }, []);
+
+  const clearAllCaches = useCallback(() => {
+    itemCache.current.clear();
+    batchCache.current.clear();
+  }, []);
   //  =============================== On submit the today point update ===============================
   const updateTodayPoints = async () => {
     let data = new FormData();
@@ -629,14 +667,19 @@ const Addsale = () => {
     if (itemId) {
       batchList(itemId);
     }
+  }, [itemId]); // Removed base and qty - they don't affect batch fetching
+
+  // Separate effect for amount calculation
+  useEffect(() => {
+    if (!qty || !unit || !base) {
+      setItemAmount(0);
+      return;
+    }
+
     const totalAmount = qty / unit;
     const total = parseFloat(base) * totalAmount;
-    if (total) {
-      setItemAmount(total.toFixed(2));
-    } else {
-      setItemAmount(0);
-    }
-  }, [itemId, base, qty]);
+    setItemAmount(total.toFixed(2));
+  }, [base, qty, unit]);
 
   /*<========================================================================= update state   ====================================================================> */
 
@@ -664,40 +707,71 @@ const Addsale = () => {
   }, [submitTimeout]);
 
   /*<================================================================= Search Item Debouncing ========================================================> */
-
-  useEffect(() => {
-
-    const SearchTimer = setTimeout(() => {
-      if (searchItem)
-        handleSearch(searchItem.toUpperCase());
-
-    }, 1500);
-
-    return () => {
-
-      clearTimeout(SearchTimer);
-
-    };
-  }, [searchItem]);
+useEffect(() => {
+  if (!searchItem) {
+    setItemList([]);
+    return;
+  }
+  
+  // Detect rapid input (likely barcode scanner)
+  const now = Date.now();
+  const inputSpeed = now - lastInputTime.current;
+  lastInputTime.current = now;
+  
+  // If input is very fast (< 50ms between chars), it's likely a barcode
+  const isBarcodeInput = inputSpeed < 50;
+  const debounceTime = isBarcodeInput ? 100 : 500; // Reduced from 1500ms
+  
+  const SearchTimer = setTimeout(() => {
+    handleSearch(searchItem.toUpperCase());
+  }, debounceTime);
+  
+  return () => {
+    clearTimeout(SearchTimer);
+  };
+}, [searchItem]);
   /*<========================================================================= search add item   ====================================================================> */
+  const handleSearch = async (searchTerm) => {
+    // Check cache first
+    const cacheKey = searchTerm.toUpperCase();
+    if (itemCache.current.has(cacheKey)) {
+      setItemList(itemCache.current.get(cacheKey));
+      return itemCache.current.get(cacheKey);
+    }
 
-  const handleSearch = async () => {
+    // Cancel previous request
+    if (searchAbortController.current) {
+      searchAbortController.current.abort();
+    }
+
+    searchAbortController.current = new AbortController();
+    lastSearchTerm.current = searchTerm;
+
     let data = new FormData();
-    data.append("search", searchItem);
+    data.append("search", searchTerm);
+
     try {
       const res = await axios.post("item-search", data, {
+        signal: searchAbortController.current.signal,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const items = res.data.data.data;
-      setItemList(items);
 
-      const allOutOfStock = items.every((item) => item.stock === 0);
+      // Only update if this is still the latest search
+      if (lastSearchTerm.current === searchTerm) {
+        itemCache.current.set(cacheKey, items);
+        setItemList(items);
+      }
 
       return items;
     } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Search request aborted');
+        return;
+      }
       console.error("API error:", error);
     }
   };
@@ -719,18 +793,19 @@ const Addsale = () => {
     // handleSearch(newInputValue.toUpperCase());
   };
 
-
   const handleOptionChange = (event, newValue) => {
     setUnsavedItems(true);
-
     setSelectedOption(newValue);
     setValue(newValue);
-    const itemName = newValue ? newValue.iteam_name : "";
 
+    const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
     setItemId(newValue?.id);
-    setIsVisible(true);
-    handleSearch(itemName);
+    setIsVisible(!!newValue);
+
+    // Don't call handleSearch again - item is already selected
+    // The itemList already contains this item from previous search
+
     if (!itemName) {
       setExpiryDate("");
       setMRP("");
@@ -740,11 +815,10 @@ const Addsale = () => {
       setLoc("");
       setUnit("");
       setBatch("");
-      setIsVisible(false); // Close dropdown when no item is selected
+      setIsVisible(false);
     }
-    tableRef1.current?.blur(); // <-- explicitly blur it
 
-    // setSelectedIndex(0)
+    tableRef1.current?.blur();
     setSelectedEditItem(null);
     setIsEditMode(false);
     setSelectedEditItemId("");
@@ -754,42 +828,56 @@ const Addsale = () => {
 
     if (isVisible && value && !batch) {
       tableRef.current.focus();
-      if (!item) return; // Ensure the item is valid.
+      if (!item) return;
     }
   };
 
   const handlePassData = (event) => {
+    // Batch all state updates together
+    const updates = {
+      itemId: event.item_id,
+      selectedOption: event,
+      selectedEditItemId: event.id,
+      searchItem: event.iteam_name,
+      batch: event.batch_number,
+      item: event.iteam_name,
+      unit: event.unit,
+      expiryDate: event.expiry_date,
+      mrp: event.mrp,
+      maxQty: event.stock,
+      base: event.mrp,
+      gst: event.gst_name,
+      loc: event.location,
+      tempQty: event.qty,
+    };
 
-    setItemId(event.item_id);
-    setSelectedOption(event);
-    setSelectedEditItemId(event.id);
-    setSearchItem(event.iteam_name);
-    setBatch(event.batch_number);
-    setItem(event.iteam_name);
-    setUnit(event.unit);
-    setExpiryDate(event.expiry_date);
-    setMRP(event.mrp);
-    setMaxQty(event.stock);
-    setBase(event.mrp);
-    setGst(event.gst_name);
-    // setQty(event.qty);
-    setLoc(event.location);
-    setTempQty(event.qty);
+    // Apply all updates at once using React 18's automatic batching
+    setItemId(updates.itemId);
+    setSelectedOption(updates.selectedOption);
+    setSelectedEditItemId(updates.selectedEditItemId);
+    setSearchItem(updates.searchItem);
+    setBatch(updates.batch);
+    setItem(updates.item);
+    setUnit(updates.unit);
+    setExpiryDate(updates.expiryDate);
+    setMRP(updates.mrp);
+    setMaxQty(updates.maxQty);
+    setBase(updates.base);
+    setGst(updates.gst);
+    setLoc(updates.loc);
+    setTempQty(updates.tempQty);
 
     if (inputRef5.current) {
       inputRef5.current.focus();
     }
-    setAutoCompleteOpen(false); // Close Autocomplete dropdown when batch row is selected
+
+    setAutoCompleteOpen(false);
 
     setUniqueItems((uniqueItems) => {
-      // avoid duplicates by id
       const exists = uniqueItems.some((item) => item.id === event.id);
       if (exists) return uniqueItems;
-
       return [...uniqueItems, { id: event.id, stock: event.stock }];
     });
-
-
   };
   /*<========================================================================= add new item   ====================================================================> */
 
@@ -1213,168 +1301,168 @@ const Addsale = () => {
   };
   /*<========================================================================= handle barcode  ====================================================================> */
 
-const handleBarcode = async () => {
-  if (!barcode) {
-    return;
-  }
-  
-  try {
-    const response = await axios.post(
-      "barcode-batch-list?",
-      { barcode: barcode },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    if (response.status !== 200) {
+  const handleBarcode = async () => {
+    if (!barcode) {
       return;
     }
 
-    setTimeout(() => {
-      handleBarcodeItem();
-    }, 100);
-
-    const handleBarcodeItem = async () => {
-      setUnsavedItems(true);
-      let data = new FormData();
-      data.append("random_number", localStorage.getItem("RandomNumber"));
-      data.append(
-        "unit",
-        Number(response?.data?.data[0]?.batch_list[0]?.unit)
-      );
-      data.append(
-        "batch",
-        response?.data?.data[0]?.batch_list[0]?.batch_name
-          ? response?.data?.data[0]?.batch_list[0]?.batch_name
-          : 0
-      );
-      data.append(
-        "exp",
-        response?.data?.data[0]?.batch_list[0]?.expiry_date
-      );
-      data.append(
-        "mrp",
-        Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
-          : 0
-      );
-      data.append(
-        "qty",
-        Number(response?.data?.data[0]?.batch_list[0]?.qty)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.qty)
-          : 0
-      );
-      data.append(
-        "free_qty",
-        Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
-          : 0
-      );
-      data.append(
-        "ptr",
-        Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
-          : 0
-      );
-      data.append(
-        "discount",
-        Number(response?.data?.data[0]?.batch_list[0]?.discount)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.discount)
-          : 0
-      );
-      data.append(
-        "base",
-        Number(response?.data?.data[0]?.batch_list[0]?.base)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.base)
-          : 0
-      );
-      data.append(
-        "gst",
-        Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
-          : 0
-      );
-      data.append(
-        "location",
-        response?.data?.data[0]?.batch_list[0]?.location
-          ? response?.data?.data[0]?.batch_list[0]?.location
-          : 0
-      );
-      data.append(
-        "margin",
-        Number(response?.data?.data[0]?.batch_list[0]?.margin)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
-          : 0
-      );
-      data.append(
-        "net_rate",
-        Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
-          : 0
-      );
-      data.append(
-        "item_id",
-        Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-          : 0
-      );
-      data.append(
-        "id",
-        Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-          ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
-          : 0
-      );
-      data.append("user_id", userId);
-      data.append("unit_id", Number(0));
-
-      try {
-        const addResponse = await axios.post("sales-item-add", data, {
+    try {
+      const response = await axios.post(
+        "barcode-batch-list?",
+        { barcode: barcode },
+        {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        });
-        
-        setTotalAmount(0);
-        saleItemList();
-        setUnit("");
-        setBatch("");
-        setExpiryDate("");
-        setMRP("");
-        setQty("");
-        setBase("");
-        setGst("");
-        setBatch("");
-        setBarcode("");
-        setLoc("");
-        setOrder("");
-        setIsEditMode(false);
-        setSelectedEditItemId(null);
-        setBarcode("");
-        setValue("");
-        setSearchItem("");
-        
-        if (addResponse.data.status === 401) {
-          history.push("/");
-          localStorage.clear();
         }
-      } catch (error) {
-        console.error("Sales item add error:", error);
-        setUnsavedItems(false);
+      );
+
+      if (response.status !== 200) {
+        return;
       }
-    };
-    
-  } catch (error) {
-    console.error("Barcode API error:", error);
-    if (error.response?.status === 400) {
-      toast.error(error.response?.data?.message || "This barcode has no items");
+
+      setTimeout(() => {
+        handleBarcodeItem();
+      }, 100);
+
+      const handleBarcodeItem = async () => {
+        setUnsavedItems(true);
+        let data = new FormData();
+        data.append("random_number", localStorage.getItem("RandomNumber"));
+        data.append(
+          "unit",
+          Number(response?.data?.data[0]?.batch_list[0]?.unit)
+        );
+        data.append(
+          "batch",
+          response?.data?.data[0]?.batch_list[0]?.batch_name
+            ? response?.data?.data[0]?.batch_list[0]?.batch_name
+            : 0
+        );
+        data.append(
+          "exp",
+          response?.data?.data[0]?.batch_list[0]?.expiry_date
+        );
+        data.append(
+          "mrp",
+          Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.mrp)
+            : 0
+        );
+        data.append(
+          "qty",
+          Number(response?.data?.data[0]?.batch_list[0]?.qty)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.qty)
+            : 0
+        );
+        data.append(
+          "free_qty",
+          Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.maxQty)
+            : 0
+        );
+        data.append(
+          "ptr",
+          Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.ptr)
+            : 0
+        );
+        data.append(
+          "discount",
+          Number(response?.data?.data[0]?.batch_list[0]?.discount)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.discount)
+            : 0
+        );
+        data.append(
+          "base",
+          Number(response?.data?.data[0]?.batch_list[0]?.base)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.base)
+            : 0
+        );
+        data.append(
+          "gst",
+          Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.gst_name)
+            : 0
+        );
+        data.append(
+          "location",
+          response?.data?.data[0]?.batch_list[0]?.location
+            ? response?.data?.data[0]?.batch_list[0]?.location
+            : 0
+        );
+        data.append(
+          "margin",
+          Number(response?.data?.data[0]?.batch_list[0]?.margin)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.margin)
+            : 0
+        );
+        data.append(
+          "net_rate",
+          Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.net_rate)
+            : 0
+        );
+        data.append(
+          "item_id",
+          Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+            : 0
+        );
+        data.append(
+          "id",
+          Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+            ? Number(response?.data?.data[0]?.batch_list[0]?.item_id)
+            : 0
+        );
+        data.append("user_id", userId);
+        data.append("unit_id", Number(0));
+
+        try {
+          const addResponse = await axios.post("sales-item-add", data, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          setTotalAmount(0);
+          saleItemList();
+          setUnit("");
+          setBatch("");
+          setExpiryDate("");
+          setMRP("");
+          setQty("");
+          setBase("");
+          setGst("");
+          setBatch("");
+          setBarcode("");
+          setLoc("");
+          setOrder("");
+          setIsEditMode(false);
+          setSelectedEditItemId(null);
+          setBarcode("");
+          setValue("");
+          setSearchItem("");
+
+          if (addResponse.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+          }
+        } catch (error) {
+          console.error("Sales item add error:", error);
+          setUnsavedItems(false);
+        }
+      };
+
+    } catch (error) {
+      console.error("Barcode API error:", error);
+      if (error.response?.status === 400) {
+        toast.error(error.response?.data?.message || "This barcode has no items");
+      }
+      setUnsavedItems(false);
     }
-    setUnsavedItems(false);
-  }
-};
+  };
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -1431,13 +1519,13 @@ const handleBarcode = async () => {
     let data = new FormData();
     // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
 
-    
-  const prevPoints = Number(previousLoyaltyPoints) || 0;
-  const redeemPoints = Number(loyaltyVal) || 0;
-  
-  const calculatedPreviousLoyaltyPoint = Math.max(0, prevPoints - redeemPoints);
 
-  const calculatedTodayPoint = Number(todayLoyltyPoint) || 0;
+    const prevPoints = Number(previousLoyaltyPoints) || 0;
+    const redeemPoints = Number(loyaltyVal) || 0;
+
+    const calculatedPreviousLoyaltyPoint = Math.max(0, prevPoints - redeemPoints);
+
+    const calculatedTodayPoint = Number(todayLoyltyPoint) || 0;
 
     data.append("bill_no", billNo);
     data.append("customer_id", customer?.id ? customer?.id : "");
@@ -1614,27 +1702,67 @@ const handleBarcode = async () => {
 
 
   /*<========================================================================= get batch list  ====================================================================> */
+  // Memoized batch data map for O(1) lookup
+  const batchDataMap = useMemo(() => {
+    return new Map(batchListData.map(item => [item.id, item]));
+  }, [batchListData]);
 
-  const batchList = async () => {
+  // Memoized item list map
+  const itemListMap = useMemo(() => {
+    return new Map(itemList.map(item => [item.id, item]));
+  }, [itemList]);
+
+  const batchList = async (id) => {
+    if (!id) return;
+
+    // Check cache first
+    if (batchCache.current.has(id)) {
+      const cachedData = batchCache.current.get(id);
+      setBatchListData(cachedData.batchList);
+      setIsAlternative(cachedData.isAlternative);
+      return;
+    }
+
+    // Cancel previous request
+    if (batchAbortController.current) {
+      batchAbortController.current.abort();
+    }
+
+    batchAbortController.current = new AbortController();
+
     let data = new FormData();
-    data.append("iteam_id", itemId || "");
+    data.append("iteam_id", id);
+
     const params = {
-      iteam_id: itemId ? itemId : "",
+      iteam_id: id,
     };
+
     try {
-      const res = await axios
-        .post("batch-list?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setBatchListData(response.data.data);
-          setIsAlternative(response.data.alternative_item_check);
-        });
+      const res = await axios.post("batch-list?", data, {
+        params: params,
+        signal: batchAbortController.current.signal,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const batchList = res.data.data;
+      const isAlternative = res.data.alternative_item_check;
+
+      // Cache the result
+      batchCache.current.set(id, {
+        batchList,
+        isAlternative,
+      });
+
+      setBatchListData(batchList);
+      setIsAlternative(isAlternative);
     } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Batch request aborted');
+        return;
+      }
       console.error("API error:", error);
     }
   };
@@ -1756,20 +1884,29 @@ const handleBarcode = async () => {
           },
         });
 
-      setTotalAmount(0);
-      saleItemList();
-      setUnit("");
-      setBatch("");
-      setExpiryDate("");
-      setMRP("");
-   setQty("");
-      setBase("");
-      setGst("");
-      setBatch("");
-      setBarcode("");
-      setLoc("");
-      setOrder("");
-      setIsEditMode(false);
+      if (response.data.status === 200) {
+
+        setTotalAmount(0);
+        saleItemList();
+        setUnit("");
+        setBatch("");
+        setExpiryDate("");
+        setMRP("");
+        setQty("");
+        setBase("");
+        setGst("");
+        setBatch("");
+        setBarcode("");
+        setLoc("");
+        setOrder("");
+        setIsEditMode(false);
+
+        clearBatchCache(itemEditID || itemId);
+
+        setTotalAmount(0);
+        saleItemList();
+      }
+
 
       //  toast.dismiss();
       // toast.success(response.data.message);

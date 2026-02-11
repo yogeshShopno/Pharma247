@@ -50,15 +50,12 @@ import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 import { Modal } from "flowbite-react";
 import { FaCaretUp } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
-import { Link } from "react-router-dom";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
 
 const AddPurchaseBill = () => {
   const timeoutRef = useRef(null);
   const [ItemPurchaseList, setItemPurchaseList] = useState({ item: [] });
-  const [totalMargin, setTotalMargin] = useState(0);
-  const [marginNetProfit, setMarginNetProfit] = useState(0);
   const [totalNetRate, setTotalNetRate] = useState(0);
   const [totalBase, setTotalBase] = useState(0);
   const [totalFree, setTotalFRee] = useState(0);
@@ -978,8 +975,6 @@ const AddPurchaseBill = () => {
           setFinalTotalAmount(response.data.data.new_total_price);
           setTotalGst(response.data.data.total_gst);
           setTotalQty(response.data.data.total_qty);
-          setTotalMargin(response.data.data.total_margin);
-          setMarginNetProfit(response.data.data.margin_net_profit);
           setTotalNetRate(response.data.data.total_net_rate);
           handleCalNetAmount(response.data.data.new_total_price);
           setTotalBase(response.data.data.total_base);

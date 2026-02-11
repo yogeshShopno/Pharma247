@@ -155,8 +155,8 @@ const Salelist = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
 
           setOpenAddPopUp(false);
           setIsLoading(false);
@@ -181,8 +181,8 @@ toast.success(response.data.meassage);
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setPDFURL(PDFURL);
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -278,422 +278,424 @@ toast.success(response.data.meassage);
     <>
       <div>
         <Header />
-       
-          <div
-            style={{
-              minHeight: 'calc(100vh - 64px)',
-              display: 'flex',
-              flexDirection: 'column',
-              width: '100%',
-            }}
-          >
-            <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
-              <div className="px-4 py-3">
+
+        <div
+          style={{
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+          }}
+        >
+          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+            <div className="px-4 py-3">
+              <div
+                className="sales_hdr_mn"
+                style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
+              >
                 <div
-                  className="sales_hdr_mn"
-                  style={{ display: "flex", gap: "4px", marginBottom: "15px" }}
+                  className="flex flex-row sale_list_pg"
+                  style={{ display: "flex", gap: "4px", alignItems: "center" }}
                 >
                   <div
-                    className="flex flex-row sale_list_pg"
-                    style={{ display: "flex", gap: "4px", alignItems: "center" }}
+                    className="flex flex-row gap-2 sale_lt_txt"
+                    style={{ alignItems: "center" }}
                   >
-                    <div
-                      className="flex flex-row gap-2 sale_lt_txt"
-                      style={{ alignItems: "center" }}
-                    >
-                      <span
-                        style={{
-                          color: "var(--color2)",
-                          display: "flex",
-                          alignItems: "center",
-                          fontWeight: 700,
-                          fontSize: "20px",
-                        }}
-                      >
-                        Sales
-                      </span>
-                      <div>
-                        <ArrowForwardIosIcon
-                          style={{ fontSize: "18px", color: "var(--color1)" }}
-                        />
-                      </div>
-                    </div>
-                    {hasPermission(permissions, "sale bill create") && (
-                      <>
-                        <Button
-                          variant="contained"
-                          className="sale_add_btn gap-2"
-                          size="small"
-                          style={{
-                            backgroundColor: "var(--color1)",
-                            fontSize: "12px",
-                          }}
-                          onClick={goIntoAdd}
-                        >
-                          <AddIcon />
-                          New
-                        </Button>
-                      </>
-                    )}
-                  </div>
-                  <div className="headerList">
-                    <Button
-                      variant="contained"
-                      className="sale_add_pdf"
-                      style={{ background: "var(--color1)", color: "white" }}
-                      onClick={() => {
-                        setOpenAddPopUp(true);
+                    <span
+                      style={{
+                        color: "var(--color2)",
+                        display: "flex",
+                        alignItems: "center",
+                        fontWeight: 700,
+                        fontSize: "20px",
                       }}
                     >
-                      Generate PDF
-                    </Button>
+                      Sales
+                    </span>
+                    <div>
+                      <ArrowForwardIosIcon
+                        style={{ fontSize: "18px", color: "var(--color1)" }}
+                      />
+                    </div>
                   </div>
+                  {hasPermission(permissions, "sale bill create") && (
+                    <>
+                      <Button
+                        variant="contained"
+                        className="sale_add_btn gap-2"
+                        size="small"
+                        style={{
+                          backgroundColor: "var(--color1)",
+                          fontSize: "12px",
+                        }}
+                        onClick={goIntoAdd}
+                      >
+                        <AddIcon />
+                        New
+                      </Button>
+                    </>
+                  )}
                 </div>
-                <div
-                  className="row border-b px-4 border-dashed"
-                  style={{ borderColor: "var(--color2)" }}
-                ></div>
-              </div>
-              <div className="firstrow px-4">
-                <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
-                  <div className="detail flex flex-col">
-                    <span className="text-gray-500 block">Start Date</span>
-                    <div className="" style={{ width: "100%" }}>
-                      <DatePicker
-                        className="custom-datepicker"
-                        selected={PdfstartDate}
-                        onChange={(newDate) => setPdfStartDate(newDate)}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </div>
-                  <div className="detail flex flex-col">
-                    <span className="text-gray-500 block">End Date</span>
-                    <div className="" style={{ width: "100%" }}>
-                      <DatePicker
-                        className="custom-datepicker"
-                        selected={PdfendDate}
-                        onChange={(newDate) => setPdfEndDate(newDate)}
-                        dateFormat="dd/MM/yyyy"
-                      />
-                    </div>
-                  </div>
-                  <div
-                    className=""
-                    style={{
-                      display: "flex",
-                      alignItems: "end",
-                      justifyContent: "flex-end",
+                <div className="headerList">
+                  <Button
+                    variant="contained"
+                    className="sale_add_pdf"
+                    style={{ background: "var(--color1)", color: "white" }}
+                    onClick={() => {
+                      setOpenAddPopUp(true);
                     }}
                   >
-                    <Button
-                      variant="contained"
-                      className=""
-                      size="small"
-                      style={{
-                        minHeight: "38px",
-                        alignItems: "center",
-                        background: "var(--color1)",
-                      }}
-                      onClick={() => saleBillList(currentPage)}
-                    >
-                      <SwapVertIcon size="large" style={{ color: "white", fontSize: "20px" }} />
-                      Filter
-                    </Button>
-                  </div>
+                    Generate PDF
+                  </Button>
                 </div>
               </div>
-              <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
-                <table
-                  className="w-full border-collapse custom-table"
+              <div
+                className="row border-b px-4 border-dashed"
+                style={{ borderColor: "var(--color2)" }}
+              ></div>
+            </div>
+            <div className="firstrow px-4">
+              <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
+                <div className="detail flex flex-col">
+                  <span className="text-gray-500 block">Start Date</span>
+                  <div className="" style={{ width: "100%" }}>
+                    <DatePicker
+                      className="custom-datepicker"
+                      selected={PdfstartDate}
+                      onChange={(newDate) => setPdfStartDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+                </div>
+                <div className="detail flex flex-col">
+                  <span className="text-gray-500 block">End Date</span>
+                  <div className="" style={{ width: "100%" }}>
+                    <DatePicker
+                      className="custom-datepicker"
+                      selected={PdfendDate}
+                      onChange={(newDate) => setPdfEndDate(newDate)}
+                      dateFormat="dd/MM/yyyy"
+                    />
+                  </div>
+                </div>
+                <div
+                  className=""
                   style={{
-                    whiteSpace: "nowrap",
-                    borderCollapse: "separate",
-                    borderSpacing: "0 6px",
+                    display: "flex",
+                    alignItems: "end",
+                    justifyContent: "flex-end",
                   }}
                 >
-                  <thead>
-                    <tr>
-                      <th>SR. No</th>
-                      {columns.map((column, index) => (
-                        <th
-                          key={column.id}
-                          style={{ minWidth: column.minWidth }}
-                        >
-                          <div className="headerStyle">
-                            <span>{column.label}</span>
-                            <SwapVertIcon
-                              style={{ cursor: "pointer" }}
-                              onClick={() => sortByColumn(column.id)}
-                            />
-                            <TextField
-                              autoComplete="off"
-                              // label={`Search ${column.label}`}
-                              label="Type Here"
-                              id="filled-basic"
-                              size="small"
-                              sx={{ width: "150px" }}
-                              value={searchTerms[index]}
-                              onChange={(e) =>
-                                handleSearchChange(index, e.target.value)
-                              }
-                            />
-                          </div>
-                        </th>
-                      ))}
-                      <th> Action</th>
-                    </tr>
-                  </thead>
-                 
-                  <tbody style={{ background: "#3f621217" }}>
-                    {paginatedData.length === 0 ? (
-                      <tr>
-                        <td
-                          colSpan={columns.length + 2}
-                          style={{
-                            textAlign: "center",
-                            color: "gray",
-                            borderRadius: "10px 10px 10px 10px",
-                          }}
-                        >
-                          No data found
-                        </td>
-                      </tr>
-                    ) : (
-                      paginatedData.map((row, index) => {
-                        return (
-                          <tr key={row.id}>
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {startIndex + index}
-                            </td>
-                            {columns.map((column) => {
-                              if (column.id === "customer_info") {
-                                const name = row.name ? row.name : "";
-                                const mobileNumber = row.mobile_numbr
-                                  ? row.mobile_numbr
-                                  : "";
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push("/salebill/view/" + row.id);
-                                    }}
-                                  >
-                                    {name && mobileNumber
-                                      ? `${name} / ${mobileNumber}`
-                                      : name || mobileNumber || "-"}
-                                  </td>
-                                );
-                              } else {
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push("/salebill/view/" + row.id);
-                                    }}
-                                  >
-                                    {row[column.id]}
-                                  </td>
-                                );
-                              }
-                            })}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <div className="flex gap-4">
-                                <VisibilityIcon
-                                  className="cursor-pointer primary hover:secondary"
-                                  onClick={() => {
-                                    history.push(`/salebill/view/${row.id}`);
-                                  }}
-                                />
-                                <FaFilePdf
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => pdfGenerator(row.id)}
-                                />
-                                <IoLogoWhatsapp
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => handleWhatsAppmsg(row)}
-                                />
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
+                  <Button
+                    variant="contained"
+                    className=""
+                    size="small"
+                    style={{
+                      minHeight: "38px",
+                      alignItems: "center",
+                      background: "var(--color1)",
+                    }}
+                    onClick={() => saleBillList(currentPage)}
+                  >
+                    <SwapVertIcon size="large" style={{ color: "white", fontSize: "20px" }} />
+                    Filter
+                  </Button>
+                </div>
               </div>
             </div>
-            <div
-              className="flex justify-center mt-4"
-              style={{
-                marginTop: 'auto',
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '1rem',
-              }}
-            >
-              <button
-                onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage === 1}
+            <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
+              <table
+                className="w-full border-collapse custom-table"
+                style={{
+                  whiteSpace: "nowrap",
+                  borderCollapse: "separate",
+                  borderSpacing: "0 6px",
+                }}
               >
-                Previous
-              </button>
-              {currentPage > 2 && (
-                <button
-                  onClick={() => handleClick(currentPage - 2)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 2}
-                </button>
-              )}
-              {currentPage > 1 && (
-                <button
-                  onClick={() => handleClick(currentPage - 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage - 1}
-                </button>
-              )}
-              <button
-                onClick={() => handleClick(currentPage)}
-                className="mx-1 px-3 py-1 rounded secondary-bg text-white"
-              >
-                {currentPage}
-              </button>
-              {currentPage < totalPages && (
-                <button
-                  onClick={() => handleClick(currentPage + 1)}
-                  className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
-                >
-                  {currentPage + 1}
-                </button>
-              )}
-              <button
-                onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
-                  ? "bg-gray-200 text-gray-700"
-                  : "secondary-bg text-white"
-                  }`}
-                disabled={currentPage >= totalPages}
-              >
-                Next
-              </button>
-            </div>
+                <thead>
+                  <tr>
+                    <th>SR. No</th>
+                    {columns.map((column, index) => (
+                      <th
+                        key={column.id}
+                        style={{ minWidth: column.minWidth }}
+                      >
+                        <div className="headerStyle">
+                          <span>{column.label}</span>
+                          <SwapVertIcon
+                            style={{ cursor: "pointer" }}
+                            onClick={() => sortByColumn(column.id)}
+                          />
+                          <TextField
+                            autoComplete="off"
+                            // label={`Search ${column.label}`}
+                            label="Type Here"
+                            id="filled-basic"
+                            size="small"
+                            sx={{ width: "150px" }}
+                            value={searchTerms[index]}
+                            onChange={(e) =>
+                              handleSearchChange(index, e.target.value)
+                            }
+                          />
+                        </div>
+                      </th>
+                    ))}
+                    <th> Action</th>
+                  </tr>
+                </thead>
 
-            <Dialog
-              open={openAddPopUp}
-              className="order_list_ml custom-dialog"
-              sx={{
-                "& .MuiDialog-container": {
-                  "& .MuiPaper-root": {
-                    width: "50%",
-                    height: "50%",
-                    maxWidth: "500px",
-                    maxHeight: "80vh",
-                    overflowY: "auto",
-                  },
-                },
-              }}
-            >
-              <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
-                Generate PDF
-              </DialogTitle>
-              <IconButton
-                aria-label="close"
-                onClick={() => {
-                  setOpenAddPopUp(false);
-                }}
-                sx={{
-                  position: "absolute",
-                  right: 8,
-                  top: 8,
-                  color: "#ffffff",
-                }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  <div
-                    className="flex"
-                    style={{ flexDirection: "column", gap: "19px" }}
-                  >
-                    <div className="flex gap-10">
-                      <div
+                <tbody style={{ background: "#3f621217" }}>
+                  {paginatedData.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={columns.length + 2}
                         style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          width: "100%",
+                          textAlign: "center",
+                          color: "gray",
+                          borderRadius: "10px 10px 10px 10px",
                         }}
                       >
-                        <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
-                          <div className="flex flex-col md:flex-row w-full gap-2">
-                            <div style={{ width: "100%" }}>
-                              <span className="primary block">Start Date</span>
-                              <div style={{ width: "100%" }}>
-                                <DatePicker
-                                  className="custom-datepicker"
-                                  selected={PdfstartDate}
-                                  onChange={(newDate) =>
-                                    setPdfStartDate(newDate)
-                                  }
-                                  dateFormat="dd/MM/yyyy"
+                        No data found
+                      </td>
+                    </tr>
+                  ) : (
+                    paginatedData.map((row, index) => {
+                      return (
+                        <tr key={row.id}>
+                          <td style={{ borderRadius: "10px 0 0 10px" }}>
+                            {startIndex + index}
+                          </td>
+                          {columns.map((column) => {
+                            if (column.id === "customer_info") {
+                              const name = row.name ? row.name : "";
+                              const mobileNumber = row.mobile_numbr
+                                ? row.mobile_numbr
+                                : "";
+                              return (
+                                <td
+                                  key={column.id}
+                                  onClick={() => {
+                                    history.push("/salebill/view/" + row.id);
+                                  }}
+                                >
+                                  {name && mobileNumber
+                                    ? `${name} / ${mobileNumber}`
+                                    : name || mobileNumber || "-"}
+                                </td>
+                              );
+                            } else {
+                              return (
+                                <td
+                                  key={column.id}
+                                  onClick={() => {
+                                    history.push("/salebill/view/" + row.id);
+                                  }}
+                                >
+                                  {row[column.id]}
+                                </td>
+                              );
+                            }
+                          })}
+                          <td style={{ borderRadius: "0 10px 10px 0" }}>
+                            <div className="flex gap-4">
+                              <VisibilityIcon
+                                className="cursor-pointer primary hover:secondary"
+                                onClick={() => {
+                                  history.push(`/salebill/view/${row.id}`);
+                                }}
+                              />
+                              <FaFilePdf
+                                className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                onClick={() => pdfGenerator(row.id)}
+                              />
+                              {hasPermission(permissions, "sale whatsapp bill status check") && (
+                                <IoLogoWhatsapp
+                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                  onClick={() => handleWhatsAppmsg(row)} 
                                 />
-                              </div>
+                                )}
                             </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            className="flex justify-center mt-4"
+            style={{
+              marginTop: 'auto',
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '1rem',
+            }}
+          >
+            <button
+              onClick={handlePrevious}
+              className={`mx-1 px-3 py-1 rounded ${currentPage === 1
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            {currentPage > 2 && (
+              <button
+                onClick={() => handleClick(currentPage - 2)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 2}
+              </button>
+            )}
+            {currentPage > 1 && (
+              <button
+                onClick={() => handleClick(currentPage - 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage - 1}
+              </button>
+            )}
+            <button
+              onClick={() => handleClick(currentPage)}
+              className="mx-1 px-3 py-1 rounded secondary-bg text-white"
+            >
+              {currentPage}
+            </button>
+            {currentPage < totalPages && (
+              <button
+                onClick={() => handleClick(currentPage + 1)}
+                className="mx-1 px-3 py-1 rounded bg-gray-200 text-gray-700"
+              >
+                {currentPage + 1}
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
+                ? "bg-gray-200 text-gray-700"
+                : "secondary-bg text-white"
+                }`}
+              disabled={currentPage >= totalPages}
+            >
+              Next
+            </button>
+          </div>
+
+          <Dialog
+            open={openAddPopUp}
+            className="order_list_ml custom-dialog"
+            sx={{
+              "& .MuiDialog-container": {
+                "& .MuiPaper-root": {
+                  width: "50%",
+                  height: "50%",
+                  maxWidth: "500px",
+                  maxHeight: "80vh",
+                  overflowY: "auto",
+                },
+              },
+            }}
+          >
+            <DialogTitle id="alert-dialog-title" style={{ fontWeight: 700 }}>
+              Generate PDF
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={() => {
+                setOpenAddPopUp(false);
+              }}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: "#ffffff",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                <div
+                  className="flex"
+                  style={{ flexDirection: "column", gap: "19px" }}
+                >
+                  <div className="flex gap-10">
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "100%",
+                      }}
+                    >
+                      <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                        <div className="flex flex-col md:flex-row w-full gap-2">
+                          <div style={{ width: "100%" }}>
+                            <span className="primary block">Start Date</span>
                             <div style={{ width: "100%" }}>
-                              <span className="primary block">End Date</span>
-                              <div style={{ width: "100%" }}>
-                                <DatePicker
-                                  className="custom-datepicker"
-                                  selected={PdfendDate}
-                                  onChange={(newDate) => setPdfEndDate(newDate)}
-                                  dateFormat="dd/MM/yyyy"
-                                />
-                              </div>
+                              <DatePicker
+                                className="custom-datepicker"
+                                selected={PdfstartDate}
+                                onChange={(newDate) =>
+                                  setPdfStartDate(newDate)
+                                }
+                                dateFormat="dd/MM/yyyy"
+                              />
+                            </div>
+                          </div>
+                          <div style={{ width: "100%" }}>
+                            <span className="primary block">End Date</span>
+                            <div style={{ width: "100%" }}>
+                              <DatePicker
+                                className="custom-datepicker"
+                                selected={PdfendDate}
+                                onChange={(newDate) => setPdfEndDate(newDate)}
+                                dateFormat="dd/MM/yyyy"
+                              />
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions style={{ padding: "20px 24px" }}>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  className="p-5"
-                  style={{
-                    background: "var(--COLOR_UI_PHARMACY)",
-                    color: "white",
-                  }}
-                  onClick={() => {
-                    AllPDFGenerate();
-                  }}
-                >
-                  Genrate
-                </Button>
-                <Button
-                  autoFocus
-                  variant="contained"
-                  onClick={() => {
-                    setOpenAddPopUp(false);
-                  }}
-                  color="error"
-                >
-                  Cancel
-                </Button>
-              </DialogActions>
-            </Dialog>
-          </div>
-        
+                </div>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions style={{ padding: "20px 24px" }}>
+              <Button
+                autoFocus
+                variant="contained"
+                className="p-5"
+                style={{
+                  background: "var(--COLOR_UI_PHARMACY)",
+                  color: "white",
+                }}
+                onClick={() => {
+                  AllPDFGenerate();
+                }}
+              >
+                Genrate
+              </Button>
+              <Button
+                autoFocus
+                variant="contained"
+                onClick={() => {
+                  setOpenAddPopUp(false);
+                }}
+                color="error"
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
+
       </div>
     </>
   );

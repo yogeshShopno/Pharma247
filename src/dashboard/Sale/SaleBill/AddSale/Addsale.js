@@ -135,7 +135,7 @@ const Addsale = () => {
   const [openCustomer, setOpenCustomer] = useState(false);
   const [doctor, setDoctor] = useState(null);
   const [clinic, setClinic] = useState();
-  const [netAmount, setNetAmount] = useState(0);
+  const [netAmount, setNetAmount] = useState(null);
   const [loc, setLoc] = useState("");
   const [itemAmount, setItemAmount] = useState(null);
   let defaultDate = new Date();
@@ -188,6 +188,7 @@ const Addsale = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [billSaveDraft, setBillSaveDraft] = useState("0");
+  
   const toggleModal = async () => {
     // If modal is currently open and we're closing it, update points
     if (isModalOpen && netAmount >= 0) {
@@ -436,7 +437,10 @@ const Addsale = () => {
   };
 
   useEffect(() => {
-    updateTodayPoints()
+    if(netAmount){
+
+      updateTodayPoints()
+    }
   }, [netAmount])
 
   // Cleanup abort controllers on unmount
@@ -467,12 +471,13 @@ const Addsale = () => {
     itemCache.current.clear();
     batchCache.current.clear();
   }, []);
+
   //  =============================== On submit the today point update ===============================
+
   const updateTodayPoints = async () => {
     let data = new FormData();
     data.append("net_amount", netAmount || 0);
     data.append("customer_id", customer?.id ? customer?.id : "");
-
 
     try {
       const response = await axios.post("sales-update-today-points", data, {

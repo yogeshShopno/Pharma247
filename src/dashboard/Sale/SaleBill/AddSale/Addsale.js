@@ -91,7 +91,7 @@ const Addsale = () => {
   ];
   const [todayLoyltyPoint, setTodayLoyaltyPoint] = useState(0);
   const userId = localStorage.getItem("userId");
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState(null);
   const [paymentType, setPaymentType] = useState("cash");
   const [pickup, setPickup] = useState("Counter");
   const [id, setId] = useState("");
@@ -1009,6 +1009,8 @@ const Addsale = () => {
       });
       const customers = response.data.data || [];
       setCustomerDetails(customers);
+
+      console.log(response.data.data[0],"firstCustomer")
 
       if (customers.length > 0) {
         const firstCustomer = customers[0];

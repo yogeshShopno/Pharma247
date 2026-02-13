@@ -632,31 +632,33 @@ const Addsale = () => {
     }
   }, [searchQuery, token]);
 
-  useEffect(() => {
-    const fetchDoctors = async () => {
-      let data = new FormData();
-      // const params = { search: searchDoctor || "" };
-      // data.append("search",searchDoctor)
-      // setIsLoading(true);
-      try {
-        const res = await axios.post("doctor-list?", data, {
+  const fetchDoctors = async () => {
+    let data = new FormData();
+    // const params = { search: searchDoctor || "" };
+    // data.append("search",searchDoctor)
+    // setIsLoading(true);
+    try {
+      const res = await axios.post("doctor-list?", data, {
 
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setDoctorData(res.data.data || []);
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDoctorData(res.data.data || []);
 
-        // Set default doctor only on initial load
-        if (!doctor && res.data.data?.length) {
-          // const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
-          setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
-        }
-      } catch (err) {
-        // handle error
-      } finally {
-        // setIsLoading(false);
-           BankList()
+   
+      if (!doctor ) {
+        // const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
+        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
       }
-    };
+    } catch (err) {
+      // handle error
+    } finally {
+      // setIsLoading(false);
+      BankList()
+    }
+  };
+
+  useEffect(() => {
+
     const timeout = setTimeout(fetchDoctors, 500);
     return () => clearTimeout(timeout);
 
@@ -2221,7 +2223,7 @@ const Addsale = () => {
   return (
     <>
 
-      {/* <Header /> */}
+      <Header />
       <ToastContainer
         position="top-right"
         autoClose={5000}

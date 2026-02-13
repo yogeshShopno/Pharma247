@@ -63,12 +63,12 @@ const Header = () => {
   };
 
   useEffect(() => {
-    fetchNotification();
+    // fetchNotification();
   }, []);
 
   useEffect(() => {
     setToken(localStorage.getItem("token"));
-    userPermission(token)
+    // userPermission(token)
 
   }, [token]);
 

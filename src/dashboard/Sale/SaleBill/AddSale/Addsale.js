@@ -188,7 +188,7 @@ const Addsale = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [billSaveDraft, setBillSaveDraft] = useState("0");
-  
+
   const toggleModal = async () => {
     // If modal is currently open and we're closing it, update points
     if (isModalOpen && netAmount >= 0) {
@@ -437,7 +437,7 @@ const Addsale = () => {
   };
 
   useEffect(() => {
-    if(netAmount){
+    if (netAmount) {
 
       updateTodayPoints()
     }
@@ -584,7 +584,7 @@ const Addsale = () => {
 
   useEffect(() => {
     // ListOfDoctor();
-    BankList();
+
     const handleClickOutside = (event) => {
       if (tableRef.current && !tableRef.current.contains(event.target)) {
         setIsVisible(false);
@@ -602,7 +602,7 @@ const Addsale = () => {
         let data = new FormData();
         const name = searchQuery.split(" [")[0];
         data.append("search", name);
-        setIsLoading(true);
+        // setIsLoading(true);
         try {
           const response = await axios.post("list-customer", data, {
             // params: params,
@@ -615,9 +615,9 @@ const Addsale = () => {
             history.push("/");
             localStorage.clear();
           }
-          setIsLoading(false);
+          // setIsLoading(false);
         } catch (error) {
-          setIsLoading(false);
+          // setIsLoading(false);
           console.error("API error:", error);
         }
       };
@@ -637,7 +637,7 @@ const Addsale = () => {
       let data = new FormData();
       // const params = { search: searchDoctor || "" };
       // data.append("search",searchDoctor)
-      setIsLoading(true);
+      // setIsLoading(true);
       try {
         const res = await axios.post("doctor-list?", data, {
 
@@ -648,18 +648,19 @@ const Addsale = () => {
         // Set default doctor only on initial load
         if (!doctor && res.data.data?.length) {
           // const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
-          setDoctor(()=>res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
+          setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
         }
       } catch (err) {
         // handle error
       } finally {
-        setIsLoading(false);
+        // setIsLoading(false);
+           BankList()
       }
     };
     const timeout = setTimeout(fetchDoctors, 500);
     return () => clearTimeout(timeout);
 
-  }, [token,searchDoctor]);
+  }, []);
 
 
   useEffect(() => {
@@ -713,29 +714,29 @@ const Addsale = () => {
   }, [submitTimeout]);
 
   /*<================================================================= Search Item Debouncing ========================================================> */
-useEffect(() => {
-  if (!searchItem) {
-    setItemList([]);
-    return;
-  }
-  
-  // Detect rapid input (likely barcode scanner)
-  const now = Date.now();
-  const inputSpeed = now - lastInputTime.current;
-  lastInputTime.current = now;
-  
-  // If input is very fast (< 50ms between chars), it's likely a barcode
-  const isBarcodeInput = inputSpeed < 50;
-  const debounceTime = isBarcodeInput ? 100 : 500; // Reduced from 1500ms
-  
-  const SearchTimer = setTimeout(() => {
-    handleSearch(searchItem.toUpperCase());
-  }, debounceTime);
-  
-  return () => {
-    clearTimeout(SearchTimer);
-  };
-}, [searchItem]);
+  useEffect(() => {
+    if (!searchItem) {
+      setItemList([]);
+      return;
+    }
+
+    // Detect rapid input (likely barcode scanner)
+    const now = Date.now();
+    const inputSpeed = now - lastInputTime.current;
+    lastInputTime.current = now;
+
+    // If input is very fast (< 50ms between chars), it's likely a barcode
+    const isBarcodeInput = inputSpeed < 50;
+    const debounceTime = isBarcodeInput ? 100 : 500; // Reduced from 1500ms
+
+    const SearchTimer = setTimeout(() => {
+      handleSearch(searchItem.toUpperCase());
+    }, debounceTime);
+
+    return () => {
+      clearTimeout(SearchTimer);
+    };
+  }, [searchItem]);
   /*<========================================================================= search add item   ====================================================================> */
   const handleSearch = async (searchTerm) => {
     // Check cache first
@@ -966,7 +967,7 @@ useEffect(() => {
   const fetchCustomerHistory = async (customerId) => {
     let data = new FormData();
     data.append("id", customerId);
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const response = await axios.post("customer-view", data, {
         headers: {
@@ -978,9 +979,9 @@ useEffect(() => {
 
         setOpenCustomerHistory(true);
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
@@ -1025,7 +1026,7 @@ useEffect(() => {
   const customerAllData = async (searchQuery) => {
     let data = new FormData();
     data.append("search", searchQuery);
-    setIsLoading(true);
+    // setIsLoading(true);
     try {
       const response = await axios.post("list-customer", data, {
         // params: params,
@@ -1048,9 +1049,9 @@ useEffect(() => {
         history.push("/");
         localStorage.clear();
       }
-      setIsLoading(false);
+      // setIsLoading(false);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
       console.error("API error:", error);
     }
   };
@@ -1071,6 +1072,10 @@ useEffect(() => {
   /*<========================================================================= fetch bank data   ====================================================================> */
 
   const BankList = async () => {
+
+    if (isLoading) return;
+    setIsLoading(true)
+
     let data = new FormData();
     try {
       await axios
@@ -1089,6 +1094,8 @@ useEffect(() => {
     } catch (error) {
       console.error("API error:", error);
     }
+    setIsLoading(false)
+
   };
 
 
@@ -1165,7 +1172,7 @@ useEffect(() => {
           toast.success(response.data.message);
         });
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
       if (error.response?.data?.status === 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
@@ -1201,7 +1208,7 @@ useEffect(() => {
       toast.dismiss();
       toast.success(response.data.message);
     } catch (error) {
-      setIsLoading(false);
+      // setIsLoading(false);
       if (error.response?.data?.status === 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
@@ -1765,7 +1772,7 @@ useEffect(() => {
       setIsAlternative(isAlternative);
     } catch (error) {
       if (error.name === 'AbortError') {
-      
+
         return;
       }
       console.error("API error:", error);
@@ -2214,7 +2221,7 @@ useEffect(() => {
   return (
     <>
 
-      <Header />
+      {/* <Header /> */}
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -2438,7 +2445,7 @@ useEffect(() => {
                   isOptionEqualToValue={(option, value) =>
                     option.phone_number === value.phone_number
                   }
-                  loading={isLoading}
+                  // loading={isLoading}
                   sx={{
                     width: "100%",
                     minWidth: {
@@ -2618,7 +2625,7 @@ useEffect(() => {
                     option?.phone_number === value?.phone_number
                   }
 
-                  loading={isLoading}
+                  // loading={isLoading}
                   sx={{
                     width: "100%",
                     minWidth: {
@@ -2648,17 +2655,17 @@ useEffect(() => {
                       {...params}
                       variant="outlined"
                       placeholder="Search by DR. Name, Mobile Number"
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {isLoading ? (
-                              <CircularProgress color="inherit" size={20} />
-                            ) : null}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      }}
+                      // InputProps={{
+                      //   ...params.InputProps,
+                      //   endAdornment: (
+                      //     <>
+                      //       {isLoading ? (
+                      //         <CircularProgress color="inherit" size={20} />
+                      //       ) : null}
+                      //       {params.InputProps.endAdornment}
+                      //     </>
+                      //   ),
+                      // }}
                       sx={{
                         "& .MuiInputBase-input::placeholder": {
                           fontSize: "1rem",

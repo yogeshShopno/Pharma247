@@ -10,9 +10,9 @@ axios.defaults.baseURL = 'https://testadmin.pharma247.in/api';
 const token = localStorage.getItem("token");
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 root.render(
-  <React.StrictMode>
+//  <React.StrictMode>
     <App />
-  </React.StrictMode>
+  //</React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

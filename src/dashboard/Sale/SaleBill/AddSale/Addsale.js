@@ -1002,8 +1002,7 @@ const Addsale = () => {
     data.append("search", searchQuery);
     // setIsLoading(true);
     try {
-      const response = await axios.post("list-customer", data, {
-        // params: params,
+      const response = await axios.post("list-customer", {}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

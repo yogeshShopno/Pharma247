@@ -635,19 +635,20 @@ const Addsale = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       let data = new FormData();
-      const params = { search: searchDoctor || "" };
+      // const params = { search: searchDoctor || "" };
+      // data.append("search",searchDoctor)
       setIsLoading(true);
       try {
         const res = await axios.post("doctor-list?", data, {
-          params,
+
           headers: { Authorization: `Bearer ${token}` }
         });
         setDoctorData(res.data.data || []);
 
         // Set default doctor only on initial load
         if (!doctor && res.data.data?.length) {
-          const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
-          setDoctor(defaultDoc);
+          // const defaultDoc = res.data.data.find(d => d.default_doctor === "1") || res.data.data[0];
+          setDoctor(()=>res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
         }
       } catch (err) {
         // handle error
@@ -658,7 +659,7 @@ const Addsale = () => {
     const timeout = setTimeout(fetchDoctors, 500);
     return () => clearTimeout(timeout);
 
-  }, [token]);
+  }, [token,searchDoctor]);
 
 
   useEffect(() => {

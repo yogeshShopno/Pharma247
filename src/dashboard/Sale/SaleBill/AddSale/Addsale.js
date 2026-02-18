@@ -189,7 +189,7 @@ const Addsale = () => {
   };
 
 
-  /*<============================================================================ Input ref on keydown enter ===================================================================> */
+  /*<=================================================== Input ref on keydown enter ==========================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const tableRef1 = useRef(null);
@@ -214,31 +214,9 @@ const Addsale = () => {
   const [openItemHistory, setOpenItemHistory] = useState(false);
 
 
-  /*<============================================================ Pil remider  ===================================================> */
 
-  useEffect(() => {
-    if (!ItemSaleList?.sales_item?.length) return;
 
-    const updated = {};
-    ItemSaleList.sales_item.forEach((item) => {
-      const totalDose = 1 + 0 + 1;
-      const refillDays = totalDose > 0 ? Math.floor(item.qty / totalDose) : 0;
-      const refillDate = new Date();
-      refillDate.setDate(refillDate.getDate() + refillDays);
-
-      updated[item.id] = {
-        morning: 1,
-        noon: 0,
-        night: 1,
-        refillDays,
-        refillDate,
-      };
-    });
-
-    setPillTimes(updated);
-  }, [ItemSaleList]);
-
-  /*<============================================================ disable autocomplete to focus when tableref is focused  ===================================================> */
+  /*<============================================ disable autocomplete to focus when tableref is focused  ===================================> */
   useEffect(() => {
     const handleTableFocus = () => setAutocompleteDisabled(false);
     const handleTableBlur = () => setAutocompleteDisabled(true);
@@ -305,7 +283,7 @@ const Addsale = () => {
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
   }, [ItemSaleList.sales_item, selectedIndex, isVisible, selectedOption, searchItem]);
-  /*<================================================================================== handle shortcut  =========================================================================> */
+  /*<============================================================= handle shortcut  ====================================================> */
 
   useEffect(() => {
     const handleKeyDown = async (event) => {
@@ -378,16 +356,77 @@ const Addsale = () => {
     };
   }, [billNo, ItemSaleList, isSubmitting, netAmount, totalAmount, loyaltyVal, customer]);
 
-  const hasSehatPlan = (option) =>
-    option?.sehat_plan_name && option.sehat_plan_name.trim() !== "";
 
-  const isDateDisabled = (date) => {
-    const today = new Date();
+  /*<========================================================== handle table and keyboard navigation  =====================================================> */
 
-    today.setHours(0, 0, 0, 0);
-    return date > today;
+  const handleTableKeyDown = (e) => {
+    const rows = Array.from(
+      tableRef.current?.querySelectorAll("tr.cursor-pointer") || []
+    );
+    let currentIndex = rows.findIndex((row) => row === document.activeElement);
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setAutoCompleteOpen(false);
+      if (rows.length > 0) {
+        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
+        rows[nextIndex]?.focus();
+        setHighlightedRowId(rows[nextIndex]?.dataset.id);
+      }
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setAutoCompleteOpen(false);
+      if (rows.length > 0) {
+        const prevIndex =
+          currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
+        rows[prevIndex]?.focus();
+        setHighlightedRowId(rows[prevIndex]?.dataset.id);
+      }
+    }
+
+    if (e.key === "Enter") {
+      e.preventDefault();
+      if (currentIndex >= 0 && rows[currentIndex]) {
+        const itemId = rows[currentIndex].getAttribute("data-id");
+        const item = batchListData.find(
+          (item) => String(item.id) === String(itemId)
+        );
+        if (item) {
+          handlePassData(item);
+          setHighlightedRowId(itemId);
+          setAutoCompleteOpen(false);
+        }
+      }
+    }
   };
 
+  {/*<================================================================= row select    ================================================================> */ }
+
+  useEffect(() => {
+    if (isVisible && tableRef.current) {
+      const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
+      if (firstRow) {
+        firstRow.focus();
+        setHighlightedRowId(firstRow.getAttribute("data-id"));
+      }
+    }
+  }, [isVisible, batchListData]);
+
+  {/*<====================================================================== Autocomplete focus   =====================================================================> */ }
+
+  useEffect(() => {
+    function handleDocumentFocus() {
+      if (autoCompleteOpen && searchInputRef.current && document.activeElement !== searchInputRef.current) {
+        setAutoCompleteOpen(false);
+      }
+    }
+    document.addEventListener('focusin', handleDocumentFocus);
+    return () => {
+      document.removeEventListener('focusin', handleDocumentFocus);
+    };
+  }, [autoCompleteOpen]);
+
+  /*<============================================================ utils  ===================================================> */
   const LastPurchaseListcolumns = [
     {
       id: "supplier_name",
@@ -403,6 +442,44 @@ const Addsale = () => {
     { id: "bill_date", label: "Date", minWidth: 100 },
     { id: "bill_no", label: "Bill No", minWidth: 100 },
   ];
+
+  const itemRowInputOrder = [
+    inputRef1, // Unit
+    inputRef3, // Batch
+    inputRef4, // Expiry
+    inputRef5, // MRP
+    inputRef6, // Base
+    inputRef7, // GST
+    inputRef9, // Qty
+    inputRef8, // Loc
+    inputRef10 // Order
+  ];
+
+  const handleKeyDown = (event, index) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      for (let i = index + 1; i < itemRowInputOrder.length; i++) {
+        const nextRef = itemRowInputOrder[i];
+        if (nextRef && nextRef.current && !nextRef.current.disabled) {
+          nextRef.current.focus();
+          return;
+        }
+      }
+    }
+  };
+
+
+
+  const hasSehatPlan = (option) =>
+    option?.sehat_plan_name && option.sehat_plan_name.trim() !== "";
+
+  const isDateDisabled = (date) => {
+    const today = new Date();
+
+    today.setHours(0, 0, 0, 0);
+    return date > today;
+  };
+
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -422,42 +499,15 @@ const Addsale = () => {
     setExpiryDate(inputValue);
   };
 
-  useEffect(() => {
-    if (netAmount) {
+  /*<=============================================== On submit the today point update ===============================================> */
 
+  useEffect(() => {
+
+    if (netAmount) {
       updateTodayPoints()
     }
+
   }, [netAmount])
-
-  useEffect(() => {
-    return () => {
-      if (searchAbortController.current) {
-        searchAbortController.current.abort();
-      }
-      if (batchAbortController.current) {
-        batchAbortController.current.abort();
-      }
-    };
-  }, []);
-
-  const clearItemCache = useCallback(() => {
-    itemCache.current.clear();
-  }, []);
-
-  const clearBatchCache = useCallback((itemId = null) => {
-    if (itemId) {
-      batchCache.current.delete(itemId);
-    } else {
-      batchCache.current.clear();
-    }
-  }, []);
-
-  const clearAllCaches = useCallback(() => {
-    itemCache.current.clear();
-    batchCache.current.clear();
-  }, []);
-
-  //  =============================== On submit the today point update ===============================
 
   const updateTodayPoints = async () => {
     let data = new FormData();
@@ -480,7 +530,7 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= Fetch customer history   ====================================================================> */
+  /*<======================================================= Fetch customer history   ==================================================> */
 
   const fetchItemHistory = async (selectedOption) => {
     let data = new FormData();
@@ -503,12 +553,6 @@ const Addsale = () => {
       toast.dismiss();
       toast.error("Failed to fetch customer history");
     }
-  };
-
-  const handleOpenDialog = (id) => {
-    setOpenPurchaseHistoryPopUp(true);
-    lastPurchseHistory();
-    setSearchItemID(id);
   };
 
   useEffect(() => {
@@ -568,7 +612,6 @@ const Addsale = () => {
   };
 
   useEffect(() => {
-    // ListOfDoctor();
 
     const handleClickOutside = (event) => {
       if (tableRef.current && !tableRef.current.contains(event.target)) {
@@ -580,89 +623,6 @@ const Addsale = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  // useEffect(() => {
-  //   if (searchQuery) {
-  //     const customerAllData = async () => {
-  //       let data = new FormData();
-  //       const name = searchQuery.split(" [")[0];
-  //       data.append("search", name);
-  //       // setIsLoading(true);
-  //       try {
-  //         const response = await axios.post("list-customer", data, {
-  //           // params: params,
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         });
-  //         setCustomerDetails(response.data.data);
-  //         if (response.data.status === 401) {
-  //           history.push("/");
-  //           localStorage.clear();
-  //         }
-  //         // setIsLoading(false);
-  //       } catch (error) {
-  //         // setIsLoading(false);
-  //         console.error("API error:", error);
-  //       }
-  //     };
-
-  //     const delayDebounceFn = setTimeout(() => {
-  //       customerAllData();
-  //     }, 500); // Debounce to prevent too many API calls
-
-  //     return () => clearTimeout(delayDebounceFn);
-  //   } else {
-  //     setCustomerDetails([]);
-  //   }
-  // }, [searchQuery, token]);
-
-  const fetchDoctors = async () => {
-    let data = new FormData();
-    // const params = { search: searchDoctor || "" };
-    // data.append("search",searchDoctor)
-    // setIsLoading(true);
-    try {
-      const res = await axios.post("doctor-list?", data, {
-
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setDoctorData(res.data.data || []);
-
-
-      if (!doctor) {
-        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
-      }
-    } catch (err) {
-      // handle error
-    } finally {
-      // setIsLoading(false);
-      // BankList()
-      customerAllData("")
-
-    }
-  };
-
-  useEffect(() => {
-
-    const timeout = setTimeout(fetchDoctors, 500);
-    return () => clearTimeout(timeout);
-
-  }, []);
-
-
-  useEffect(() => {
-    let doctor = doctorData.filter((d) => d.default_doctor === "1");
-
-    setDoctor(doctor[0]);
-
-  }, [doctorData])
-
-  useEffect(() => {
-    if (itemId) {
-      batchList(itemId);
-    }
-  }, [itemId]);
 
   useEffect(() => {
     if (!qty || !unit || !base) {
@@ -864,6 +824,7 @@ const Addsale = () => {
       return [...uniqueItems, { id: event.id, stock: event.stock }];
     });
   };
+
   /*<========================================================================= add new item   ====================================================================> */
 
   const handleAddNewItemValidation = () => {
@@ -941,7 +902,7 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= Fetch customer history   ====================================================================> */
+  /*<========================================================== Fetch customer history   =====================================================> */
 
   const fetchCustomerHistory = async (customerId) => {
     let data = new FormData();
@@ -967,7 +928,7 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= Find drug group   ====================================================================> */
+  /*<============================================================== Find drug group   =========================================================> */
 
   const fetchItemDrugGroup = async (searchItem) => {
     let data = new FormData();
@@ -1000,16 +961,90 @@ const Addsale = () => {
     setAddBarcode("");
   };
 
-  /*<========================================================================= fetch customer data   ====================================================================> */
+  /*<============================================================== fetch doctor data   =========================================================> */
+  // useEffect(() => {
+  //   if (searchQuery) {
+  //     const customerAllData = async () => {
+  //       let data = new FormData();
+  //       const name = searchQuery.split(" [")[0];
+  //       data.append("search", name);
+  //       // setIsLoading(true);
+  //       try {
+  //         const response = await axios.post("list-customer", data, {
+  //           // params: params,
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         });
+  //         setCustomerDetails(response.data.data);
+  //         if (response.data.status === 401) {
+  //           history.push("/");
+  //           localStorage.clear();
+  //         }
+  //         // setIsLoading(false);
+  //       } catch (error) {
+  //         // setIsLoading(false);
+  //         console.error("API error:", error);
+  //       }
+  //     };
+
+  //     const delayDebounceFn = setTimeout(() => {
+  //       customerAllData();
+  //     }, 500); // Debounce to prevent too many API calls
+
+  //     return () => clearTimeout(delayDebounceFn);
+  //   } else {
+  //     setCustomerDetails([]);
+  //   }
+  // }, [searchQuery, token]);
+
+  const fetchDoctors = async () => {
+    let data = new FormData();
+    // const params = { search: searchDoctor || "" };
+    // data.append("search",searchDoctor)
+    // setIsLoading(true);
+    try {
+      const res = await axios.post("doctor-list?", data, {
+
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDoctorData(res.data.data || []);
+
+
+      if (!doctor) {
+        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
+      }
+    } catch (err) {
+      // handle error
+    } finally {
+      // setIsLoading(false);
+      // BankList()
+      // customerAllData("")
+
+    }
+  };
+
+  // useEffect(() => {
+  //   const timeout = setTimeout(fetchDoctors, 500);
+  //   return () => clearTimeout(timeout);
+  // }, []);
+
+  useEffect(() => {
+    let doctor = doctorData.filter((d) => d.default_doctor === "1");
+
+    setDoctor(doctor[0]);
+
+  }, [doctorData])
+  /*<============================================================== fetch customer data   =========================================================> */
 
   const customerAllData = async (searchQuery) => {
-    
-    if(isLoading) return ;
-    
+
+    if (isLoading) return;
+
     let data = new FormData();
     data.append("search", searchQuery);
     setIsLoading(true);
-    
+
     try {
       const response = await axios.post("list-customer", data, {
         headers: {
@@ -1019,7 +1054,7 @@ const Addsale = () => {
 
       const customers = response.data.data || [];
       setCustomerDetails(customers);
-        // setCustomer(response.data.data[0]);
+      // setCustomer(response.data.data[0]);
 
       if (!searchQuery && customers.length > 0) {
         setCustomer(customers[0]);
@@ -1041,32 +1076,32 @@ const Addsale = () => {
     }
   };
 
- useEffect(() => {
-  if (searchQuery === "") return;
+  useEffect(() => {
+    if (searchQuery === "") return;
 
-  const delayDebounce = setTimeout(() => {
-    // customerAllData(searchQuery);
-  }, 500);
+    const delayDebounce = setTimeout(() => {
+      // customerAllData(searchQuery);
+    }, 500);
 
-  return () => clearTimeout(delayDebounce);
-}, [searchQuery]);
+    return () => clearTimeout(delayDebounce);
+  }, [searchQuery]);
 
 
   useEffect(() => {
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
-    generateRandomNumber();
-    let data = new FormData();
-    data.append("random_number", localStorage.getItem("RandomNumber") || "");
-    axios.post("all-sales-item-delete", data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-      // customerAllData("")
+    // generateRandomNumber();
+    // let data = new FormData();
+    // data.append("random_number", localStorage.getItem("RandomNumber") || "");
+    // axios.post("all-sales-item-delete", data, {
+    //   headers: { Authorization: `Bearer ${token}` },
+    // });
+    // customerAllData("")
 
   }, []);
 
-  /*<========================================================================= fetch bank data   ====================================================================> */
+  /*<============================================================== fetch bank data   =========================================================> */
 
   const BankList = async () => {
 
@@ -1090,7 +1125,7 @@ const Addsale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-    }finally{
+    } finally {
       setIsLoading(false)
     }
 
@@ -1113,32 +1148,7 @@ const Addsale = () => {
   };
 
 
-  const itemRowInputOrder = [
-    inputRef1, // Unit
-    inputRef3, // Batch
-    inputRef4, // Expiry
-    inputRef5, // MRP
-    inputRef6, // Base
-    inputRef7, // GST
-    inputRef9, // Qty
-    inputRef8, // Loc
-    inputRef10 // Order
-  ];
 
-
-
-  const handleKeyDown = (event, index) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      for (let i = index + 1; i < itemRowInputOrder.length; i++) {
-        const nextRef = itemRowInputOrder[i];
-        if (nextRef && nextRef.current && !nextRef.current.disabled) {
-          nextRef.current.focus();
-          return;
-        }
-      }
-    }
-  };
   /*<========================================================================= add doctor   ====================================================================> */
 
   const AddDoctorRecord = async () => {
@@ -1177,6 +1187,7 @@ const Addsale = () => {
       }
     }
   };
+
   /*<========================================================================= add customer   ====================================================================> */
 
   const AddCustomerRecord = async () => {
@@ -1213,44 +1224,6 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= purchase history   ====================================================================> */
-
-  const lastPurchseHistory = async () => {
-    let data = new FormData();
-    const params = {
-      item_id: itemId ? itemId : "",
-    };
-    setIsLoading(true);
-    try {
-      await axios
-        .post("online-order-item?", data, {
-          params: params,
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setPurchaseHistory(response.data.data);
-          setIsLoading(false);
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    }
-  };
-  /*<================================================================== state update immediatly  =============================================================> */
-
-  useEffect(() => {
-    if (selectedEditItem) {
-      setSelectedEditItemId(selectedEditItem.id);
-      setBarcodeItemName(selectedEditItem.iteam_name);
-      setSearchItem(selectedEditItem.iteam_name);
-      setItemEditID(selectedEditItem.item_id);
-      setLoc(selectedEditItem.location);
-    }
-    setSelectedOption(selectedEditItem);
-
-  }, [selectedEditItem]);
-
   /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
@@ -1267,8 +1240,20 @@ const Addsale = () => {
     } else {
       setMaxQty(item.stock);
     }
-
   };
+
+  useEffect(() => {
+    if (selectedEditItem) {
+      setSelectedEditItemId(selectedEditItem.id);
+      setBarcodeItemName(selectedEditItem.iteam_name);
+      setSearchItem(selectedEditItem.iteam_name);
+      setItemEditID(selectedEditItem.item_id);
+      setLoc(selectedEditItem.location);
+    }
+    setSelectedOption(selectedEditItem);
+
+  }, [selectedEditItem]);
+
   /*<========================================================================= get added item  ====================================================================> */
 
   const saleItemList = async () => {
@@ -1305,6 +1290,7 @@ const Addsale = () => {
       console.error("API error:", error);
     }
   };
+
   /*<========================================================================= handle barcode  ====================================================================> */
 
   const handleBarcode = async () => {
@@ -1660,6 +1646,7 @@ const Addsale = () => {
     // setOpenAddPopUp(false);
     setNextPath(path);
   };
+
   const handleLeavePage = async () => {
     let data = new FormData();
     data.append("random_number", localStorage.getItem("RandomNumber") || "");
@@ -1703,15 +1690,13 @@ const Addsale = () => {
     }
   };
 
-
   /*<========================================================================= get batch list  ====================================================================> */
-  const batchDataMap = useMemo(() => {
-    return new Map(batchListData.map(item => [item.id, item]));
-  }, [batchListData]);
 
-  const itemListMap = useMemo(() => {
-    return new Map(itemList.map(item => [item.id, item]));
-  }, [itemList]);
+  useEffect(() => {
+    if (itemId) {
+      batchList(itemId);
+    }
+  }, [itemId]);
 
   const batchList = async (id) => {
     if (!id) return;
@@ -1765,7 +1750,18 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= generate random number  ====================================================================> */
+  useEffect(() => {
+    return () => {
+      if (searchAbortController.current) {
+        searchAbortController.current.abort();
+      }
+      if (batchAbortController.current) {
+        batchAbortController.current.abort();
+      }
+    };
+  }, []);
+
+  /*<=============================================================== generate random number  ==========================================================> */
 
   const generateRandomNumber = () => {
     if (localStorage.getItem("RandomNumber") == null) {
@@ -1776,7 +1772,7 @@ const Addsale = () => {
       return;
     }
   };
-  /*<========================================================================= Add and Edit validation  ====================================================================> */
+  /*<=============================================================== Add and Edit validation  =========================================================> */
 
   const addItemValidation = async () => {
 
@@ -1814,7 +1810,7 @@ const Addsale = () => {
     return isValid;
   };
 
-  /*<========================================================================= Add and Edit item function  ====================================================================> */
+  /*<============================================================= Add and Edit item function  ========================================================> */
 
   const addSaleItem = async () => {
     if (isSubmitting) return false;
@@ -1895,7 +1891,7 @@ const Addsale = () => {
         setOrder("");
         setIsEditMode(false);
 
-        clearBatchCache(itemEditID || itemId);
+
 
         setTotalAmount(0);
         saleItemList();
@@ -1912,7 +1908,7 @@ const Addsale = () => {
       setIsSubmitting(false);
     }
   };
-  /*<========================================================================= qty validation and calculation  ====================================================================> */
+  /*<===================================================== qty validation and calculation  ================================================> */
 
   const handleQtyChange = (e) => {
     const val = e.target.value;
@@ -1943,7 +1939,7 @@ const Addsale = () => {
   };
 
 
-  /*<========================================================================= reset item value  ====================================================================> */
+  /*<=================================================================== reset item value  ==============================================================> */
 
   const resetValue = () => {
     setUnit("");
@@ -1962,7 +1958,7 @@ const Addsale = () => {
     }
     setIsEditMode(false);
   };
-  /*<========================================================================= delete item  ====================================================================> */
+  /*<=================================================================== delete item  ==============================================================> */
 
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
@@ -1989,60 +1985,99 @@ const Addsale = () => {
     }
   };
 
-  /*<========================================================================= handle table and keyboard navigation  ====================================================================> */
+  /*<============================================================ Pil remider  ===================================================> */
+
+  useEffect(() => {
+    if (!ItemSaleList?.sales_item?.length) return;
+
+    const updated = {};
+    ItemSaleList.sales_item.forEach((item) => {
+      const totalDose = 1 + 0 + 1;
+      const refillDays = totalDose > 0 ? Math.floor(item.qty / totalDose) : 0;
+      const refillDate = new Date();
+      refillDate.setDate(refillDate.getDate() + refillDays);
+
+      updated[item.id] = {
+        morning: 1,
+        noon: 0,
+        night: 1,
+        refillDays,
+        refillDate,
+      };
+    });
+
+    setPillTimes(updated);
+  }, [ItemSaleList]);
+
+  {/*<====================================================================== pill /refill timing   =====================================================================> */ }
+
+  const updatePillTiming = (item, updated) => {
+    const total = Number(updated.morning || 0) + Number(updated.noon || 0) + Number(updated.night || 0);
+    const refillDays = total > 0 ? Math.floor(item.qty / total) : 0;
+
+    const refillDate = new Date();
+    refillDate.setDate(refillDate.getDate() + refillDays);
+
+    setPillTimes((prev) => ({
+      ...prev,
+      [item.id]: {
+        ...updated,
+        refillDays,
+        refillDate,
+      },
+    }));
+  };
+  {/*<====================================================================== pill /refill remider   =====================================================================> */ }
+
+  const handleReminder = async () => {
+    const selectedItems = Object.keys(checkedItems).filter((id) => checkedItems[id]);
+
+    for (const id of selectedItems) {
+      const item = ItemSaleList.sales_item.find((i) => i.id === parseInt(id));
+      const dose = pillTimes[id];
+
+      if (!item || !dose) continue;
+
+      const data = new FormData();
+      data.append("item_id", item.id);
+      data.append("refill_date", dose.refillDate.toLocaleDateString("en-GB"));
+      data.append("morning", dose.morning);
+      data.append("noon", dose.noon);
+      data.append("night", dose.night);
+      data.append("customer_id")
+
+      try {
+        const response = await axios.post("pill-refill-reminder?", data, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (response.data.status === 200) {
+          toast.dismiss();
+          toast.success("Reminder(s) set successfully");
+          setOpenReminderPopUp(false);
 
 
-  const handleTableKeyDown = (e) => {
-    const rows = Array.from(
-      tableRef.current?.querySelectorAll("tr.cursor-pointer") || []
-    );
-    let currentIndex = rows.findIndex((row) => row === document.activeElement);
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setAutoCompleteOpen(false);
-      if (rows.length > 0) {
-        const nextIndex = currentIndex + 1 < rows.length ? currentIndex + 1 : 0;
-        rows[nextIndex]?.focus();
-        setHighlightedRowId(rows[nextIndex]?.dataset.id);
-      }
-    }
-    if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setAutoCompleteOpen(false);
-      if (rows.length > 0) {
-        const prevIndex =
-          currentIndex - 1 >= 0 ? currentIndex - 1 : rows.length - 1;
-        rows[prevIndex]?.focus();
-        setHighlightedRowId(rows[prevIndex]?.dataset.id);
-      }
-    }
-
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (currentIndex >= 0 && rows[currentIndex]) {
-        const itemId = rows[currentIndex].getAttribute("data-id");
-        const item = batchListData.find(
-          (item) => String(item.id) === String(itemId)
-        );
-        if (item) {
-          handlePassData(item);
-          setHighlightedRowId(itemId);
-          setAutoCompleteOpen(false);
+        } else if (response.data.status === 400) {
+          toast.dismiss();
+          toast.error(response.data.message);
+        } else if (response.data.status === 401) {
+          history.push("/");
+          localStorage.clear();
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          toast.dismiss();
+          toast.error(error.response.data.message);
+        } else {
+          toast.dismiss();
+          toast.error("Error setting reminder. Please try again later.");
         }
       }
     }
   };
-  {/*<====================================================================== row select    =====================================================================> */ }
 
-  useEffect(() => {
-    if (isVisible && tableRef.current) {
-      const firstRow = tableRef.current.querySelector("tr.cursor-pointer");
-      if (firstRow) {
-        firstRow.focus();
-        setHighlightedRowId(firstRow.getAttribute("data-id"));
-      }
-    }
-  }, [isVisible, batchListData]);
   {/*<====================================================================== send whatsapp bil   =====================================================================> */ }
 
   const handleSendInvoice = async (customer, Amount, date, billNo) => {
@@ -2115,87 +2150,8 @@ const Addsale = () => {
     }
   };
 
-  {/*<====================================================================== Autocomplete focus   =====================================================================> */ }
 
-  useEffect(() => {
-    function handleDocumentFocus() {
-      if (autoCompleteOpen && searchInputRef.current && document.activeElement !== searchInputRef.current) {
-        setAutoCompleteOpen(false);
-      }
-    }
-    document.addEventListener('focusin', handleDocumentFocus);
-    return () => {
-      document.removeEventListener('focusin', handleDocumentFocus);
-    };
-  }, [autoCompleteOpen]);
-  {/*<====================================================================== pill /refill timing   =====================================================================> */ }
-
-  const updatePillTiming = (item, updated) => {
-    const total = Number(updated.morning || 0) + Number(updated.noon || 0) + Number(updated.night || 0);
-    const refillDays = total > 0 ? Math.floor(item.qty / total) : 0;
-
-    const refillDate = new Date();
-    refillDate.setDate(refillDate.getDate() + refillDays);
-
-    setPillTimes((prev) => ({
-      ...prev,
-      [item.id]: {
-        ...updated,
-        refillDays,
-        refillDate,
-      },
-    }));
-  };
-  {/*<====================================================================== pill /refill remider   =====================================================================> */ }
-
-  const handleReminder = async () => {
-    const selectedItems = Object.keys(checkedItems).filter((id) => checkedItems[id]);
-
-    for (const id of selectedItems) {
-      const item = ItemSaleList.sales_item.find((i) => i.id === parseInt(id));
-      const dose = pillTimes[id];
-
-      if (!item || !dose) continue;
-
-      const data = new FormData();
-      data.append("item_id", item.id);
-      data.append("refill_date", dose.refillDate.toLocaleDateString("en-GB"));
-      data.append("morning", dose.morning);
-      data.append("noon", dose.noon);
-      data.append("night", dose.night);
-      data.append("customer_id")
-
-      try {
-        const response = await axios.post("pill-refill-reminder?", data, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.data.status === 200) {
-          toast.dismiss();
-          toast.success("Reminder(s) set successfully");
-          setOpenReminderPopUp(false);
-
-
-        } else if (response.data.status === 400) {
-          toast.dismiss();
-          toast.error(response.data.message);
-        } else if (response.data.status === 401) {
-          history.push("/");
-          localStorage.clear();
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 400) {
-          toast.dismiss();
-          toast.error(error.response.data.message);
-        } else {
-          toast.dismiss();
-          toast.error("Error setting reminder. Please try again later.");
-        }
-      }
-    }
-  };
+  {/*<====================================================================== UI =====================================================================> */ }
 
   return (
     <>
@@ -2212,43 +2168,43 @@ const Addsale = () => {
         draggable
         pauseOnHover
       />
+
       <div className="p-6"
         style={{
           height: "calc(-125px + 100vh)",
           overflow: "auto",
         }}>
 
-        <div >
 
-          {/*<====================================================================== header   =====================================================================> */}
+        {/*<================================================================ header   =====================================================> */}
 
-          <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]" >
+        <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]" >
 
-            <div className="flex items-center gap-2">
-              <span
-                className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                onClick={() => {
-                  history.push("/salelist");
-                }}
-              >
-                Sales
-              </span>
-              <span className="w-6 h-6">
+          <div className="flex items-center gap-2">
+            <span
+              className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+              onClick={() => {
+                history.push("/salelist");
+              }}
+            >
+              Sales
+            </span>
+            <span className="w-6 h-6">
 
-                <ArrowForwardIosIcon
-                  fontSize="small"
-                  className="text-[var(--color1)]"
-                />
-              </span>
+              <ArrowForwardIosIcon
+                fontSize="small"
+                className="text-[var(--color1)]"
+              />
+            </span>
 
-              <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
+            <span className="text-[var(--color1)] font-bold text-[20px]">New</span>
 
-              <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow"
-                onClick={() => setShowModal(true)} />
-            </div>
+            <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow"
+              onClick={() => setShowModal(true)} />
+          </div>
 
-            <div className="flex items-center gap-2">
-              {/* <button
+          <div className="flex items-center gap-2">
+            {/* <button
                 type="button"
                 className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
                 onClick={() => setOpenReminderPopUp(true)}
@@ -2257,1199 +2213,1263 @@ const Addsale = () => {
                 Set Reminder
               </button> */}
 
+            <button
+              type="button"
+              className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+              onClick={handelAddItemOpen}
+            >
+              <ControlPointIcon className="mr-2" />
+              Add New Item
+            </button>
+
+            <Select
+              labelId="dropdown-label"
+              id="dropdown"
+              value={paymentType}
+              className="payment_divv"
+              onChange={(e) => {
+                setPaymentType(e.target.value);
+                setUnsavedItems(true);
+              }}
+              size="small"
+              sx={{ minWidth: "150px" }}
+            >
+              <MenuItem value="cash">Cash</MenuItem>
+              <MenuItem value="credit">Credit</MenuItem>
+              {bankData?.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.bank_name}
+                </MenuItem>
+              ))}
+            </Select>
+
+            <Select
+              labelId="dropdown-label"
+              id="dropdown"
+              value={pickup}
+              className="payment_divv "
+              onChange={(e) => {
+                setPickup(e.target.value);
+                setUnsavedItems(true);
+              }}
+              size="small"
+              sx={{
+                minWidth: "150px",
+                "& .MuiInputBase-input": {
+                  display: "flex",
+                  whiteSpace: "nowrap",
+                  alignItems: "center",
+                  gap: "1rem",
+                },
+              }}
+            >
+              {pickupOptions.map((option) => (
+                <MenuItem
+                  key={option.id}
+                  value={option.label}
+                  className="gap-4"
+                >
+                  {option.icon && option.icon}
+                  {option.label}
+                </MenuItem>
+              ))}
+            </Select>
+
+            <div
+              className="relative inline-block z-index-1000"
+              onMouseEnter={() => {
+                clearTimeout(timeoutRef.current);
+                setIsOpen(true);
+              }}
+              onMouseLeave={() => {
+                timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
+              }}
+            >
               <button
                 type="button"
-                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
-                onClick={handelAddItemOpen}
+                className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
+                disabled={isSubmitting}
+                aria-disabled={isSubmitting}
+                onClick={() => {
+                  setBillSaveDraft("1");
+                  handleSubmit("1");
+                }}
               >
-                <ControlPointIcon className="mr-2" />
-                Add New Item
+                Save
               </button>
 
-              <Select
-                labelId="dropdown-label"
-                id="dropdown"
-                value={paymentType}
-                className="payment_divv"
-                onChange={(e) => {
-                  setPaymentType(e.target.value);
-                  setUnsavedItems(true);
-                }}
-                size="small"
-                sx={{ minWidth: "150px" }}
+              <button
+                type="button"
+                className="h-10 rounded-r-[4px] bg-[var(--color1)] px-2 text-white hover:bg-[var(--color2)] transition align-middle"
+                onClick={() => setIsOpen((v) => !v)}
+                ref={submitButtonRef}
+                aria-haspopup="menu"
+                aria-expanded={isOpen}
               >
-                <MenuItem value="cash">Cash</MenuItem>
-                <MenuItem value="credit">Credit</MenuItem>
-                {bankData?.map((option) => (
-                  <MenuItem key={option.id} value={option.id}>
-                    {option.bank_name}
-                  </MenuItem>
-                ))}
-              </Select>
+                <IoCaretDown className="text-white" />
+              </button>
 
-              <Select
-                labelId="dropdown-label"
-                id="dropdown"
-                value={pickup}
-                className="payment_divv "
-                onChange={(e) => {
-                  setPickup(e.target.value);
-                  setUnsavedItems(true);
-                }}
-                size="small"
-                sx={{
-                  minWidth: "150px",
-                  "& .MuiInputBase-input": {
-                    display: "flex",
-                    whiteSpace: "nowrap",
-                    alignItems: "center",
-                    gap: "1rem",
-                  },
-                }}
-              >
-                {pickupOptions.map((option) => (
-                  <MenuItem
-                    key={option.id}
-                    value={option.label}
-                    className="gap-4"
-                  >
-                    {option.icon && option.icon}
-                    {option.label}
-                  </MenuItem>
-                ))}
-              </Select>
+              {isOpen && (
+                <div className="absolute right-1 top-14 w-36 bg-white shadow-lg  overflow-hidden ring-1 ring-[var(--color1)]">
+                  <ul className="text-slate-800">
+                    <li
+                      onClick={() => {
+                        setBillSaveDraft("1");
+                        handleSubmit("1");
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white"
+                      role="menuitem"
+                    >
+                      <SaveIcon />
+                      Save
+                    </li>
+                    <li
+                      onClick={() => {
+                        setBillSaveDraft("0");
+                        handleSubmit("0");
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white border-t border-[var(--color1)]"
+                      role="menuitem"
+                    >
+                      <SaveAsIcon />
+                      Draft
+                    </li>
+                  </ul>
+                </div>
+              )}
 
-              <div
-                className="relative inline-block z-index-1000"
-                onMouseEnter={() => {
-                  clearTimeout(timeoutRef.current);
-                  setIsOpen(true);
-                }}
-                onMouseLeave={() => {
-                  timeoutRef.current = setTimeout(() => setIsOpen(false), 200);
-                }}
-              >
-                <button
-                  type="button"
-                  className="h-10 rounded-l-[4px] bg-[var(--color1)] px-6 text-white hover:bg-[var(--color2)] transition align-middle"
-                  disabled={isSubmitting}
-                  aria-disabled={isSubmitting}
-                  onClick={() => {
-                    setBillSaveDraft("1");
-                    handleSubmit("1");
-                  }}
-                >
-                  Save
-                </button>
-
-                <button
-                  type="button"
-                  className="h-10 rounded-r-[4px] bg-[var(--color1)] px-2 text-white hover:bg-[var(--color2)] transition align-middle"
-                  onClick={() => setIsOpen((v) => !v)}
-                  ref={submitButtonRef}
-                  aria-haspopup="menu"
-                  aria-expanded={isOpen}
-                >
-                  <IoCaretDown className="text-white" />
-                </button>
-
-                {isOpen && (
-                  <div className="absolute right-1 top-14 w-36 bg-white shadow-lg  overflow-hidden ring-1 ring-[var(--color1)]">
-                    <ul className="text-slate-800">
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("1");
-                          handleSubmit("1");
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white"
-                        role="menuitem"
-                      >
-                        <SaveIcon />
-                        Save
-                      </li>
-                      <li
-                        onClick={() => {
-                          setBillSaveDraft("0");
-                          handleSubmit("0");
-                        }}
-                        className="flex items-center gap-2 px-4 py-2 cursor-pointer hover:bg-[var(--color2)] hover:text-white border-t border-[var(--color1)]"
-                        role="menuitem"
-                      >
-                        <SaveAsIcon />
-                        Draft
-                      </li>
-                    </ul>
-                  </div>
-                )}
-
-              </div>
             </div>
           </div>
+        </div>
 
 
-          {/*<====================================================================== Top detail   =====================================================================> */}
+        {/*<=========================================================== Top detail   ==========================================================> */}
 
 
-          <div className=" flex gap-4  mt-4">
-            <div className="flex flex-row gap-4 overflow-x-auto w-full">
-              <div style={{
+        <div className=" flex gap-4  mt-4">
+          <div className="flex flex-row gap-4 overflow-x-auto w-full">
+            <div style={{
+              width: "100%",
+              borderRadius: "15px",
+            }}>
+              <span
+                className="title mb-2 flex  items-center gap-2"
+              >
+                Customer Mobile / Name <span className="text-red-600">*</span>
+                <FaPlusCircle
+                  className="primary cursor-pointer"
+                  onClick={() => {
+                    setOpenCustomer(true);
+                  }}
+                />
+              </span>
+
+              <Autocomplete
+                value={customer}
+                onChange={handleCustomerOption}
+                inputValue={searchQuery}
+                onInputChange={(event, newInputValue) => {
+                  setSearchQuery(newInputValue);
+                }}
+                options={customerDetails}
+                getOptionLabel={(option) =>
+                  option.name
+                    ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
+                    : option.phone_number || ""
+                }
+                isOptionEqualToValue={(option, value) =>
+                  option.phone_number === value.phone_number
+                }
+                // loading={isLoading}
+                sx={{
+                  width: "100%",
+                  minWidth: {
+                    // xs: "350px",
+                    // sm: "400px",
+                    // md: "400px",
+                    // lg: "250px",
+                  },
+                  '& .MuiAutocomplete-inputRoot': {
+                    padding: '0 !important',
+                    paddingRight: customer ? '65px !important' : '39px !important',
+                  },
+                  '& .MuiInputBase-root': {
+                    padding: '0',
+                  }
+                }}
+
+                renderOption={(props, option) => (
+                  <ListItem {...props} className="flex items-center gap-2">
+
+                    {hasSehatPlan(option) && (
+                      <FaCrown
+                        size={14}
+                        color="#facc15"
+                        title={option.sehat_plan_name}
+                      />
+                    )}
+
+                    <ListItemText
+                      primary={`${option.name} `}
+                      secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
+                    />
+                  </ListItem>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Search by Mobile, Name"
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <>
+                          {customer && hasSehatPlan(customer) && (
+                            <Tooltip title={customer.sehat_plan_name} arrow>
+                              <FaCrown
+                                size={16}
+                                color="#facc15"
+                                style={{ marginRight: 6 }}
+                              />
+                            </Tooltip>
+                          )}
+                          {customer && (
+                            <Tooltip
+                              title="Sales History"
+                              arrow
+                              componentsProps={{
+                                tooltip: {
+                                  sx: {
+                                    backgroundColor: "#3f6212",
+                                    color: 'white',
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    padding: '8px 12px',
+                                    '& .MuiTooltip-arrow': {
+                                      color: '#3f6212',
+                                    }
+                                  }
+                                }
+                              }}
+                            >
+                              <IconButton
+                                size="small"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  fetchCustomerHistory(customer.id);
+                                }}
+                                sx={{
+                                  marginRight: '-8px',
+                                  zIndex: 1,
+                                  width: '28px',
+                                  height: '28px',
+                                  border: '2px solid var(--color1)',
+                                  borderRadius: '50%',
+                                  transition: 'all 0.3s ease',
+                                  '&:hover': {
+                                    backgroundColor: 'var(--color1) !important',
+                                    borderColor: 'var(--color1)',
+                                  },
+                                  '&:hover .sales-history-text': {
+                                    color: 'white !important'
+                                  }
+                                }}
+                              >
+                                <span
+                                  className="sales-history-text"
+                                  style={{
+                                    color: 'var(--color1)',
+                                    fontWeight: 'bold',
+                                    fontSize: '14px',
+                                    transition: 'color 0.3s ease'
+                                  }}
+                                >
+                                  S
+                                </span>
+                              </IconButton>
+                            </Tooltip>
+                          )}
+                          {params.InputProps.endAdornment}
+                        </>
+                      ),
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input::placeholder": {
+                        fontSize: "1rem",
+                        color: "black",
+                      },
+                    }}
+                  />
+                )}
+              />
+
+            </div>
+            <div
+              className="detail custommedia col-12 col-md-3"
+              style={{
                 width: "100%",
                 borderRadius: "15px",
-              }}>
-                <span
-                  className="title mb-2 flex  items-center gap-2"
-                >
-                  Customer Mobile / Name <span className="text-red-600">*</span>
+              }}
+            >
+              <span
+                className="heading mb-2 title flex flex-row justify-between"
+                style={{
+                  fontWeight: "500",
+                  fontSize: "17px",
+                  color: "var(--color1)",
+
+                }}
+              >
+                <span className="flex flex-row gap-1">
+                  Doctor
                   <FaPlusCircle
-                    className="primary cursor-pointer"
+                    className="icon primary"
                     onClick={() => {
-                      setOpenCustomer(true);
+                      setOpenAddPopUp(true);
+                      setUnsavedItems(true);
                     }}
                   />
                 </span>
 
-                <Autocomplete
-                  value={customer}
-                  onChange={handleCustomerOption}
-                  inputValue={searchQuery}
-                  onInputChange={(event, newInputValue) => {
-                     setSearchQuery(newInputValue);
-                  }}
-                  options={customerDetails}
-                  getOptionLabel={(option) =>
-                    option.name
-                      ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
-                      : option.phone_number || ""
-                  }
-                  isOptionEqualToValue={(option, value) =>
-                    option.phone_number === value.phone_number
-                  }
-                  // loading={isLoading}
-                  sx={{
-                    width: "100%",
-                    minWidth: {
-                      // xs: "350px",
-                      // sm: "400px",
-                      // md: "400px",
-                      // lg: "250px",
-                    },
-                    '& .MuiAutocomplete-inputRoot': {
-                      padding: '0 !important',
-                      paddingRight: customer ? '65px !important' : '39px !important',
-                    },
-                    '& .MuiInputBase-root': {
-                      padding: '0',
-                    }
-                  }}
+                <p
+                  onClick={() => history.push("/more/doctors")}
+                  className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
+                >
+                  set default
+                </p>
 
-                  renderOption={(props, option) => (
-                    <ListItem {...props} className="flex items-center gap-2">
+              </span>
 
-                      {hasSehatPlan(option) && (
-                        <FaCrown
-                          size={14}
-                          color="#facc15"
-                          title={option.sehat_plan_name}
-                        />
-                      )}
+              <Autocomplete
+                value={doctor}
+                onChange={(e, newVal) => setDoctor(newVal)}
+                inputValue={searchDoctor}
+                onInputChange={(event, newInputValue) => {
+                  setSearchDoctor(newInputValue);
+                }}
+                options={doctorData}
+                getOptionLabel={(option) =>
+                  option?.name
+                    ? `${option.name} [${option.phone_number || ''}]`
+                    : option?.phone_number || ''
+                }
 
-                      <ListItemText
-                        primary={`${option.name} `}
-                        secondary={`Mobile No: ${option.phone_number} | Loyalty Point: ${option.roylti_point} | Due Payment: ${option.roylti_point}`}
-                      />
-                    </ListItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      placeholder="Search by Mobile, Name"
-                      InputProps={{
-                        ...params.InputProps,
-                        endAdornment: (
-                          <>
-                            {customer && hasSehatPlan(customer) && (
-                              <Tooltip title={customer.sehat_plan_name} arrow>
-                                <FaCrown
-                                  size={16}
-                                  color="#facc15"
-                                  style={{ marginRight: 6 }}
-                                />
-                              </Tooltip>
-                            )}
-                            {customer && (
-                              <Tooltip
-                                title="Sales History"
-                                arrow
-                                componentsProps={{
-                                  tooltip: {
-                                    sx: {
-                                      backgroundColor: "#3f6212",
-                                      color: 'white',
-                                      fontSize: '14px',
-                                      fontWeight: '500',
-                                      padding: '8px 12px',
-                                      '& .MuiTooltip-arrow': {
-                                        color: '#3f6212',
-                                      }
-                                    }
-                                  }
-                                }}
-                              >
-                                <IconButton
-                                  size="small"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    fetchCustomerHistory(customer.id);
-                                  }}
-                                  sx={{
-                                    marginRight: '-8px',
-                                    zIndex: 1,
-                                    width: '28px',
-                                    height: '28px',
-                                    border: '2px solid var(--color1)',
-                                    borderRadius: '50%',
-                                    transition: 'all 0.3s ease',
-                                    '&:hover': {
-                                      backgroundColor: 'var(--color1) !important',
-                                      borderColor: 'var(--color1)',
-                                    },
-                                    '&:hover .sales-history-text': {
-                                      color: 'white !important'
-                                    }
-                                  }}
-                                >
-                                  <span
-                                    className="sales-history-text"
-                                    style={{
-                                      color: 'var(--color1)',
-                                      fontWeight: 'bold',
-                                      fontSize: '14px',
-                                      transition: 'color 0.3s ease'
-                                    }}
-                                  >
-                                    S
-                                  </span>
-                                </IconButton>
-                              </Tooltip>
-                            )}
-                            {params.InputProps.endAdornment}
-                          </>
-                        ),
-                      }}
-                      sx={{
-                        "& .MuiInputBase-input::placeholder": {
-                          fontSize: "1rem",
-                          color: "black",
-                        },
-                      }}
-                    />
-                  )}
-                />
+                isOptionEqualToValue={(option, value) =>
+                  option?.phone_number === value?.phone_number
+                }
 
-              </div>
-              <div
-                className="detail custommedia col-12 col-md-3"
-                style={{
+                // loading={isLoading}
+                sx={{
                   width: "100%",
-                  borderRadius: "15px",
+                  minWidth: {
+                    // xs: "350px",
+                    // sm: "400px",
+                    // md: "400px",
+                    // lg: "350px",
+                  },
+                  '& .MuiAutocomplete-inputRoot': {
+                    padding: '0 !important',
+                  },
+                  '& .MuiInputBase-root': {
+                    padding: '0',
+                  }
+                }}
+                renderOption={(props, option) => (
+                  <ListItem {...props}>
+                    <ListItemText
+                      primary={`${option.name} `}
+                      secondary={`Mobile No: ${option.phone_number}`}
+                    />
+                  </ListItem>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant="outlined"
+                    placeholder="Search by DR. Name, Mobile Number"
+                    // InputProps={{
+                    //   ...params.InputProps,
+                    //   endAdornment: (
+                    //     <>
+                    //       {isLoading ? (
+                    //         <CircularProgress color="inherit" size={20} />
+                    //       ) : null}
+                    //       {params.InputProps.endAdornment}
+                    //     </>
+                    //   ),
+                    // }}
+                    sx={{
+                      "& .MuiInputBase-input::placeholder": {
+                        fontSize: "1rem",
+                        color: "black",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
+
+            <div
+              className="detail custommedia col-12 col-md-3"
+              style={{
+                width: "100%",
+                borderRadius: "15px",
+                marginleft: "10px",
+              }}
+            >
+              <span
+                className="heading mb-2 title"
+                style={{
+                  fontWeight: "500",
+                  fontSize: "17px",
+                  color: "var(--color1)",
                 }}
               >
-                <span
-                  className="heading mb-2 title flex flex-row justify-between"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
+                Select Date{" "}
 
-                  }}
-                >
-                  <span className="flex flex-row gap-1">
-                    Doctor
-                    <FaPlusCircle
-                      className="icon primary"
-                      onClick={() => {
-                        setOpenAddPopUp(true);
-                        setUnsavedItems(true);
-                      }}
-                    />
-                  </span>
+              </span>
 
-                  <p
-                    onClick={() => history.push("/more/doctors")}
-                    className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
-                  >
-                    set default
-                  </p>
-
-                </span>
-
-                <Autocomplete
-                  value={doctor}
-                  onChange={(e, newVal) => setDoctor(newVal)}
-                  inputValue={searchDoctor}
-                  onInputChange={(event, newInputValue) => {
-                    setSearchDoctor(newInputValue);
-                  }}
-                  options={doctorData}
-                  getOptionLabel={(option) =>
-                    option?.name
-                      ? `${option.name} [${option.phone_number || ''}]`
-                      : option?.phone_number || ''
-                  }
-
-                  isOptionEqualToValue={(option, value) =>
-                    option?.phone_number === value?.phone_number
-                  }
-
-                  // loading={isLoading}
-                  sx={{
-                    width: "100%",
-                    minWidth: {
-                      // xs: "350px",
-                      // sm: "400px",
-                      // md: "400px",
-                      // lg: "350px",
-                    },
-                    '& .MuiAutocomplete-inputRoot': {
-                      padding: '0 !important',
-                    },
-                    '& .MuiInputBase-root': {
-                      padding: '0',
-                    }
-                  }}
-                  renderOption={(props, option) => (
-                    <ListItem {...props}>
-                      <ListItemText
-                        primary={`${option.name} `}
-                        secondary={`Mobile No: ${option.phone_number}`}
-                      />
-                    </ListItem>
-                  )}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant="outlined"
-                      placeholder="Search by DR. Name, Mobile Number"
-                      // InputProps={{
-                      //   ...params.InputProps,
-                      //   endAdornment: (
-                      //     <>
-                      //       {isLoading ? (
-                      //         <CircularProgress color="inherit" size={20} />
-                      //       ) : null}
-                      //       {params.InputProps.endAdornment}
-                      //     </>
-                      //   ),
-                      // }}
-                      sx={{
-                        "& .MuiInputBase-input::placeholder": {
-                          fontSize: "1rem",
-                          color: "black",
-                        },
-                      }}
-                    />
-                  )}
-                />
-              </div>
-
-              <div
-                className="detail custommedia col-12 col-md-3"
+              <DatePicker
+                className="custom-datepicker w-100"
+                selected={selectedDate}
+                variant="outlined"
+                onChange={(newDate) => setSelectedDate(newDate)}
+                dateFormat="dd/MM/yyyy"
+                filterDate={(date) => !isDateDisabled(date)}
+              />
+            </div>
+            <div
+              className="detail custommedia col-12 col-md-3"
+              style={{
+                width: "100%",
+                borderRadius: "15px",
+              }}
+            >
+              <span
+                className="heading mb-2 title"
                 style={{
-                  width: "100%",
-                  borderRadius: "15px",
-                  marginleft: "10px",
+                  fontWeight: "500",
+                  fontSize: "17px",
+                  color: "var(--color1)",
                 }}
               >
-                <span
-                  className="heading mb-2 title"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
-                  }}
-                >
-                  Select Date{" "}
-
-                </span>
-
-                <DatePicker
-                  className="custom-datepicker w-100"
-                  selected={selectedDate}
-                  variant="outlined"
-                  onChange={(newDate) => setSelectedDate(newDate)}
-                  dateFormat="dd/MM/yyyy"
-                  filterDate={(date) => !isDateDisabled(date)}
-                />
-              </div>
-              <div
-                className="detail custommedia col-12 col-md-3"
-                style={{
-                  width: "100%",
-                  borderRadius: "15px",
-                }}
-              >
-                <span
-                  className="heading mb-2 title"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
-                  }}
-                >
-                  Scan Barcode
-                  {/* <FaPlusCircle
+                Scan Barcode
+                {/* <FaPlusCircle
                         className="icon primary"
                         onClick={() => {
                           setOpenAddPopUp(true);
                           setUnsavedItems(true);
                         }}
                       /> */}
-                </span>
-                <TextField
-                  id="outlined-number"
-                  type="number"
-                  size="small"
-                  value={barcode}
-                  placeholder="Scan Barcode"
-                  // inputRef={inputRef10}
-                  // onKeyDown={handleKeyDown}
-                  sx={{ width: "50%", backgroundColor: "white" }}
-                  onChange={(e) => {
-                    setBarcode(e.target.value);
-                  }}
-                />
-              </div>
+              </span>
+              <TextField
+                id="outlined-number"
+                type="number"
+                size="small"
+                value={barcode}
+                placeholder="Scan Barcode"
+                // inputRef={inputRef10}
+                // onKeyDown={handleKeyDown}
+                sx={{ width: "50%", backgroundColor: "white" }}
+                onChange={(e) => {
+                  setBarcode(e.target.value);
+                }}
+              />
             </div>
-
           </div>
-          {/*<====================================================================== item table   =====================================================================> */}
 
-          <div className="table-container">
-            <table className="w-full border-collapse item-table">
-              <thead>
-                <tr>
-                  <th>
-                    <div className="flex justify-center items-center gap-2">
-                      Search Item Name{" "}
-                      <span className="text-red-600 ">*</span>
-                      <FaPlusCircle
-                        className="primary cursor-pointer"
-                        onClick={() => {
-                          setOpenAddItemPopUp(true);
+        </div>
+        {/*<=========================================================== item table   ==========================================================> */}
+
+        <div className="table-container">
+          <table className="w-full border-collapse item-table">
+            <thead>
+              <tr>
+                <th>
+                  <div className="flex justify-center items-center gap-2">
+                    Search Item Name{" "}
+                    <span className="text-red-600 ">*</span>
+                    <FaPlusCircle
+                      className="primary cursor-pointer"
+                      onClick={() => {
+                        setOpenAddItemPopUp(true);
+                      }}
+                    />
+                  </div>
+                </th>
+                <th>
+                  Unit <span className="text-red-600 ">*</span>
+                </th>
+                <th>
+                  Batch <span className="text-red-600 ">*</span>{" "}
+                </th>
+                <th>
+                  Expiry <span className="text-red-600 ">*</span>
+                </th>
+                <th>
+                  MRP <span className="text-red-600 ">*</span>
+                </th>
+                <th>Base</th>
+                <th>
+                  GST% <span className="text-red-600 ">*</span>
+                </th>
+                <th>Qty. </th>
+                <th>Loc.</th>
+                <th style={{ textAlign: "center" }}>
+                  {" "}
+                  <div style={{ display: "flex", flexWrap: "nowrap" }}>
+                    Order
+                    <Tooltip title="Please Enter only (o)" arrow>
+                      <Button
+                        style={{
+                          justifyContent: "left",
+                          color: "var(--color1)",
                         }}
-                      />
-                    </div>
-                  </th>
-                  <th>
-                    Unit <span className="text-red-600 ">*</span>
-                  </th>
-                  <th>
-                    Batch <span className="text-red-600 ">*</span>{" "}
-                  </th>
-                  <th>
-                    Expiry <span className="text-red-600 ">*</span>
-                  </th>
-                  <th>
-                    MRP <span className="text-red-600 ">*</span>
-                  </th>
-                  <th>Base</th>
-                  <th>
-                    GST% <span className="text-red-600 ">*</span>
-                  </th>
-                  <th>Qty. </th>
-                  <th>Loc.</th>
-                  <th style={{ textAlign: "center" }}>
-                    {" "}
-                    <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                      Order
-                      <Tooltip title="Please Enter only (o)" arrow>
-                        <Button
-                          style={{
-                            justifyContent: "left",
-                            color: "var(--color1)",
-                          }}
-                        >
-                          <GoInfo
-                            className="absolute"
-                            style={{ fontSize: "1rem" }}
-                          />
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  </th>
-                  <th
-                    style={{
-                      padding: "10px 15px",
-                      textAlign: "center",
-                    }}
+                      >
+                        <GoInfo
+                          className="absolute"
+                          style={{ fontSize: "1rem" }}
+                        />
+                      </Button>
+                    </Tooltip>
+                  </div>
+                </th>
+                <th
+                  style={{
+                    padding: "10px 15px",
+                    textAlign: "center",
+                  }}
+                >
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+        {/*<============================================== table for autocomplete/batch selection   =============================================> */}
+
+              <tr style={{ borderBottom: "1px solid lightgray" }}>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <div
+                    className="flex gap-5 "
                   >
-                    Amount
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Input row (with inner table for autocomplete/batch selection) */}
-                <tr style={{ borderBottom: "1px solid lightgray" }}>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <div
-                      className="flex gap-5 "
-                    >
 
-                      <Box
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        width: "100%",
+                        alignItems: "center",
+                      }}
+                    ><Autocomplete
+                        key={autocompleteKey}
+                        value={selectedOption}
+                        size="small"
                         sx={{
-                          display: "flex",
-                          flexWrap: "wrap",
                           width: "100%",
-                          alignItems: "center",
+                          minWidth: "450px",
                         }}
-                      ><Autocomplete
-                          key={autocompleteKey}
-                          value={selectedOption}
-                          size="small"
-                          sx={{
-                            width: "100%",
-                            minWidth: "450px",
-                          }}
-                          onChange={handleOptionChange}
-                          onInputChange={handleInputChange}
-                          open={autoCompleteOpen}
-                          onOpen={() => setAutoCompleteOpen(true)}
-                          onClose={() => setAutoCompleteOpen(false)}
-                          getOptionLabel={(option) => `${option.iteam_name || ""}`}
-                          options={itemList}
-                          renderOption={(props, option) => (
-                            <ListItem {...props} key={option.id}>
-                              <ListItemText
-                                primary={`${option.iteam_name}`}
-                                secondary={`${option.company}`}
-                              />
-                            </ListItem>
-                          )}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              inputRef={searchInputRef}
-                              variant="outlined"
-                              id="searchResults"
-                              autoFocus
-                              placeholder="Search Item Name..."
-                              InputProps={{
-                                ...params.InputProps,
-                                style: {
-                                  height: 40,
-                                  textTransform: 'uppercase',
-                                },
-                                startAdornment: (
-                                  <InputAdornment position="start">
-                                    <SearchIcon
-                                      sx={{
-                                        color: "var(--color1)",
-                                        cursor: "pointer",
-                                      }}
-                                    />
-                                  </InputAdornment>
+                        onChange={handleOptionChange}
+                        onInputChange={handleInputChange}
+                        open={autoCompleteOpen}
+                        onOpen={() => setAutoCompleteOpen(true)}
+                        onClose={() => setAutoCompleteOpen(false)}
+                        getOptionLabel={(option) => `${option.iteam_name || ""}`}
+                        options={itemList}
+                        renderOption={(props, option) => (
+                          <ListItem {...props} key={option.id}>
+                            <ListItemText
+                              primary={`${option.iteam_name}`}
+                              secondary={`${option.company}`}
+                            />
+                          </ListItem>
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            inputRef={searchInputRef}
+                            variant="outlined"
+                            id="searchResults"
+                            autoFocus
+                            placeholder="Search Item Name..."
+                            InputProps={{
+                              ...params.InputProps,
+                              style: {
+                                height: 40,
+                                textTransform: 'uppercase',
+                              },
+                              startAdornment: (
+                                <InputAdornment position="start">
+                                  <SearchIcon
+                                    sx={{
+                                      color: "var(--color1)",
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                </InputAdornment>
 
-                                ),
-                                endAdornment: (
-                                  <>
-                                    {selectedOption && (
-                                      <Tooltip
-                                        title="Item Purchase History"
-                                        arrow
-                                        componentsProps={{
-                                          tooltip: {
-                                            sx: {
-                                              backgroundColor: "#3f6212",
-                                              color: 'white',
-                                              fontSize: '14px',
-                                              fontWeight: '500',
-                                              padding: '8px 12px',
-                                              '& .MuiTooltip-arrow': {
-                                                color: '#3f6212',
-                                              }
+                              ),
+                              endAdornment: (
+                                <>
+                                  {selectedOption && (
+                                    <Tooltip
+                                      title="Item Purchase History"
+                                      arrow
+                                      componentsProps={{
+                                        tooltip: {
+                                          sx: {
+                                            backgroundColor: "#3f6212",
+                                            color: 'white',
+                                            fontSize: '14px',
+                                            fontWeight: '500',
+                                            padding: '8px 12px',
+                                            '& .MuiTooltip-arrow': {
+                                              color: '#3f6212',
                                             }
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      <IconButton
+                                        size="small"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          fetchItemHistory(selectedOption);
+                                        }}
+                                        sx={{
+                                          marginRight: '-8px',
+                                          zIndex: 1,
+                                          width: '28px',
+                                          height: '28px',
+                                          border: '2px solid var(--color1)',
+                                          borderRadius: '50%',
+                                          transition: 'all 0.3s ease',
+                                          '&:hover': {
+                                            backgroundColor: 'var(--color1) !important',
+                                            borderColor: 'var(--color1)',
+                                          },
+                                          '&:hover .sales-history-text': {
+                                            color: 'white !important'
                                           }
                                         }}
                                       >
-                                        <IconButton
-                                          size="small"
-                                          onClick={(e) => {
-                                            e.stopPropagation();
-                                            fetchItemHistory(selectedOption);
-                                          }}
-                                          sx={{
-                                            marginRight: '-8px',
-                                            zIndex: 1,
-                                            width: '28px',
-                                            height: '28px',
-                                            border: '2px solid var(--color1)',
-                                            borderRadius: '50%',
-                                            transition: 'all 0.3s ease',
-                                            '&:hover': {
-                                              backgroundColor: 'var(--color1) !important',
-                                              borderColor: 'var(--color1)',
-                                            },
-                                            '&:hover .sales-history-text': {
-                                              color: 'white !important'
-                                            }
+                                        <span
+                                          className="sales-history-text"
+                                          style={{
+                                            color: 'var(--color1)',
+                                            fontWeight: 'bold',
+                                            fontSize: '14px',
+                                            transition: 'color 0.3s ease'
                                           }}
                                         >
-                                          <span
-                                            className="sales-history-text"
-                                            style={{
-                                              color: 'var(--color1)',
-                                              fontWeight: 'bold',
-                                              fontSize: '14px',
-                                              transition: 'color 0.3s ease'
-                                            }}
-                                          >
-                                            P
-                                          </span>
-                                        </IconButton>
-                                      </Tooltip>
-                                    )}
-                                    {params.InputProps.endAdornment}
-                                  </>
-                                ),
+                                          P
+                                        </span>
+                                      </IconButton>
+                                    </Tooltip>
+                                  )}
+                                  {params.InputProps.endAdornment}
+                                </>
+                              ),
 
-                              }}
-                              sx={{
-                                "& .MuiInputBase-input": {
-                                  textTransform: "uppercase",
-                                },
-                                "& .MuiInputBase-input::placeholder": {
-                                  fontSize: "1rem",
-                                  color: "black",
-                                },
-                              }}
-                              onFocus={() => setSelectedIndex(-1)}
+                            }}
+                            sx={{
+                              "& .MuiInputBase-input": {
+                                textTransform: "uppercase",
+                              },
+                              "& .MuiInputBase-input::placeholder": {
+                                fontSize: "1rem",
+                                color: "black",
+                              },
+                            }}
+                            onFocus={() => setSelectedIndex(-1)}
 
-                              onKeyDown={(e) => {
-                                const key = e.key;
-                                const isTab = key === "Tab";
-                                const isShiftTab = isTab && e.shiftKey;
-                                const isEnter = key === "Enter";
-                                const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                            onKeyDown={(e) => {
+                              const key = e.key;
+                              const isTab = key === "Tab";
+                              const isShiftTab = isTab && e.shiftKey;
+                              const isEnter = key === "Enter";
+                              const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                                if (
-                                  isArrowKey &&
-                                  !isShiftTab &&
-                                  (searchItem === null || searchItem === "") &&
-                                  !selectedOption
-                                ) {
-                                  e.preventDefault();
-                                  setAutocompleteDisabled(true);
-                                  setAutoCompleteOpen(false);
-                                  setTimeout(() => {
-                                    if (searchInputRef.current) searchInputRef.current.blur();
-                                    if (tableRef1.current) tableRef1.current.focus();
-                                    if (ItemSaleList?.sales_item?.length > 0) {
-                                      setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
-                                    } else {
-                                      setSelectedIndex(-1);
-                                    }
-                                  }, 0);
-                                  return;
-                                }
-
-                                if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                                if (isEnter || isTab) {
-                                  e.preventDefault();
-                                  if (!selectedOption) {
-                                    setTimeout(() => {
-                                      toast.dismiss();
-                                      toast.error("Please select an Item")
-                                    }, 100);
+                              if (
+                                isArrowKey &&
+                                !isShiftTab &&
+                                (searchItem === null || searchItem === "") &&
+                                !selectedOption
+                              ) {
+                                e.preventDefault();
+                                setAutocompleteDisabled(true);
+                                setAutoCompleteOpen(false);
+                                setTimeout(() => {
+                                  if (searchInputRef.current) searchInputRef.current.blur();
+                                  if (tableRef1.current) tableRef1.current.focus();
+                                  if (ItemSaleList?.sales_item?.length > 0) {
+                                    setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
                                   } else {
-                                    setTimeout(() => {
-                                      if (inputRef1.current) inputRef1.current.focus();
-                                    }, 100);
+                                    setSelectedIndex(-1);
                                   }
-                                  return;
+                                }, 0);
+                                return;
+                              }
+
+                              if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                              if (isEnter || isTab) {
+                                e.preventDefault();
+                                if (!selectedOption) {
+                                  setTimeout(() => {
+                                    toast.dismiss();
+                                    toast.error("Please select an Item")
+                                  }, 100);
+                                } else {
+                                  setTimeout(() => {
+                                    if (inputRef1.current) inputRef1.current.focus();
+                                  }, 100);
                                 }
-                              }}
-                            />
-                          )}
-                        />
+                                return;
+                              }
+                            }}
+                          />
+                        )}
+                      />
 
-                      </Box>
-                      {isVisible && value && !batch && (
-                        <Box
-                          sx={{
-                            minWidth: {
-                              xs: "200px",
-                              sm: "500px",
-                              md: "1000px",
-                            },
-                            backgroundColor: "white",
-                            position: "absolute",
-                            marginTop: "50px",
-                            zIndex: 1,
-                          }}
-                          id="tempId"
+                    </Box>
+                    {isVisible && value && !batch && (
+                      <Box
+                        sx={{
+                          minWidth: {
+                            xs: "200px",
+                            sm: "500px",
+                            md: "1000px",
+                          },
+                          backgroundColor: "white",
+                          position: "absolute",
+                          marginTop: "50px",
+                          zIndex: 1,
+                        }}
+                        id="tempId"
+                      >
+                        <div
+                          className="custom-scroll-sale"
+                          style={{ width: "100%" }}
+                          tabIndex={0}
+                          onKeyDown={handleTableKeyDown}
                         >
-                          <div
-                            className="custom-scroll-sale"
-                            style={{ width: "100%" }}
+                          <table
+                            ref={tableRef}
                             tabIndex={0}
-                            onKeyDown={handleTableKeyDown}
+                            style={{
+                              width: "100%",
+                              borderCollapse: "collapse",
+                            }}
                           >
-                            <table
-                              ref={tableRef}
-                              tabIndex={0}
-                              style={{
-                                width: "100%",
-                                borderCollapse: "collapse",
-                              }}
-                            >
-                              <thead>
-                                {isAlternative && (
-                                  <tr className="customtable">
-                                    <th
-                                      className="saleTable highlighted-row"
-                                      colSpan={8}
-                                    >
-                                      Alternate Medicine
-                                    </th>
-                                  </tr>
-                                )}
-
+                            <thead>
+                              {isAlternative && (
                                 <tr className="customtable">
-                                  <th>Item Name</th>
-                                  <th>Batch Number</th>
-                                  <th>Unit</th>
-                                  <th>Expiry Date</th>
-                                  <th>MRP</th>
-                                  <th>QTY</th>
-                                  <th>Loc</th>
+                                  <th
+                                    className="saleTable highlighted-row"
+                                    colSpan={8}
+                                  >
+                                    Alternate Medicine
+                                  </th>
                                 </tr>
-                              </thead>
+                              )}
 
-                              <tbody>
-                                {batchListData.length > 0 ? (
-                                  <>
-                                    {batchListData.map((item) => (
-                                      <tr
-                                        className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                          String(item.id)
-                                          ? "highlighted-row"
-                                          : ""
-                                          }`}
-                                        key={item.id}
-                                        data-id={item.id}
-                                        tabIndex={0}
-                                        style={{
-                                          border:
-                                            "1px solid rgba(4, 76, 157, 0.1)",
-                                          padding: "10px",
-                                          outline: "none",
-                                        }}
-                                        onClick={() =>
-                                          handlePassData(item)
-                                        }
-                                        onFocus={() => setAutoCompleteOpen(false)}
-                                        onMouseEnter={(e) => {
-                                          const hoveredRow = e.currentTarget;
-                                          setHighlightedRowId(hoveredRow);
-                                        }}
+                              <tr className="customtable">
+                                <th>Item Name</th>
+                                <th>Batch Number</th>
+                                <th>Unit</th>
+                                <th>Expiry Date</th>
+                                <th>MRP</th>
+                                <th>QTY</th>
+                                <th>Loc</th>
+                              </tr>
+                            </thead>
 
-                                      >
-                                        <td className="text-base font-semibold">
-                                          {item.iteam_name}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.batch_number}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.unit}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.expiry_date}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.mrp}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.qty}
-                                        </td>
-                                        <td className="text-base font-semibold">
-                                          {item.location}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </>
-                                ) : (
-                                  <tr>
-                                    <td
-                                      colSpan={6}
+                            <tbody>
+                              {batchListData.length > 0 ? (
+                                <>
+                                  {batchListData.map((item) => (
+                                    <tr
+                                      className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                        String(item.id)
+                                        ? "highlighted-row"
+                                        : ""
+                                        }`}
+                                      key={item.id}
+                                      data-id={item.id}
+                                      tabIndex={0}
                                       style={{
-                                        textAlign: "center",
-                                        fontSize: "16px",
-                                        fontWeight: 600,
+                                        border:
+                                          "1px solid rgba(4, 76, 157, 0.1)",
+                                        padding: "10px",
+                                        outline: "none",
                                       }}
+                                      onClick={() =>
+                                        handlePassData(item)
+                                      }
+                                      onFocus={() => setAutoCompleteOpen(false)}
+                                      onMouseEnter={(e) => {
+                                        const hoveredRow = e.currentTarget;
+                                        setHighlightedRowId(hoveredRow);
+                                      }}
+
                                     >
-                                      No record found
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
-                          </div>
-                        </Box>
-                      )}
+                                      <td className="text-base font-semibold">
+                                        {item.iteam_name}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.batch_number}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.unit}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.expiry_date}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.mrp}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.qty}
+                                      </td>
+                                      <td className="text-base font-semibold">
+                                        {item.location}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </>
+                              ) : (
+                                <tr>
+                                  <td
+                                    colSpan={6}
+                                    style={{
+                                      textAlign: "center",
+                                      fontSize: "16px",
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    No record found
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      </Box>
+                    )}
 
-                    </div>
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      disabled
-                      type="number"
-                      inputRef={inputRef1}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          return;
+                  </div>
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    id="outlined-number"
+                    disabled
+                    type="number"
+                    inputRef={inputRef1}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[1]?.current) {
+                          itemRowInputOrder[1].current.focus();
                         }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[1]?.current) {
-                            itemRowInputOrder[1].current.focus();
-                          }
-                        }
-                      }}
-                      size="small"
-                      value={unit}
-                      sx={{ width: "100px" }}
-                      onChange={(e) => {
-                        setUnit(e.target.value);
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      sx={{ width: "100px" }}
-                      size="small"
-                      disabled
-                      value={batch}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[0]?.current) {
-                            itemRowInputOrder[0].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[2]?.current) {
-                            itemRowInputOrder[2].current.focus();
-                          }
-                        }
-                      }}
-                      onChange={(e) => {
-                        setBatch(e.target.value);
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      disabled
-                      size="small"
-                      sx={{ width: "100px" }}
-                      inputRef={inputRef3}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[1]?.current) {
-                            itemRowInputOrder[1].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[3]?.current) {
-                            itemRowInputOrder[3].current.focus();
-                          }
-                        }
-                      }}
-                      value={expiryDate}
-                      onChange={handleExpiryDateChange}
-                      placeholder="MM/YY"
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      disabled
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "100px" }}
-                      size="small"
-                      inputRef={inputRef4}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[2]?.current) {
-                            itemRowInputOrder[2].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[4]?.current) {
-                            itemRowInputOrder[4].current.focus();
-                          }
-                        }
-                      }}
-                      value={mrp}
-                      onChange={(e) => {
-                        setMRP(e.target.value);
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "100px" }}
-                      size="small"
-                      inputRef={inputRef5}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[3]?.current) {
-                            itemRowInputOrder[3].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          if (base === "" || base === null || base === undefined) {
-                            toast.dismiss();
-                            toast.error("Base is required");
-                            e.preventDefault();
-                            return;
-                          }
-                          e.preventDefault();
-                          if (itemRowInputOrder[5]?.current) {
-                            itemRowInputOrder[5].current.focus();
-                          }
-                        }
-                      }}
-                      value={base}
-                      onChange={(e) => {
-                        setBase(e.target.value);
-                      }}
-
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      type="number"
-                      disabled
-                      size="small"
-                      inputRef={inputRef6}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[4]?.current) {
-                            itemRowInputOrder[4].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[6]?.current) {
-                            itemRowInputOrder[6].current.focus();
-                          }
-                        }
-                      }}
-                      sx={{ width: "100px" }}
-                      value={gst}
-                      onChange={(e) => {
-                        setGst(e.target.value);
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      type="number"
-                      sx={{ width: "100px" }}
-                      size="small"
-                      inputRef={inputRef7}
-                      value={qty}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[5]?.current) {
-                            itemRowInputOrder[5].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          if (qty === "" || qty === null || qty === undefined) {
-                            toast.dismiss();
-                            toast.error("Qty is required");
-                            e.preventDefault();
-                            return;
-                          }
-                          e.preventDefault();
-                          if (itemRowInputOrder[7]?.current) {
-                            itemRowInputOrder[7].current.focus();
-                          }
-                        }
-                      }}
-                      onChange={(e) => {
-                        handleQtyChange(e);
-                        if (
-                          (e.key === "Enter" || e.key === "Tab") &&
-                          Number(qty) === maxQty
-                        ) {
-                          setOrder("O");
-                        }
-                      }}
-                    />
-                  </td>
-
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      id="outlined-number"
-                      size="small"
-                      inputRef={inputRef9}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[6]?.current) {
-                            itemRowInputOrder[6].current.focus();
-                          }
-                          return;
-                        }
-                        if (e.key === "Enter" || e.key === "Tab") {
-                          e.preventDefault();
-                          if (itemRowInputOrder[8]?.current) {
-                            itemRowInputOrder[8].current.focus();
-                          }
-                        }
-                      }}
-                      disabled
-                      sx={{ width: "100px" }}
-                      value={loc}
-                      onChange={(e) => {
-                        setLoc(e.target.value);
-                      }}
-                    />
-                  </td>
-                  <td style={{ padding: "10px", textAlign: "center" }}>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      sx={{ width: "100px" }}
-                      size="small"
-                      value={order}
-                      inputRef={inputRef8}
-                      onKeyDown={(e) => {
-                        if (e.key === "Tab" && e.shiftKey) {
-                          e.preventDefault();
-                          if (itemRowInputOrder[7]?.current) {
-                            itemRowInputOrder[7].current.focus();
-                          }
-                          return;
-                        }
-                        handleKeyDown(e);
-                        if (e.key === "Enter") {
-                          addItemValidation();
-                        }
-                      }}
-                      onChange={(e) => {
-                        const value = e.target.value.toUpperCase();
-                        if (value === "" || value === "O") {
-                          setOrder(value);
-                        }
-                      }}
-                    />
-                  </td>
-                  <td
-                    className="total "
-                    style={{ padding: "10px", textAlign: "center" }}
-                  >
-                    {itemAmount}
-                  </td>
-                </tr>
-
-                {ItemSaleList?.sales_item?.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    style={{ whiteSpace: "nowrap" }}
-                    onClick={() => {
-                      handleEditClick(item);
-                      setSelectedIndex(index);
+                      }
                     }}
-                    className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                    size="small"
+                    value={unit}
+                    sx={{ width: "100px" }}
+                    onChange={(e) => {
+                      setUnit(e.target.value);
+                    }}
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    id="outlined-number"
+                    sx={{ width: "100px" }}
+                    size="small"
+                    disabled
+                    value={batch}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[0]?.current) {
+                          itemRowInputOrder[0].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[2]?.current) {
+                          itemRowInputOrder[2].current.focus();
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      setBatch(e.target.value);
+                    }}
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    id="outlined-number"
+                    disabled
+                    size="small"
+                    sx={{ width: "100px" }}
+                    inputRef={inputRef3}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[1]?.current) {
+                          itemRowInputOrder[1].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[3]?.current) {
+                          itemRowInputOrder[3].current.focus();
+                        }
+                      }
+                    }}
+                    value={expiryDate}
+                    onChange={handleExpiryDateChange}
+                    placeholder="MM/YY"
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    disabled
+                    id="outlined-number"
+                    type="number"
+                    sx={{ width: "100px" }}
+                    size="small"
+                    inputRef={inputRef4}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[2]?.current) {
+                          itemRowInputOrder[2].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[4]?.current) {
+                          itemRowInputOrder[4].current.focus();
+                        }
+                      }
+                    }}
+                    value={mrp}
+                    onChange={(e) => {
+                      setMRP(e.target.value);
+                    }}
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    sx={{ width: "100px" }}
+                    size="small"
+                    inputRef={inputRef5}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[3]?.current) {
+                          itemRowInputOrder[3].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        if (base === "" || base === null || base === undefined) {
+                          toast.dismiss();
+                          toast.error("Base is required");
+                          e.preventDefault();
+                          return;
+                        }
+                        e.preventDefault();
+                        if (itemRowInputOrder[5]?.current) {
+                          itemRowInputOrder[5].current.focus();
+                        }
+                      }
+                    }}
+                    value={base}
+                    onChange={(e) => {
+                      setBase(e.target.value);
+                    }}
+
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    id="outlined-number"
+                    type="number"
+                    disabled
+                    size="small"
+                    inputRef={inputRef6}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[4]?.current) {
+                          itemRowInputOrder[4].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[6]?.current) {
+                          itemRowInputOrder[6].current.focus();
+                        }
+                      }
+                    }}
+                    sx={{ width: "100px" }}
+                    value={gst}
+                    onChange={(e) => {
+                      setGst(e.target.value);
+                    }}
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    sx={{ width: "100px" }}
+                    size="small"
+                    inputRef={inputRef7}
+                    value={qty}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[5]?.current) {
+                          itemRowInputOrder[5].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        if (qty === "" || qty === null || qty === undefined) {
+                          toast.dismiss();
+                          toast.error("Qty is required");
+                          e.preventDefault();
+                          return;
+                        }
+                        e.preventDefault();
+                        if (itemRowInputOrder[7]?.current) {
+                          itemRowInputOrder[7].current.focus();
+                        }
+                      }
+                    }}
+                    onChange={(e) => {
+                      handleQtyChange(e);
+                      if (
+                        (e.key === "Enter" || e.key === "Tab") &&
+                        Number(qty) === maxQty
+                      ) {
+                        setOrder("O");
+                      }
+                    }}
+                  />
+                </td>
+
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    id="outlined-number"
+                    size="small"
+                    inputRef={inputRef9}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[6]?.current) {
+                          itemRowInputOrder[6].current.focus();
+                        }
+                        return;
+                      }
+                      if (e.key === "Enter" || e.key === "Tab") {
+                        e.preventDefault();
+                        if (itemRowInputOrder[8]?.current) {
+                          itemRowInputOrder[8].current.focus();
+                        }
+                      }
+                    }}
+                    disabled
+                    sx={{ width: "100px" }}
+                    value={loc}
+                    onChange={(e) => {
+                      setLoc(e.target.value);
+                    }}
+                  />
+                </td>
+                <td style={{ padding: "10px", textAlign: "center" }}>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    sx={{ width: "100px" }}
+                    size="small"
+                    value={order}
+                    inputRef={inputRef8}
+                    onKeyDown={(e) => {
+                      if (e.key === "Tab" && e.shiftKey) {
+                        e.preventDefault();
+                        if (itemRowInputOrder[7]?.current) {
+                          itemRowInputOrder[7].current.focus();
+                        }
+                        return;
+                      }
+                      handleKeyDown(e);
+                      if (e.key === "Enter") {
+                        addItemValidation();
+                      }
+                    }}
+                    onChange={(e) => {
+                      const value = e.target.value.toUpperCase();
+                      if (value === "" || value === "O") {
+                        setOrder(value);
+                      }
+                    }}
+                  />
+                </td>
+                <td
+                  className="total "
+                  style={{ padding: "10px", textAlign: "center" }}
+                >
+                  {itemAmount}
+                </td>
+              </tr>
+
+              {ItemSaleList?.sales_item?.map((item, index) => (
+                <tr
+                  key={item.id}
+                  style={{ whiteSpace: "nowrap" }}
+                  onClick={() => {
+                    handleEditClick(item);
+                    setSelectedIndex(index);
+                  }}
+                  className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                >
+                  <td
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      whiteSpace: "nowrap",
+                    }}
                   >
-                    <td
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        whiteSpace: "nowrap",
+                    <BorderColorIcon
+                      style={{ color: "var(--color1)" }}
+                      color="primary"
+                      className="cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleEditClick(item);
                       }}
-                    >
-                      <BorderColorIcon
-                        style={{ color: "var(--color1)" }}
-                        color="primary"
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(item);
-                        }}
-                      />
-                      <DeleteIcon
-                        className="delete-icon"
-                        style={{ color: "#F20000" }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setIsDelete(true);
-                          setSaleItemId(item.id);
+                    />
+                    <DeleteIcon
+                      className="delete-icon"
+                      style={{ color: "#F20000" }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsDelete(true);
+                        setSaleItemId(item.id);
 
-                        }}
-                      />
-                      {item.iteam_name || barcodeItemName}
-                    </td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
-                    <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {/* } */}
-          {/*<====================================================================== total and other details =====================================================================> */}
+                      }}
+                    />
+                    {item.iteam_name || barcodeItemName}
+                  </td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
+                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
+                </tr>
+              ))}
 
+            </tbody>
+          </table>
+        </div>
+
+        {/*<==================================================== total and other details ===================================================> */}
+
+        <div className="sale_filtr_add"
+          style={{
+            background: "var(--color1)",
+            color: "white",
+            display: "flex",
+            flexDirection: "column",
+            position: "fixed",
+            width: "100%",
+            bottom: "0",
+            left: "0",
+          }}
+        >
           <div
-            className="sale_filtr_add"
+            className=""
             style={{
-              background: "var(--color1)",
-              color: "white",
               display: "flex",
-              flexDirection: "column",
-              position: "fixed",
-              width: "100%",
-              bottom: "0",
+              whiteSpace: "nowrap",
+              position: "sticky",
               left: "0",
+              overflow: "auto",
+              padding: "20px",
+            }}
+          >
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total GST : </label>
+
+              <span style={{ fontWeight: 600 }}> {totalgst} </span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total Base : </label>
+              <span style={{ fontWeight: 600 }}> {totalBase} </span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Profit : </label>
+              <span style={{ fontWeight: 600 }}>
+                &#8377; {marginNetProfit || 0} (
+                {Number(totalMargin || 0).toFixed(2)}%)
+              </span>
+            </div>
+            <div
+              className="gap-2 invoice_total_fld"
+              style={{ display: "flex" }}
+            >
+              <label className="font-bold">Total Net Rate : </label>
+              <span style={{ fontWeight: 600 }}>&#8377; {totalNetRate}</span>
+            </div>
+          </div>
+          <hr
+            style={{
+              opacity: 0.5,
+              position: "sticky",
+              left: "0",
+              width: "100%",
+            }}
+          />
+          <div
+            className=""
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              whiteSpace: "nowrap",
+              padding: "20px",
+              alignItems: "baseline",
+              overflow: "auto",
             }}
           >
             <div
@@ -3457,384 +3477,316 @@ const Addsale = () => {
               style={{
                 display: "flex",
                 whiteSpace: "nowrap",
-                position: "sticky",
                 left: "0",
-                overflow: "auto",
-                padding: "20px",
               }}
             >
               <div
                 className="gap-2 invoice_total_fld"
                 style={{ display: "flex" }}
               >
-                <label className="font-bold">Total GST : </label>
+                <label className="font-bold">Today Points : </label>
+                {todayLoyltyPoint || 0}
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Previous Points : </label>
+                {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
+              </div>
+              <div
+                className="gap-2 invoice_total_fld"
+                style={{ display: "flex" }}
+              >
+                <label className="font-bold">Redeem : </label>
+                <Input
+                  type="number"
+                  value={loyaltyVal}
+                  onChange={(e) => {
+                    const value = e.target.value;
 
-                <span style={{ fontWeight: 600 }}> {totalgst} </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total Base : </label>
-                <span style={{ fontWeight: 600 }}> {totalBase} </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Profit : </label>
-                <span style={{ fontWeight: 600 }}>
-                  &#8377; {marginNetProfit || 0} (
-                  {Number(totalMargin || 0).toFixed(2)}%)
-                </span>
-              </div>
-              <div
-                className="gap-2 invoice_total_fld"
-                style={{ display: "flex" }}
-              >
-                <label className="font-bold">Total Net Rate : </label>
-                <span style={{ fontWeight: 600 }}>&#8377; {totalNetRate}</span>
+                    const numericValue = Math.floor(Number(value));
+
+                    const maxAllowedPoints = Math.min(
+                      maxLoyaltyPoints,
+                      totalAmount
+                    );
+
+                    if (
+                      numericValue >= 0 &&
+                      numericValue <= maxAllowedPoints
+                    ) {
+                      setLoyaltyVal(numericValue);
+                    } else if (numericValue < 0) {
+                      setLoyaltyVal(0);
+                    }
+                    setUnsavedItems(true);
+                  }}
+                  onKeyPress={(e) => {
+                    const value = e.target.value;
+                    const isMinusKey = e.key === "-";
+
+                    if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
+                      e.preventDefault();
+                    }
+
+                    if (isMinusKey && value.includes("-")) {
+                      e.preventDefault();
+                    }
+                  }}
+                  size="small"
+                  style={{
+                    width: "70px",
+                    background: "none",
+                    borderBottom: "1px solid gray",
+                    justifyItems: "end",
+                    outline: "none",
+                    color: "white",
+                  }}
+                  sx={{
+                    "& .MuiInputBase-root": {
+                      height: "35px",
+                    },
+                    "& .MuiInputBase-input": { textAlign: "end" },
+                  }}
+                />
+                {/* {previousLoyaltyPoints} */}
               </div>
             </div>
-            <hr
-              style={{
-                opacity: 0.5,
-                position: "sticky",
-                left: "0",
-                width: "100%",
-              }}
-            />
-            <div
-              className=""
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                whiteSpace: "nowrap",
-                padding: "20px",
-                alignItems: "baseline",
-                overflow: "auto",
-              }}
-            >
+
+            <div style={{ display: "flex", whiteSpace: "nowrap" }}>
               <div
-                className=""
+                className="gap-2 "
+                onClick={toggleModal}
                 style={{
                   display: "flex",
-                  whiteSpace: "nowrap",
-                  left: "0",
+                  alignItems: "center",
+                  cursor: "pointer",
                 }}
               >
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Today Points : </label>
-                  {todayLoyltyPoint || 0}
-                </div>
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Previous Points : </label>
-                  {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
-                </div>
-                <div
-                  className="gap-2 invoice_total_fld"
-                  style={{ display: "flex" }}
-                >
-                  <label className="font-bold">Redeem : </label>
-                  <Input
-                    type="number"
-                    value={loyaltyVal}
-                    onChange={(e) => {
-                      const value = e.target.value;
-
-                      const numericValue = Math.floor(Number(value));
-
-                      const maxAllowedPoints = Math.min(
-                        maxLoyaltyPoints,
-                        totalAmount
-                      );
-
-                      if (
-                        numericValue >= 0 &&
-                        numericValue <= maxAllowedPoints
-                      ) {
-                        setLoyaltyVal(numericValue);
-                      } else if (numericValue < 0) {
-                        setLoyaltyVal(0);
-                      }
-                      setUnsavedItems(true);
-                    }}
-                    onKeyPress={(e) => {
-                      const value = e.target.value;
-                      const isMinusKey = e.key === "-";
-
-                      if (!/[0-9.-]/.test(e.key) && e.key !== "Backspace") {
-                        e.preventDefault();
-                      }
-
-                      if (isMinusKey && value.includes("-")) {
-                        e.preventDefault();
-                      }
-                    }}
-                    size="small"
-                    style={{
-                      width: "70px",
-                      background: "none",
-                      borderBottom: "1px solid gray",
-                      justifyItems: "end",
-                      outline: "none",
-                      color: "white",
-                    }}
-                    sx={{
-                      "& .MuiInputBase-root": {
-                        height: "35px",
-                      },
-                      "& .MuiInputBase-input": { textAlign: "end" },
-                    }}
-                  />
-                  {/* {previousLoyaltyPoints} */}
-                </div>
-              </div>
-
-              <div style={{ display: "flex", whiteSpace: "nowrap" }}>
-                <div
-                  className="gap-2 "
-                  onClick={toggleModal}
+                <label className="font-bold">Net Amount : </label>
+                <span
+                  className="gap-1"
                   style={{
+                    fontWeight: 800,
+                    fontSize: "22px",
+                    whiteSpace: "nowrap",
                     display: "flex",
                     alignItems: "center",
-                    cursor: "pointer",
                   }}
                 >
-                  <label className="font-bold">Net Amount : </label>
-                  <span
-                    className="gap-1"
-                    style={{
-                      fontWeight: 800,
-                      fontSize: "22px",
-                      whiteSpace: "nowrap",
-                      display: "flex",
-                      alignItems: "center",
-                    }}
-                  >
-                    {netAmount}
-                    <FaCaretUp />
-                  </span>
-                </div>
+                  {netAmount}
+                  <FaCaretUp />
+                </span>
+              </div>
 
-                <Modal
-                  show={isModalOpen}
-                  onClose={toggleModal}
-                  size="lg"
-                  position="bottom-center"
-                  className="modal_amount"
+              <Modal
+                show={isModalOpen}
+                onClose={toggleModal}
+                size="lg"
+                position="bottom-center"
+                className="modal_amount"
+              >
+                <div
+                  style={{
+                    backgroundColor: "var(--COLOR_UI_PHARMACY)",
+                    color: "white",
+                    padding: "20px",
+                    fontSize: "larger",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <h2 style={{ textTransform: "uppercase" }}>
+                    invoice total
+                  </h2>
+                  <IoMdClose
+                    onClick={toggleModal}
+                    cursor={"pointer"}
+                    size={30}
+                  />
+                </div>
+                <div
+                  style={{
+                    background: "white",
+                    padding: "20px",
+                    width: "100%",
+                    maxWidth: "600px",
+                    margin: "0 auto",
+                    lineHeight: "2.5rem",
+                  }}
                 >
                   <div
+                    className=""
                     style={{
-                      backgroundColor: "var(--COLOR_UI_PHARMACY)",
-                      color: "white",
-                      padding: "20px",
-                      fontSize: "larger",
                       display: "flex",
                       justifyContent: "space-between",
                     }}
                   >
-                    <h2 style={{ textTransform: "uppercase" }}>
-                      invoice total
-                    </h2>
-                    <IoMdClose
-                      onClick={toggleModal}
-                      cursor={"pointer"}
-                      size={30}
+                    <label className="font-bold">Total Amount : </label>
+                    <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                  </div>
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <label className="font-bold">Discount(%) : </label>
+                    <Input
+                      type="number"
+                      value={finalDiscount}
+                      onKeyPress={(e) => {
+                        if (
+                          !/[0-9.]/.test(e.key) &&
+                          e.key !== "Backspace"
+                        ) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onChange={(e) => {
+                        let newValue = e.target.value;
+
+                        if (newValue > 100) {
+                          setFinalDiscount(100);
+                        } else if (newValue >= 0) {
+                          setFinalDiscount(newValue);
+                        }
+                      }}
+                      size="small"
+                      style={{
+                        width: "70px",
+                        background: "none",
+                        outline: "none",
+                        justifyItems: "end",
+                      }}
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: "35px",
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" },
+                      }}
                     />
                   </div>
                   <div
+                    className=""
                     style={{
-                      background: "white",
-                      padding: "20px",
-                      width: "100%",
-                      maxWidth: "600px",
-                      margin: "0 auto",
-                      lineHeight: "2.5rem",
+                      display: "flex",
+                      justifyContent: "space-between",
                     }}
                   >
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Total Amount : </label>
-                      <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                    </div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Discount(%) : </label>
-                      <Input
-                        type="number"
-                        value={finalDiscount}
-                        onKeyPress={(e) => {
-                          if (
-                            !/[0-9.]/.test(e.key) &&
-                            e.key !== "Backspace"
-                          ) {
-                            e.preventDefault();
-                          }
-                        }}
-                        onChange={(e) => {
-                          let newValue = e.target.value;
+                    <label className="font-bold">Other Amount : </label>
+                    <Input
+                      type="number"
+                      value={otherAmt}
+                      onKeyPress={(e) => {
+                        const value = e.target.value;
+                        const isMinusKey = e.key === "-";
 
-                          if (newValue > 100) {
-                            setFinalDiscount(100);
-                          } else if (newValue >= 0) {
-                            setFinalDiscount(newValue);
-                          }
-                        }}
-                        size="small"
-                        style={{
-                          width: "70px",
-                          background: "none",
-                          outline: "none",
-                          justifyItems: "end",
-                        }}
-                        sx={{
-                          "& .MuiInputBase-root": {
-                            height: "35px",
-                          },
-                          "& .MuiInputBase-input": { textAlign: "end" },
-                        }}
-                      />
-                    </div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <label className="font-bold">Other Amount : </label>
-                      <Input
-                        type="number"
-                        value={otherAmt}
-                        onKeyPress={(e) => {
-                          const value = e.target.value;
-                          const isMinusKey = e.key === "-";
+                        if (
+                          !/[0-9.-]/.test(e.key) &&
+                          e.key !== "Backspace"
+                        ) {
+                          e.preventDefault();
+                        }
 
-                          if (
-                            !/[0-9.-]/.test(e.key) &&
-                            e.key !== "Backspace"
-                          ) {
-                            e.preventDefault();
-                          }
-
-                          if (isMinusKey && value.includes("-")) {
-                            e.preventDefault();
-                          }
-                        }}
-                        onChange={handleOtherAmtChange}
-                        size="small"
-                        style={{
-                          width: "70px",
-                          background: "none",
-                          justifyItems: "end",
-                          outline: "none",
-                        }}
-                        sx={{
-                          "& .MuiInputBase-root": {
-                            height: "35px",
-                          },
-                          "& .MuiInputBase-input": { textAlign: "end" },
-                        }}
-                      />
-                    </div>
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
+                        if (isMinusKey && value.includes("-")) {
+                          e.preventDefault();
+                        }
                       }}
-                    >
-                      <label className="font-bold">
-                        Loyalty Points Redeem:{" "}
-                      </label>
-                      <span>{loyaltyVal || 0}</span>
-                    </div>
-                    <div
-                      className=""
+                      onChange={handleOtherAmtChange}
+                      size="small"
                       style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
+                        width: "70px",
+                        background: "none",
+                        justifyItems: "end",
+                        outline: "none",
                       }}
-                    >
-                      <label className="font-bold">
-                        Discount Amount :{" "}
-                      </label>
-                      {discountAmount !== 0 && (
-                        <span>
-                          {discountAmount > 0
-                            ? `-${discountAmount}`
-                            : discountAmount}
-                        </span>
-                      )}
-                    </div>
-
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        paddingBottom: "5px",
-                        borderTop:
-                          "1px solid var(--toastify-spinner-color-empty-area)",
-                        paddingTop: "5px",
+                      sx={{
+                        "& .MuiInputBase-root": {
+                          height: "35px",
+                        },
+                        "& .MuiInputBase-input": { textAlign: "end" },
                       }}
-                    >
-                      <label className="font-bold">Round Off : </label>
-                      <span>{!roundOff ? 0 : roundOff}</span>
-                    </div>
-
-                    <div
-                      className=""
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        cursor: "pointer",
-                        justifyContent: "space-between",
-                        borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
-                        paddingTop: "5px",
-                      }}
-                    >
-                      <label className="font-bold">Net Amount: </label>
-                      <span
-                        style={{
-                          fontWeight: 800,
-                          fontSize: "22px",
-                          color: "var(--COLOR_UI_PHARMACY)",
-                        }}
-                      >
-                        {netAmount}
-                      </span>
-                    </div>
+                    />
                   </div>
-                </Modal>
-              </div>
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <label className="font-bold">
+                      Loyalty Points Redeem:{" "}
+                    </label>
+                    <span>{loyaltyVal || 0}</span>
+                  </div>
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      paddingBottom: "5px",
+                    }}
+                  >
+                    <label className="font-bold">
+                      Discount Amount :{" "}
+                    </label>
+                    {discountAmount !== 0 && (
+                      <span>
+                        {discountAmount > 0
+                          ? `-${discountAmount}`
+                          : discountAmount}
+                      </span>
+                    )}
+                  </div>
+
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      paddingBottom: "5px",
+                      borderTop:
+                        "1px solid var(--toastify-spinner-color-empty-area)",
+                      paddingTop: "5px",
+                    }}
+                  >
+                    <label className="font-bold">Round Off : </label>
+                    <span>{!roundOff ? 0 : roundOff}</span>
+                  </div>
+
+                  <div
+                    className=""
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      cursor: "pointer",
+                      justifyContent: "space-between",
+                      borderTop: "2px solid var(--COLOR_UI_PHARMACY)",
+                      paddingTop: "5px",
+                    }}
+                  >
+                    <label className="font-bold">Net Amount: </label>
+                    <span
+                      style={{
+                        fontWeight: 800,
+                        fontSize: "22px",
+                        color: "var(--COLOR_UI_PHARMACY)",
+                      }}
+                    >
+                      {netAmount}
+                    </span>
+                  </div>
+                </div>
+              </Modal>
             </div>
           </div>
-
-
         </div>
 
-
-
-        {/*<====================================================================== Add Doctor  =====================================================================> */}
+        {/*<========================================================== Add Doctor  =========================================================> */}
 
         <Dialog open={openAddPopUp} className="custom-dialog add-company-dialog ">
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -3931,7 +3883,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<====================================================================== Add customer  =====================================================================> */}
+        {/*<========================================================== Add customer  =========================================================> */}
         <Dialog open={openCustomer} className="custom-dialog add-company-dialog">
           <DialogTitle id="alert-dialog-title" className="primary">
             Add Customer
@@ -4039,7 +3991,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<====================================================================== item purchase history  =====================================================================> */}
+        {/*<====================================================== item purchase history  =====================================================> */}
 
         <Dialog
           open={openPurchaseHistoryPopUp}
@@ -4115,7 +4067,8 @@ const Addsale = () => {
             </DialogContentText>
           </DialogContent>
         </Dialog>
-        {/*<====================================================================== Add item  =====================================================================> */}
+        {/*<======================================================== Add item  ===================================================================> */}
+        
         <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add New Item
@@ -4214,7 +4167,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<====================================================================== Pill refill modal  =====================================================================> */}
+        {/*<========================================================== Pill refill modal  =========================================================> */}
 
         <Dialog open={openReminderPopUp} className="custom-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
@@ -4361,7 +4314,7 @@ const Addsale = () => {
           </DialogActions>
         </Dialog>
 
-        {/*<====================================================================== Customer History Modal  =====================================================================> */}
+        {/*<======================================================== Customer History Modal  =======================================================> */}
         <Dialog
           open={openCustomerHistory}
           onClose={() => setOpenCustomerHistory(false)}
@@ -4486,7 +4439,7 @@ const Addsale = () => {
           </DialogContent>
         </Dialog>
 
-        {/*<====================================================================== Item History Modal  =====================================================================> */}
+        {/*<========================================================== Item History Modal  =========================================================> */}
         <Dialog
           open={openItemHistory}
           onClose={() => setOpenItemHistory(false)}
@@ -4641,7 +4594,7 @@ const Addsale = () => {
           </DialogContent>
         </Dialog>
 
-        {/*<====================================================================== Delete modal  =====================================================================> */}
+        {/*<========================================================== Delete modal  =========================================================> */}
 
         <div
           id="modal"
@@ -4697,7 +4650,7 @@ const Addsale = () => {
           </div>
         </div>
 
-        {/*<====================================================================== Leave page modal  =====================================================================> */}
+        {/*<========================================================== Leave page modal  =========================================================> */}
 
         <Prompt
           when={unsavedItems}

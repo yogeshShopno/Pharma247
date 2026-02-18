@@ -154,7 +154,7 @@ const Addsale = () => {
   const [otherAmt, setOtherAmt] = useState(0);
   const [searchItemID, setSearchItemID] = useState("");
   const [bankData, setBankData] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [CustomerSearchQuery, setCustomerSearchQuery] = useState("");
   const [searchDoctor, setSearchDoctor] = useState("");
   const [purchaseHistory, setPurchaseHistory] = useState([]);
   const [discountAmount, setDiscountAmount] = useState();
@@ -212,9 +212,6 @@ const Addsale = () => {
 
   const [itemHistoryData, setItemHistoryData] = useState(null);
   const [openItemHistory, setOpenItemHistory] = useState(false);
-
-
-
 
   /*<============================================ disable autocomplete to focus when tableref is focused  ===================================> */
   useEffect(() => {
@@ -479,7 +476,6 @@ const Addsale = () => {
     today.setHours(0, 0, 0, 0);
     return date > today;
   };
-
 
   const handleExpiryDateChange = (event) => {
     let inputValue = event.target.value;
@@ -962,72 +958,6 @@ const Addsale = () => {
   };
 
   /*<============================================================== fetch doctor data   =========================================================> */
-  // useEffect(() => {
-  //   if (searchQuery) {
-  //     const customerAllData = async () => {
-  //       let data = new FormData();
-  //       const name = searchQuery.split(" [")[0];
-  //       data.append("search", name);
-  //       // setIsLoading(true);
-  //       try {
-  //         const response = await axios.post("list-customer", data, {
-  //           // params: params,
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         });
-  //         setCustomerDetails(response.data.data);
-  //         if (response.data.status === 401) {
-  //           history.push("/");
-  //           localStorage.clear();
-  //         }
-  //         // setIsLoading(false);
-  //       } catch (error) {
-  //         // setIsLoading(false);
-  //         console.error("API error:", error);
-  //       }
-  //     };
-
-  //     const delayDebounceFn = setTimeout(() => {
-  //       customerAllData();
-  //     }, 500); // Debounce to prevent too many API calls
-
-  //     return () => clearTimeout(delayDebounceFn);
-  //   } else {
-  //     setCustomerDetails([]);
-  //   }
-  // }, [searchQuery, token]);
-
-  // const fetchDoctors = async () => {
-  //   let data = new FormData();
-  //   // const params = { search: searchDoctor || "" };
-  //   // data.append("search",searchDoctor)
-  //   // setIsLoading(true);
-  //   try {
-  //     const res = await axios.post("doctor-list?", data, {
-
-  //       headers: { Authorization: `Bearer ${token}` }
-  //     });
-  //     setDoctorData(res.data.data || []);
-
-
-  //     if (!doctor) {
-  //       setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
-  //     }
-  //   } catch (err) {
-  //     // handle error
-  //   } finally {
-  //     // setIsLoading(false);
-  //     // BankList()
-  //     // customerAllData("")
-
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   const timeout = setTimeout(fetchDoctors, 500);
-  //   return () => clearTimeout(timeout);
-  // }, []);
 
   useEffect(() => {
     let doctor = doctorData.filter((d) => d.default_doctor === "1");
@@ -1036,56 +966,6 @@ const Addsale = () => {
 
   }, [doctorData])
   /*<============================================================== fetch customer data   =========================================================> */
-
-  const customerAllData = async (searchQuery) => {
-
-    if (isLoading) return;
-
-    let data = new FormData();
-    data.append("search", searchQuery);
-    setIsLoading(true);
-
-    try {
-      const response = await axios.post("list-customer", data, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      const customers = response.data.data || [];
-      setCustomerDetails(customers);
-      // setCustomer(response.data.data[0]);
-
-      if (!searchQuery && customers.length > 0) {
-        setCustomer(customers[0]);
-        setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
-        setMaxLoyaltyPoints(customers[0].roylti_point || 0);
-      }
-
-      if (response.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
-      // setIsLoading(false);
-    } catch (error) {
-      console.error("API error:", error);
-    } finally {
-      setIsLoading(false);
-      BankList()
-
-    }
-  };
-
-  useEffect(() => {
-    if (searchQuery === "") return;
-
-    const delayDebounce = setTimeout(() => {
-      // customerAllData(searchQuery);
-    }, 500);
-
-    return () => clearTimeout(delayDebounce);
-  }, [searchQuery]);
-
 
   useEffect(() => {
     if (searchInputRef.current) {
@@ -1111,40 +991,38 @@ const Addsale = () => {
 
   /*<======================================================= fetch essential data intially    ==================================================> */
 
-  const fetchCustomers = async () => {
-
+  const fetchCustomers = async (search = "") => {
     if (isLoading) return;
 
     setIsLoading(true);
 
+    let data = new FormData();
+    data.append("search", search);
+
     try {
-      const res = await axios.post("list-customer", {}, {
+      const res = await axios.post("list-customer", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
       const customers = res.data.data || [];
-      setCustomer(res.data.data[0]);
       setCustomerDetails(customers);
 
-      if (customers.length > 0) {
+      // Only auto-select on initial load
+      if (!search && customers.length > 0) {
         setCustomer(customers[0]);
         setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
         setMaxLoyaltyPoints(customers[0].roylti_point || 0);
-      }
-      if (res.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
       }
 
     } catch (error) {
       console.error("API error:", error);
     } finally {
       setIsLoading(false);
-
     }
   };
+
 
   const fetchDoctors = async () => {
 
@@ -1172,7 +1050,6 @@ const Addsale = () => {
 
   const CleanOldData = async () => {
     let data = new FormData()
-    console.log("hi")
     data.append("random_number", localStorage.getItem("RandomNumber") || "");
     axios.post("all-sales-item-delete", data, {
       headers: { Authorization: `Bearer ${token}` },
@@ -1182,7 +1059,7 @@ const Addsale = () => {
   const BankList = async () => {
 
     let data = new FormData();
-    
+
     try {
       await axios
         .post("bank-list", data, {
@@ -1223,6 +1100,15 @@ const Addsale = () => {
 
     loadData()
   }, [])
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchCustomers(CustomerSearchQuery.toUpperCase());
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [CustomerSearchQuery]);
+
 
 
   /*<========================================================================= add doctor   ====================================================================> */
@@ -1659,8 +1545,6 @@ const Addsale = () => {
         const lowStockItems = ItemSaleList.sales_item.filter(
           (item) => parseFloat(item.total_stock) <= 1
         );
-
-
 
         if (billSaveDraft == 1 && customer.id !== 1) {
           handleSendInvoice(customer, totalAmount, selectedDate, billNo);
@@ -2251,7 +2135,6 @@ const Addsale = () => {
           overflow: "auto",
         }}>
 
-
         {/*<================================================================ header   =====================================================> */}
 
         <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]" >
@@ -2418,9 +2301,7 @@ const Addsale = () => {
           </div>
         </div>
 
-
         {/*<=========================================================== Top detail   ==========================================================> */}
-
 
         <div className=" flex gap-4  mt-4">
           <div className="flex flex-row gap-4 overflow-x-auto w-full">
@@ -2443,9 +2324,9 @@ const Addsale = () => {
               <Autocomplete
                 value={customer}
                 onChange={handleCustomerOption}
-                inputValue={searchQuery}
+                inputValue={CustomerSearchQuery}
                 onInputChange={(event, newInputValue) => {
-                  setSearchQuery(newInputValue);
+                  setCustomerSearchQuery(newInputValue);
                 }}
                 options={customerDetails}
                 getOptionLabel={(option) =>
@@ -2755,6 +2636,7 @@ const Addsale = () => {
           </div>
 
         </div>
+
         {/*<=========================================================== item table   ==========================================================> */}
 
         <div className="table-container">
@@ -2855,7 +2737,7 @@ const Addsale = () => {
                           <ListItem {...props} key={option.id}>
                             <ListItemText
                               primary={`${option.iteam_name}`}
-                              secondary={`${option.company}`}
+                              secondary={`${option.company_name}`}
                             />
                           </ListItem>
                         )}

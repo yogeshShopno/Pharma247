@@ -718,7 +718,9 @@ const Addsale = () => {
       clearTimeout(SearchTimer);
     };
   }, [searchItem]);
+
   /*<========================================================================= search add item   ====================================================================> */
+
   const handleSearch = async (searchTerm) => {
     const cacheKey = searchTerm.toUpperCase();
     if (itemCache.current.has(cacheKey)) {
@@ -735,16 +737,17 @@ const Addsale = () => {
 
     let data = new FormData();
     data.append("search", searchTerm);
+    data.append("page", 1);
 
     try {
-      const res = await axios.post("item-search", data, {
+      const res = await axios.post("items-list", data, {
         signal: searchAbortController.current.signal,
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      const items = res.data.data.data;
+      const items = res.data.data;
 
       if (lastSearchTerm.current === searchTerm) {
         itemCache.current.set(cacheKey, items);
@@ -998,25 +1001,28 @@ const Addsale = () => {
   /*<========================================================================= fetch customer data   ====================================================================> */
 
   const customerAllData = async (searchQuery) => {
+    
+    if(isLoading) return ;
+    
     let data = new FormData();
     data.append("search", searchQuery);
-    // setIsLoading(true);
+    setIsLoading(true);
+    
     try {
-      const response = await axios.post("list-customer", {}, {
+      const response = await axios.post("list-customer", data, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
+
       const customers = response.data.data || [];
       setCustomerDetails(customers);
+        // setCustomer(response.data.data[0]);
 
-      console.log(response.data.data[0],"firstCustomer")
-
-      if (customers.length > 0) {
-        const firstCustomer = customers[0];
-        setCustomer(firstCustomer);
-        setPreviousLoyaltyPoints(firstCustomer.roylti_point || 0);
-        setMaxLoyaltyPoints(firstCustomer.roylti_point || 0);
+      if (!searchQuery && customers.length > 0) {
+        setCustomer(customers[0]);
+        setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
+        setMaxLoyaltyPoints(customers[0].roylti_point || 0);
       }
 
       if (response.data.status === 401) {
@@ -1025,13 +1031,25 @@ const Addsale = () => {
       }
       // setIsLoading(false);
     } catch (error) {
-      // setIsLoading(false);
       console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+
     }
   };
 
+ useEffect(() => {
+  if (searchQuery === "") return;
+
+  const delayDebounce = setTimeout(() => {
+    // customerAllData(searchQuery);
+  }, 500);
+
+  return () => clearTimeout(delayDebounce);
+}, [searchQuery]);
+
+
   useEffect(() => {
-    customerAllData();
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
@@ -1067,11 +1085,12 @@ const Addsale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+    }finally{
+      customerAllData("")
+      setIsLoading(false)
     }
-    setIsLoading(false)
 
   };
-
 
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
@@ -2390,7 +2409,7 @@ const Addsale = () => {
                   onChange={handleCustomerOption}
                   inputValue={searchQuery}
                   onInputChange={(event, newInputValue) => {
-                    setSearchQuery(newInputValue);
+                     setSearchQuery(newInputValue);
                   }}
                   options={customerDetails}
                   getOptionLabel={(option) =>
@@ -2798,8 +2817,8 @@ const Addsale = () => {
                           renderOption={(props, option) => (
                             <ListItem {...props} key={option.id}>
                               <ListItemText
-                                primary={`${option.iteam_name}, (${option.company})`}
-                                secondary={`Stock: ${option.stock} | MRP: ${option.mrp} | Location: ${option.location}`}
+                                primary={`${option.iteam_name}`}
+                                secondary={`${option.company}`}
                               />
                             </ListItem>
                           )}

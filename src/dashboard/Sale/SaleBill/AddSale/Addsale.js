@@ -637,7 +637,9 @@ const Addsale = () => {
       // handle error
     } finally {
       // setIsLoading(false);
-      BankList()
+      // BankList()
+      customerAllData("")
+
     }
   };
 
@@ -1034,6 +1036,7 @@ const Addsale = () => {
       console.error("API error:", error);
     } finally {
       setIsLoading(false);
+      BankList()
 
     }
   };
@@ -1059,6 +1062,8 @@ const Addsale = () => {
     axios.post("all-sales-item-delete", data, {
       headers: { Authorization: `Bearer ${token}` },
     });
+      // customerAllData("")
+
   }, []);
 
   /*<========================================================================= fetch bank data   ====================================================================> */
@@ -1086,7 +1091,6 @@ const Addsale = () => {
     } catch (error) {
       console.error("API error:", error);
     }finally{
-      customerAllData("")
       setIsLoading(false)
     }
 

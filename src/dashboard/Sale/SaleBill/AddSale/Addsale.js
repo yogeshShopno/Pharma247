@@ -8,7 +8,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import SwapVertIcon from "@mui/icons-material/SwapVert";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import { FaPlusCircle, FaShippingFast, FaWalking } from "react-icons/fa";
+import { FaPlusCircle, FaPray, FaShippingFast, FaWalking } from "react-icons/fa";
 import {
   Box,
   CircularProgress,
@@ -998,31 +998,31 @@ const Addsale = () => {
   //   }
   // }, [searchQuery, token]);
 
-  const fetchDoctors = async () => {
-    let data = new FormData();
-    // const params = { search: searchDoctor || "" };
-    // data.append("search",searchDoctor)
-    // setIsLoading(true);
-    try {
-      const res = await axios.post("doctor-list?", data, {
+  // const fetchDoctors = async () => {
+  //   let data = new FormData();
+  //   // const params = { search: searchDoctor || "" };
+  //   // data.append("search",searchDoctor)
+  //   // setIsLoading(true);
+  //   try {
+  //     const res = await axios.post("doctor-list?", data, {
 
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setDoctorData(res.data.data || []);
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     });
+  //     setDoctorData(res.data.data || []);
 
 
-      if (!doctor) {
-        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
-      }
-    } catch (err) {
-      // handle error
-    } finally {
-      // setIsLoading(false);
-      // BankList()
-      // customerAllData("")
+  //     if (!doctor) {
+  //       setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
+  //     }
+  //   } catch (err) {
+  //     // handle error
+  //   } finally {
+  //     // setIsLoading(false);
+  //     // BankList()
+  //     // customerAllData("")
 
-    }
-  };
+  //   }
+  // };
 
   // useEffect(() => {
   //   const timeout = setTimeout(fetchDoctors, 500);
@@ -1091,45 +1091,7 @@ const Addsale = () => {
     if (searchInputRef.current) {
       searchInputRef.current.focus();
     }
-    // generateRandomNumber();
-    // let data = new FormData();
-    // data.append("random_number", localStorage.getItem("RandomNumber") || "");
-    // axios.post("all-sales-item-delete", data, {
-    //   headers: { Authorization: `Bearer ${token}` },
-    // });
-    // customerAllData("")
-
   }, []);
-
-  /*<============================================================== fetch bank data   =========================================================> */
-
-  const BankList = async () => {
-
-    if (isLoading) return;
-    setIsLoading(true)
-
-    let data = new FormData();
-    try {
-      await axios
-        .post("bank-list", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setBankData(response.data.data);
-          if (response.data.status === 401) {
-            history.push("/");
-            localStorage.clear();
-          }
-        });
-    } catch (error) {
-      console.error("API error:", error);
-    } finally {
-      setIsLoading(false)
-    }
-
-  };
 
   const handleCustomerOption = (event, newValue) => {
     setCustomer(newValue);
@@ -1147,6 +1109,120 @@ const Addsale = () => {
     }
   };
 
+  /*<======================================================= fetch essential data intially    ==================================================> */
+
+  const fetchCustomers = async () => {
+
+    if (isLoading) return;
+
+    setIsLoading(true);
+
+    try {
+      const res = await axios.post("list-customer", {}, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const customers = res.data.data || [];
+      setCustomer(res.data.data[0]);
+      setCustomerDetails(customers);
+
+      if (customers.length > 0) {
+        setCustomer(customers[0]);
+        setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
+        setMaxLoyaltyPoints(customers[0].roylti_point || 0);
+      }
+      if (res.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+      }
+
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+
+    }
+  };
+
+  const fetchDoctors = async () => {
+
+    setIsLoading(true);
+    try {
+      const res = await axios.post("doctor-list?", {}, {
+
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDoctorData(res.data.data || []);
+
+      if (!doctor) {
+        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
+      }
+      if (res.data.status === 401) {
+        history.push("/");
+        localStorage.clear();
+      }
+    } catch (err) {
+      console.error("API error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const CleanOldData = async () => {
+    let data = new FormData()
+    console.log("hi")
+    data.append("random_number", localStorage.getItem("RandomNumber") || "");
+    axios.post("all-sales-item-delete", data, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+  }
+
+  const BankList = async () => {
+
+    let data = new FormData();
+    
+    try {
+      await axios
+        .post("bank-list", data, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((response) => {
+          setBankData(response.data.data);
+          if (response.data.status === 401) {
+            history.push("/");
+            localStorage.clear();
+          }
+        });
+    } catch (error) {
+      console.error("API error:", error);
+    } finally {
+      CleanOldData();
+
+    }
+
+  };
+
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await Promise.all([
+          generateRandomNumber(),
+          fetchCustomers(),
+          fetchDoctors(),
+          BankList(),
+        ])
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    loadData()
+  }, [])
 
 
   /*<========================================================================= add doctor   ====================================================================> */
@@ -2745,7 +2821,7 @@ const Addsale = () => {
               </tr>
             </thead>
             <tbody>
-        {/*<============================================== table for autocomplete/batch selection   =============================================> */}
+              {/*<============================================== table for autocomplete/batch selection   =============================================> */}
 
               <tr style={{ borderBottom: "1px solid lightgray" }}>
                 <td style={{ padding: "10px", textAlign: "center" }}>
@@ -4068,7 +4144,7 @@ const Addsale = () => {
           </DialogContent>
         </Dialog>
         {/*<======================================================== Add item  ===================================================================> */}
-        
+
         <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
           <DialogTitle id="alert-dialog-title" className="secondary">
             Add New Item

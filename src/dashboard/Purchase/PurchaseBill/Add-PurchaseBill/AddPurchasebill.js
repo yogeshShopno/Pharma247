@@ -63,6 +63,9 @@ const AddPurchaseBill = () => {
   const [totalQty, setTotalQty] = useState(0);
   const [searchItem, setSearchItem] = useState("");
   const [itemList, setItemList] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [distributor, setDistributor] = useState(null);
   const [billNo, setbillNo] = useState("");
   const [dueDate, setDueDate] = useState(addDays(new Date(), 15));
@@ -326,19 +329,27 @@ const AddPurchaseBill = () => {
   /*<================================================================= Search Item Debouncing ========================================================> */
 
   useEffect(() => {
-
     const SearchTimer = setTimeout(() => {
-      if (searchItem)
-        handleSearch(searchItem.toUpperCase());
-
+      if (searchItem) {
+        setPage(1);
+        setHasMore(true);
+        handleSearch(searchItem.toUpperCase(), 1);
+      } else {
+        setItemList([]);
+        setPage(1);
+        setHasMore(true);
+      }
     }, 500);
 
-    return () => {
-
-      clearTimeout(SearchTimer);
-
-    };
+    return () => clearTimeout(SearchTimer);
   }, [searchItem]);
+
+  useEffect(() => {
+    if (page > 1 && searchItem) {
+      handleSearch(searchItem.toUpperCase(), page);
+    }
+  }, [page]);
+
   /*<================================================================= PTR and MRP validation ========================================================> */
 
   useEffect(() => {
@@ -1401,29 +1412,62 @@ const AddPurchaseBill = () => {
 
 
   /*<======================================================================= search item name  ==================================================================> */
+  const handleScroll = (event) => {
+    const listboxNode = event.currentTarget;
 
-  const handleSearch = async (searchItem) => {
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handleSearch = async (searchValue, pageNumber = 1) => {
+    if (!searchValue || isFetchingMore) return;
+    setIsFetchingMore(true);
+
+
     let data = new FormData();
     data.append("search", searchItem);
+    data.append("page", pageNumber);
     const params = {
-      search: searchItem,
+      search: searchValue,
+      page: pageNumber,
+      limit: 20,
     };
+
     try {
-      const res = await axios
-        .post("items-list?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => {
-          setItemList(res.data.data);
+      const res = await axios.post("items-list?", data, {
+        params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const newData = res?.data?.data || [];
+
+      if (pageNumber === 1) {
+        setItemList(newData);
+      } else {
+        setItemList((prev) => {
+          const existingIds = new Set(prev.map((i) => i.id));
+          const filtered = newData.filter((i) => !existingIds.has(i.id));
+          return [...prev, ...filtered];
         });
-    }
-     catch (error) {
+      }
+
+      if (newData.length < 20) {
+        setHasMore(false);
+      }
+    } catch (error) {
       console.error("API error:", error);
-      setUnsavedItems(false);
+    } finally {
+      setIsFetchingMore(false);
     }
   };
 
@@ -2359,12 +2403,15 @@ const AddPurchaseBill = () => {
                           getOptionLabel={(option) =>
                             `${option.iteam_name} `
                           }
+                          ListboxProps={{
+                            onScroll: handleScroll,
+                          }}
                           options={itemList}
                           renderOption={(props, option) => (
                             <ListItem {...props}>
                               <ListItemText
                                 primary={`${option?.iteam_name}`}
-                                secondary={`${option.company_name}`} 
+                                secondary={`${option.company_name}`}
                               />
                             </ListItem>
                           )}

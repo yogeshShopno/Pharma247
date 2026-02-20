@@ -888,7 +888,7 @@ toast.success(response.data.meassage);
               </DialogContent>
             </Dialog>
           {/*<=============================================== order dialog  ==============================================> */}
-            <Dialog className=" custom-dialog " open={openAddPopUpPlaceOrder}>
+            <Dialog className=" custom-dialog pending-orders-dialog" open={openAddPopUpPlaceOrder}>
               <DialogTitle
                 id="alert-dialog-title"
                 style={{ fontWeight: 700 }}

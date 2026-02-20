@@ -331,7 +331,7 @@ const AddPurchaseBill = () => {
       if (searchItem)
         handleSearch(searchItem.toUpperCase());
 
-    }, 1500);
+    }, 500);
 
     return () => {
 
@@ -1410,17 +1410,18 @@ const AddPurchaseBill = () => {
     };
     try {
       const res = await axios
-        .post("item-search?", data, {
+        .post("items-list?", data, {
           params: params,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         })
-        .then((response) => {
-          setItemList(response.data.data.data);
+        .then((res) => {
+          setItemList(res.data.data);
         });
-    } catch (error) {
+    }
+     catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
     }
@@ -2362,12 +2363,8 @@ const AddPurchaseBill = () => {
                           renderOption={(props, option) => (
                             <ListItem {...props}>
                               <ListItemText
-                                primary={`${option.iteam_name}`}
-                                secondary={` ${option.stock === 0
-                                  ? `Unit: ${option.weightage}`
-                                  : `Pack: ${option.pack}`
-                                  } | MRP: ${option.mrp}  | Location: ${option.location
-                                  }  | Current Stock: ${option.stock}`}
+                                primary={`${option?.iteam_name}`}
+                                secondary={`${option.company_name}`} 
                               />
                             </ListItem>
                           )}

@@ -1010,7 +1010,7 @@ const EditPurchaseBill = () => {
     };
     try {
       const res = await axios
-        .post("item-search?", data, {
+        .post("items-list?", data, {
           params: params,
           headers: {
             "Content-Type": "application/json",
@@ -1018,7 +1018,7 @@ const EditPurchaseBill = () => {
           },
         })
         .then((response) => {
-          setItemList(response.data.data.data);
+          setItemList(response.data.data);
         });
     } catch (error) {
       console.error("API error:", error);

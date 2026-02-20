@@ -181,6 +181,7 @@ function App() {
       display: flex;
       align-items: center;
       justify-content: center;
+      width: 100%;
     }
     .custom-dialog .MuiDialog-paper {
       border-radius: 8px !important;

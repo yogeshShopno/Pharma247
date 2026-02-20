@@ -502,8 +502,7 @@ const Itemmaster = () => {
         resetData()
       }
         handleSearch(searchItem.toUpperCase());
-
-    }, 1500);
+    }, 500);
 
     return () => {
 

@@ -248,7 +248,7 @@ const EditPurchaseBill = () => {
       if (searchItem)
         handleSearch(searchItem.toUpperCase());
 
-    }, 1500);
+    }, 500);
 
     return () => {
 

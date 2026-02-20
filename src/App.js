@@ -267,6 +267,56 @@ function App() {
     .custom-dialog .detail.custommedia .MuiAutocomplete-inputRoot {
       padding: 10px 14px !important;
     }
+
+    /* ================================
+        PENDING ORDERS DIALOG (PlaceOrder)
+       ================================ */
+
+    /* Force the dialog paper to a consistent width */
+    .custom-dialog.pending-orders-dialog .MuiDialog-paper {
+      width: 480px !important;
+      max-width: 95vw !important;
+      border-radius: 8px !important;
+    }
+
+    /* Item Name Select — outlined border */
+    .custom-dialog.pending-orders-dialog .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+      border-color: var(--COLOR_UI_PHARMACY) !important;
+    }
+    .custom-dialog.pending-orders-dialog .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+      border-color: var(--COLOR_UI_PHARMACY) !important;
+    }
+    .custom-dialog.pending-orders-dialog .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border-color: var(--COLOR_UI_PHARMACY) !important;
+      border-width: 2px !important;
+    }
+
+    /* Label color */
+    .custom-dialog.pending-orders-dialog .MuiInputLabel-root {
+      color: var(--COLOR_UI_PHARMACY) !important;
+    }
+    .custom-dialog.pending-orders-dialog .MuiInputLabel-root.Mui-focused {
+      color: var(--COLOR_UI_PHARMACY) !important;
+    }
+
+    /* Select full width */
+    .custom-dialog.pending-orders-dialog .MuiFormControl-root {
+      width: 100% !important;
+    }
+
+    /* DialogContent padding consistency */
+    .custom-dialog.pending-orders-dialog .MuiDialogContent-root {
+      padding: 20px 24px !important;
+    }
+
+    /* Action buttons */
+    .custom-dialog.pending-orders-dialog .MuiDialogActions-root {
+      padding: 16px 24px !important;
+    }
+    .custom-dialog.pending-orders-dialog .MuiButton-contained {
+      text-transform: none !important;
+      box-shadow: none !important;
+    }
       /* ================================
           ADD DISTRIBUTOR DIALOG
        ================================ */

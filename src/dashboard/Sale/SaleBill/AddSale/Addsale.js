@@ -180,6 +180,9 @@ const Addsale = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitTimeout, setSubmitTimeout] = useState(null);
   const [billSaveDraft, setBillSaveDraft] = useState("0");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   const toggleModal = async () => {
     if (isModalOpen && netAmount >= 0) {
@@ -662,6 +665,7 @@ const Addsale = () => {
       return;
     }
 
+
     const now = Date.now();
     const inputSpeed = now - lastInputTime.current;
     lastInputTime.current = now;
@@ -669,7 +673,16 @@ const Addsale = () => {
     const isBarcodeInput = inputSpeed < 50;
     const debounceTime = isBarcodeInput ? 100 : 500;
     const SearchTimer = setTimeout(() => {
-      handleSearch(searchItem.toUpperCase());
+      if (searchItem) {
+        setPage(1);
+        setHasMore(true);
+        handleSearch(searchItem.toUpperCase(), 1);
+      } else {
+        setItemList([]);
+        setPage(1);
+        setHasMore(true);
+      }
+
     }, debounceTime);
 
     return () => {
@@ -677,9 +690,32 @@ const Addsale = () => {
     };
   }, [searchItem]);
 
+  useEffect(() => {
+    if (page > 1 && searchItem) {
+      handleSearch(searchItem.toUpperCase(), page);
+    }
+  }, [page]);
   /*<========================================================================= search add item   ====================================================================> */
 
-  const handleSearch = async (searchTerm) => {
+  const handleScroll = (event) => {
+    const listboxNode = event.currentTarget;
+
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handleSearch = async (searchTerm, pageNumber = 1) => {
+    if (!searchTerm || isFetchingMore) return;
+    setIsFetchingMore(true);
+
+
     const cacheKey = searchTerm.toUpperCase();
     if (itemCache.current.has(cacheKey)) {
       setItemList(itemCache.current.get(cacheKey));
@@ -696,6 +732,11 @@ const Addsale = () => {
     let data = new FormData();
     data.append("search", searchTerm);
     data.append("page", 1);
+    const params = {
+      search: searchTerm,
+      page: pageNumber,
+      limit: 20,
+    };
 
     try {
       const res = await axios.post("items-list", data, {
@@ -712,6 +753,22 @@ const Addsale = () => {
         setItemList(items);
       }
 
+      const newData = res?.data?.data || [];
+
+      if (pageNumber === 1) {
+        setItemList(newData);
+      } else {
+        setItemList((prev) => {
+          const existingIds = new Set(prev.map((i) => i.id));
+          const filtered = newData.filter((i) => !existingIds.has(i.id));
+          return [...prev, ...filtered];
+        });
+      }
+
+      if (newData.length < 20) {
+        setHasMore(false);
+      }
+
       return items;
     } catch (error) {
       if (error.name === 'AbortError') {
@@ -719,6 +776,10 @@ const Addsale = () => {
       }
       console.error("API error:", error);
     }
+    finally {
+      setIsFetchingMore(false);
+    }
+
   };
 
   const handelAddItemOpen = () => {
@@ -2733,6 +2794,9 @@ const Addsale = () => {
                         onClose={() => setAutoCompleteOpen(false)}
                         getOptionLabel={(option) => `${option.iteam_name || ""}`}
                         options={itemList}
+                        ListboxProps={{
+                          onScroll: handleScroll,
+                        }}
                         renderOption={(props, option) => (
                           <ListItem {...props} key={option.id}>
                             <ListItemText

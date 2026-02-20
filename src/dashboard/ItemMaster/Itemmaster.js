@@ -45,6 +45,9 @@ const Itemmaster = () => {
   const [location, setLocation] = useState("");
   const [drugGroup, setDrugGroup] = useState(null);
   const [searchItem, setSearchItem] = useState("");
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [value, setValue] = useState(null);
   const [locationvalue, setLocationValue] = useState(null);
   const [itemList, setItemList] = useState([]);
@@ -497,12 +500,29 @@ const Itemmaster = () => {
   };
 
   useEffect(() => {
+    if (page > 1 && searchItem) {
+      handleSearch(searchItem.toUpperCase(), page);
+    }
+  }, [page]);
+
+  useEffect(() => {
     const SearchTimer = setTimeout(() => {
-      if(!searchItem){
+      if (!searchItem) {
         resetData()
       }
-        handleSearch(searchItem.toUpperCase());
+
+      if (searchItem) {
+        setPage(1);
+        setHasMore(true);
+        handleSearch(searchItem.toUpperCase(), 1);
+      } else {
+        setItemList([]);
+        setPage(1);
+        setHasMore(true);
+      }
     }, 500);
+
+
 
     return () => {
 
@@ -511,34 +531,63 @@ const Itemmaster = () => {
     };
   }, [searchItem]);
 
-  const handleSearch = async () => {
-    if (loading) return;
-    setLoading(true)
+  const handleScroll = (event) => {
+    const listboxNode = event.currentTarget;
+
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+
+  const handleSearch = async (searchValue, pageNumber = 1) => {
+    if (!searchValue || isFetchingMore) return;
+
+    setIsFetchingMore(true);
+
     let data = new FormData();
-    data.append("search", searchItem);
-    // const params = {
-    //   search: searchItem,
-    // };
+    data.append("search", searchValue);
+    data.append("page", pageNumber); // backend must support this
+
+    const params = {
+      search: searchValue,
+      page: pageNumber,
+      limit: 20,
+    };
 
     try {
-      const res = await axios
-        .post("items-list?", data, {
-          // params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setItemList(response.data.data);
+      const res = await axios.post("items-list?", data, {
+        params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      const newData = res?.data?.data || [];
+
+      if (pageNumber === 1) {
+        setItemList(newData);
+      } else {
+        setItemList((prev) => {
+          const existingIds = new Set(prev.map((i) => i.id));
+          const filtered = newData.filter((i) => !existingIds.has(i.id));
+          return [...prev, ...filtered];
         });
+      }
+
+      if (newData.length < 20) {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("API error:", error);
-
     } finally {
-      setLoading(false)
-
+      setIsFetchingMore(false);
     }
   };
 
@@ -642,7 +691,7 @@ const Itemmaster = () => {
     }
   };
 
-  
+
   const handleOptionChange = async (event, newValue) => {
 
     setValue(newValue);
@@ -805,6 +854,9 @@ const Itemmaster = () => {
 
                       onChange={handleOptionChange}
                       onInputChange={handleInputChange} // Handles input changes while typing
+                      ListboxProps={{
+                        onScroll: handleScroll,
+                      }}
                       getOptionLabel={(option) =>
                         typeof option === "string" ? option : option.iteam_name
                       }

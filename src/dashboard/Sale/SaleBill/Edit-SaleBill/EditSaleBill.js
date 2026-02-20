@@ -134,6 +134,9 @@ const EditSaleBill = () => {
 
   const [autoCompleteOpen, setAutoCompleteOpen] = useState(false);
 
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -503,19 +506,27 @@ const EditSaleBill = () => {
   /*<================================================================= Search Item Debouncing ========================================================> */
 
   useEffect(() => {
+    if (page > 1 && searchItem) {
+      handleSearch(searchItem.toUpperCase(), page);
+    }
+  }, [page]);
 
+  useEffect(() => {
     const SearchTimer = setTimeout(() => {
-      if (searchItem)
-        handleSearch(searchItem.toUpperCase());
+      if (searchItem) {
+        setPage(1);
+        setHasMore(true);
+        handleSearch(searchItem.toUpperCase(), 1);
+      } else {
+        setItemList([]);
+        setPage(1);
+        setHasMore(true);
+      }
+    }, 500);
 
-    }, 1500);
-
-    return () => {
-
-      clearTimeout(SearchTimer);
-
-    };
+    return () => clearTimeout(SearchTimer);
   }, [searchItem]);
+
 
   const updateTodayPoints = async (netAmount) => {
     let data = new FormData();
@@ -642,7 +653,7 @@ const EditSaleBill = () => {
       setCustomerDetails(response.data.data);
       // setCustomer(response.data.data[0] || '');
       setIsLoading(false);
-     if (response.data.status === 401) {
+      if (response.data.status === 401) {
         history.push("/");
         localStorage.clear();
       }
@@ -653,7 +664,7 @@ const EditSaleBill = () => {
       }
       return customerData;
 
- 
+
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
@@ -867,28 +878,58 @@ const EditSaleBill = () => {
     setIsDelete(true);
     setSaleItemId(Id);
   };
+  const handleScroll = (event) => {
+    const listboxNode = event.currentTarget;
 
-  const handleSearch = async () => {
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+  const handleSearch = async (searchValue, pageNumber = 1) => {
+    if (!searchValue || isFetchingMore) return;
+
+    setIsFetchingMore(true);
     let data = new FormData();
-    data.append("search", searchItem || "");
-    const params = {
-      search: searchItem ? searchItem : "",
-    };
+    data.append("search", searchValue);
+    data.append("page", pageNumber);
+
     try {
       const res = await axios
         .post("items-list?", data, {
-          params: params,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         })
-        .then((response) => {
-          setItemList(response.data.data);
+        .then((res) => {
+          const newData = res?.data?.data || [];
+
+          if (pageNumber === 1) {
+            setItemList(newData);
+          } else {
+            setItemList((prev) => {
+              const existingIds = new Set(prev.map((i) => i.id));
+              const filtered = newData.filter((i) => !existingIds.has(i.id));
+              return [...prev, ...filtered];
+            });
+          }
+
+          if (newData.length < 20) {
+            setHasMore(false);
+          }
         });
     } catch (error) {
       console.error("API error:", error);
+    } finally {
+      setIsFetchingMore(false);
     }
+
   };
   useEffect(() => {
     saleBillGetBySaleID();
@@ -1576,7 +1617,7 @@ const EditSaleBill = () => {
               tabIndex={0}
               onBlur={() => setSelectedIndex(-1)}
               style={{ background: "#F5F5F5", padding: "10px 15px" }}
-           
+
             >
               <thead>
                 <tr
@@ -1653,6 +1694,9 @@ const EditSaleBill = () => {
                                 `${option.iteam_name} `
                               }
                               options={itemList}
+                              ListboxProps={{
+                                onScroll: handleScroll,
+                              }}
                               autoHighlight
                               open={autoCompleteOpen}
                               onOpen={() => setAutoCompleteOpen(true)}
@@ -1662,8 +1706,8 @@ const EditSaleBill = () => {
                                   <ListItemText
                                     // primary={`${option.iteam_name} - ${option.stock}`}
                                     // secondary={`weightage: ${option.weightage}`}
-                                    primary={`${option.iteam_name},(${option.company})`}
-                                    secondary={`Stock:${option.stock}, &#8377;:${option.mrp},Location:${option.location}`}
+                                    primary={`${option.iteam_name}`}
+                                    secondary={`${option.company_name}`}
                                     // secondary={
                                     //   <>
                                     //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>

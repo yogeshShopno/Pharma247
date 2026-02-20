@@ -119,6 +119,9 @@ const EditPurchaseBill = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [purchase, setPurchase] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
 
   /*<=============================================================================== Input ref on keydown enter ======================================================================> */
 
@@ -243,18 +246,25 @@ const EditPurchaseBill = () => {
   /*<================================================================= Search Item Debouncing ========================================================> */
 
   useEffect(() => {
+    if (page > 1 && searchItem) {
+      handleSearch(searchItem.toUpperCase(), page);
+    }
+  }, [page]);
 
+  useEffect(() => {
     const SearchTimer = setTimeout(() => {
-      if (searchItem)
-        handleSearch(searchItem.toUpperCase());
-
+      if (searchItem) {
+        setPage(1);
+        setHasMore(true);
+        handleSearch(searchItem.toUpperCase(), 1);
+      } else {
+        setItemList([]);
+        setPage(1);
+        setHasMore(true);
+      }
     }, 500);
 
-    return () => {
-
-      clearTimeout(SearchTimer);
-
-    };
+    return () => clearTimeout(SearchTimer);
   }, [searchItem]);
 
   /*<================================================================================== handle Leave page  =========================================================================> */
@@ -1002,26 +1012,63 @@ const EditPurchaseBill = () => {
   };
   /*<============================================================================== search  =========================================================================> */
 
-  const handleSearch = async () => {
+  const handleScroll = (event) => {
+    const listboxNode = event.currentTarget;
+
+    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
+
+    if (
+      scrollTop + clientHeight >= scrollHeight - 10 &&
+      hasMore &&
+      !isFetchingMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
+  const handleSearch = async (searchValue, pageNumber = 1) => {
+
+    if (!searchValue || isFetchingMore) return;
+    setIsFetchingMore(true);
+
     let data = new FormData();
-    data.append("search", searchItem);
+    data.append("search", searchValue);
+    data.append("page", pageNumber); // backend must support this
+    data.append("limit", 20); // adjust if needed
+
     const params = {
-      search: searchItem,
+      search: searchValue,
+      page: pageNumber,
+
     };
+
     try {
-      const res = await axios
-        .post("items-list?", data, {
-          params: params,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          setItemList(response.data.data);
+      const res = await axios.post("items-list?", data, {
+        params,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const newData = res?.data?.data || [];
+
+      if (pageNumber === 1) {
+        setItemList(newData);
+      } else {
+        setItemList((prev) => {
+          const existingIds = new Set(prev.map((i) => i.id));
+          const filtered = newData.filter((i) => !existingIds.has(i.id));
+          return [...prev, ...filtered];
         });
+      }
+
+      if (newData.length < 20) {
+        setHasMore(false);
+      }
     } catch (error) {
       console.error("API error:", error);
+    } finally {
+      setIsFetchingMore(false);
     }
   };
   /*<================================================================================== delete item   ============================================================> */
@@ -1645,7 +1692,9 @@ const EditPurchaseBill = () => {
                           disabled={isAutocompleteDisabled}
                           getOptionLabel={(option) => `${option.iteam_name} `}
                           options={itemList}
-
+                          ListboxProps={{
+                            onScroll: handleScroll,
+                          }}
                           renderOption={(props, option) => (
                             <ListItem {...props}>
                               <ListItemText

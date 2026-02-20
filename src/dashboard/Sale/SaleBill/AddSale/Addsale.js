@@ -711,76 +711,66 @@ const Addsale = () => {
     }
   };
 
-  const handleSearch = async (searchTerm, pageNumber = 1) => {
-    if (!searchTerm || isFetchingMore) return;
-    setIsFetchingMore(true);
+const handleSearch = async (searchTerm, pageNumber = 1) => {
+  if (!searchTerm || isFetchingMore) return;
 
+  setIsFetchingMore(true);
 
-    const cacheKey = searchTerm.toUpperCase();
-    if (itemCache.current.has(cacheKey)) {
-      setItemList(itemCache.current.get(cacheKey));
-      return itemCache.current.get(cacheKey);
-    }
+  const normalizedTerm = searchTerm.toUpperCase();
+  const cacheKey = `${normalizedTerm}_page_${pageNumber}`;
 
-    if (searchAbortController.current) {
-      searchAbortController.current.abort();
-    }
+  // ✅ Cache only first page
+  if (pageNumber === 1 && itemCache.current.has(cacheKey)) {
+    setItemList(itemCache.current.get(cacheKey));
+    setIsFetchingMore(false);
+    return;
+  }
 
-    searchAbortController.current = new AbortController();
-    lastSearchTerm.current = searchTerm;
+  if (searchAbortController.current) {
+    searchAbortController.current.abort();
+  }
 
-    let data = new FormData();
-    data.append("search", searchTerm);
-    data.append("page", 1);
-    const params = {
-      search: searchTerm,
-      page: pageNumber,
-      limit: 20,
-    };
+  searchAbortController.current = new AbortController();
+  lastSearchTerm.current = normalizedTerm;
 
-    try {
-      const res = await axios.post("items-list", data, {
-        signal: searchAbortController.current.signal,
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+  let data = new FormData();
+  data.append("search", normalizedTerm);
+  data.append("page", pageNumber);      // ✅ FIXED
+  data.append("limit", 20);             // ✅ FIXED
+
+  try {
+    const res = await axios.post("items-list", data, {
+      signal: searchAbortController.current.signal,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const newData = res?.data?.data || [];
+
+    if (pageNumber === 1) {
+      setItemList(newData);
+      itemCache.current.set(cacheKey, newData);
+    } else {
+      setItemList((prev) => {
+        const existingIds = new Set(prev.map((i) => i.id));
+        const filtered = newData.filter((i) => !existingIds.has(i.id));
+        return [...prev, ...filtered];
       });
+    }
 
-      const items = res.data.data;
+    if (newData.length < 20) {
+      setHasMore(false);
+    }
 
-      if (lastSearchTerm.current === searchTerm) {
-        itemCache.current.set(cacheKey, items);
-        setItemList(items);
-      }
-
-      const newData = res?.data?.data || [];
-
-      if (pageNumber === 1) {
-        setItemList(newData);
-      } else {
-        setItemList((prev) => {
-          const existingIds = new Set(prev.map((i) => i.id));
-          const filtered = newData.filter((i) => !existingIds.has(i.id));
-          return [...prev, ...filtered];
-        });
-      }
-
-      if (newData.length < 20) {
-        setHasMore(false);
-      }
-
-      return items;
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        return;
-      }
+  } catch (error) {
+    if (error.name !== "AbortError") {
       console.error("API error:", error);
     }
-    finally {
-      setIsFetchingMore(false);
-    }
-
-  };
+  } finally {
+    setIsFetchingMore(false);
+  }
+};
 
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
@@ -2787,6 +2777,7 @@ const Addsale = () => {
                           width: "100%",
                           minWidth: "450px",
                         }}
+
                         onChange={handleOptionChange}
                         onInputChange={handleInputChange}
                         open={autoCompleteOpen}

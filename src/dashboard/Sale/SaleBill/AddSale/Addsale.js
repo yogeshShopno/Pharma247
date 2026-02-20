@@ -664,8 +664,6 @@ const Addsale = () => {
       setItemList([]);
       return;
     }
-
-
     const now = Date.now();
     const inputSpeed = now - lastInputTime.current;
     lastInputTime.current = now;
@@ -711,66 +709,66 @@ const Addsale = () => {
     }
   };
 
-const handleSearch = async (searchTerm, pageNumber = 1) => {
-  if (!searchTerm || isFetchingMore) return;
+  const handleSearch = async (searchTerm, pageNumber = 1) => {
+    if (!searchTerm || isFetchingMore) return;
 
-  setIsFetchingMore(true);
+    setIsFetchingMore(true);
 
-  const normalizedTerm = searchTerm.toUpperCase();
-  const cacheKey = `${normalizedTerm}_page_${pageNumber}`;
+    const normalizedTerm = searchTerm.toUpperCase();
+    const cacheKey = `${normalizedTerm}_page_${pageNumber}`;
 
-  // ✅ Cache only first page
-  if (pageNumber === 1 && itemCache.current.has(cacheKey)) {
-    setItemList(itemCache.current.get(cacheKey));
-    setIsFetchingMore(false);
-    return;
-  }
+    // ✅ Cache only first page
+    if (pageNumber === 1 && itemCache.current.has(cacheKey)) {
+      setItemList(itemCache.current.get(cacheKey));
+      setIsFetchingMore(false);
+      return;
+    }
 
-  if (searchAbortController.current) {
-    searchAbortController.current.abort();
-  }
+    if (searchAbortController.current) {
+      searchAbortController.current.abort();
+    }
 
-  searchAbortController.current = new AbortController();
-  lastSearchTerm.current = normalizedTerm;
+    searchAbortController.current = new AbortController();
+    lastSearchTerm.current = normalizedTerm;
 
-  let data = new FormData();
-  data.append("search", normalizedTerm);
-  data.append("page", pageNumber);      // ✅ FIXED
-  data.append("limit", 20);             // ✅ FIXED
+    let data = new FormData();
+    data.append("search", normalizedTerm);
+    data.append("page", pageNumber);      // ✅ FIXED
+    data.append("limit", 20);             // ✅ FIXED
 
-  try {
-    const res = await axios.post("items-list", data, {
-      signal: searchAbortController.current.signal,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const newData = res?.data?.data || [];
-
-    if (pageNumber === 1) {
-      setItemList(newData);
-      itemCache.current.set(cacheKey, newData);
-    } else {
-      setItemList((prev) => {
-        const existingIds = new Set(prev.map((i) => i.id));
-        const filtered = newData.filter((i) => !existingIds.has(i.id));
-        return [...prev, ...filtered];
+    try {
+      const res = await axios.post("items-list", data, {
+        signal: searchAbortController.current.signal,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
-    }
 
-    if (newData.length < 20) {
-      setHasMore(false);
-    }
+      const newData = res?.data?.data || [];
 
-  } catch (error) {
-    if (error.name !== "AbortError") {
-      console.error("API error:", error);
+      if (pageNumber === 1) {
+        setItemList(newData);
+        itemCache.current.set(cacheKey, newData);
+      } else {
+        setItemList((prev) => {
+          const existingIds = new Set(prev.map((i) => i.id));
+          const filtered = newData.filter((i) => !existingIds.has(i.id));
+          return [...prev, ...filtered];
+        });
+      }
+
+      if (newData.length < 20) {
+        setHasMore(false);
+      }
+
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        console.error("API error:", error);
+      }
+    } finally {
+      setIsFetchingMore(false);
     }
-  } finally {
-    setIsFetchingMore(false);
-  }
-};
+  };
 
   const handelAddItemOpen = () => {
     setUnsavedItems(true);
@@ -1011,11 +1009,44 @@ const handleSearch = async (searchTerm, pageNumber = 1) => {
   /*<============================================================== fetch doctor data   =========================================================> */
 
   useEffect(() => {
-    let doctor = doctorData.filter((d) => d.default_doctor === "1");
+    const timer = setTimeout(() => {
+      if (searchDoctor) {
+        fetchDoctors(searchDoctor.toUpperCase());
+      }
+    }, 500);
 
-    setDoctor(doctor[0]);
+    return () => clearTimeout(timer);
+  }, [searchDoctor]);
 
-  }, [doctorData])
+  const fetchDoctors = async (name = "") => {
+    setIsLoading(true);
+
+    try {
+      const formData = new FormData();
+      if (name) formData.append("name", name);
+
+      const res = await axios.post("doctor-list?", formData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const doctors = res.data.data || [];
+      setDoctorData(doctors);
+
+      if (!doctor && doctors.length) {
+        setDoctor(doctors.find(d => d.default_doctor === "1") || doctors[0]);
+      }
+
+      if (res.data.status === 401) {
+        localStorage.clear();
+        history.push("/");
+      }
+    } catch (err) {
+      console.error("API error:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   /*<============================================================== fetch customer data   =========================================================> */
 
   useEffect(() => {
@@ -1075,29 +1106,7 @@ const handleSearch = async (searchTerm, pageNumber = 1) => {
   };
 
 
-  const fetchDoctors = async () => {
 
-    setIsLoading(true);
-    try {
-      const res = await axios.post("doctor-list?", {}, {
-
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setDoctorData(res.data.data || []);
-
-      if (!doctor) {
-        setDoctor(() => res.data.data.find(d => d.default_doctor === "1") || res.data.data[0]);
-      }
-      if (res.data.status === 401) {
-        history.push("/");
-        localStorage.clear();
-      }
-    } catch (err) {
-      console.error("API error:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const CleanOldData = async () => {
     let data = new FormData()
@@ -1151,6 +1160,7 @@ const handleSearch = async (searchTerm, pageNumber = 1) => {
 
     loadData()
   }, [])
+
 
   useEffect(() => {
     const timer = setTimeout(() => {

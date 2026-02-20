@@ -506,9 +506,9 @@ const EditSaleBill = () => {
   /*<================================================================= Search Item Debouncing ========================================================> */
 
   useEffect(() => {
-    if (page > 1 && searchItem) {
-      handleSearch(searchItem.toUpperCase(), page);
-    }
+    if (!searchItem) return;
+
+    handleSearch(searchItem.toUpperCase(), page);
   }, [page]);
 
   useEffect(() => {
@@ -517,10 +517,6 @@ const EditSaleBill = () => {
         setPage(1);
         setHasMore(true);
         handleSearch(searchItem.toUpperCase(), 1);
-      } else {
-        setItemList([]);
-        setPage(1);
-        setHasMore(true);
       }
     }, 500);
 
@@ -878,19 +874,22 @@ const EditSaleBill = () => {
     setIsDelete(true);
     setSaleItemId(Id);
   };
+
   const handleScroll = (event) => {
     const listboxNode = event.currentTarget;
-
     const { scrollTop, scrollHeight, clientHeight } = listboxNode;
 
     if (
-      scrollTop + clientHeight >= scrollHeight - 10 &&
-      hasMore &&
-      !isFetchingMore
+      scrollTop + clientHeight >= scrollHeight - 10
     ) {
-      setPage((prev) => prev + 1);
+
+      setPage(prev => {
+        const next = prev + 1;
+        return next;
+      });
     }
   };
+
   const handleSearch = async (searchValue, pageNumber = 1) => {
     if (!searchValue || isFetchingMore) return;
 

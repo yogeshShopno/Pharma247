@@ -1090,13 +1090,15 @@ const Addsale = () => {
 
       const customers = res.data.data || [];
       setCustomerDetails(customers);
+      setCustomer(customers[0]);
 
-      // Only auto-select on initial load
-      if (!search && customers.length > 0) {
-        setCustomer(customers[0]);
-        setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
-        setMaxLoyaltyPoints(customers[0].roylti_point || 0);
-      }
+
+      // // Only auto-select on initial load
+      // if (!search && customers.length > 0) {
+      //   setCustomer(customers[0]);
+      //   setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
+      //   setMaxLoyaltyPoints(customers[0].roylti_point || 0);
+      // }
 
     } catch (error) {
       console.error("API error:", error);
@@ -1104,9 +1106,6 @@ const Addsale = () => {
       setIsLoading(false);
     }
   };
-
-
-
 
   const CleanOldData = async () => {
     let data = new FormData()
@@ -1161,16 +1160,14 @@ const Addsale = () => {
     loadData()
   }, [])
 
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchCustomers(CustomerSearchQuery.toUpperCase());
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [CustomerSearchQuery]);
-
-
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     if (CustomerSearchQuery) {
+  //       fetchCustomers(CustomerSearchQuery.toUpperCase());
+  //     }
+  //   }, 500);
+  //   return () => clearTimeout(timer);
+  // }, [CustomerSearchQuery]);
 
   /*<========================================================================= add doctor   ====================================================================> */
 

@@ -242,7 +242,7 @@ const InventoryView = () => {
     // saleData()
     // saleReturnData()
     // ledgerData()
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,id]);
 
   let listOfPack = () => {
     axios

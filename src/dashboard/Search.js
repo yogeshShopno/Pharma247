@@ -15,7 +15,7 @@ import { toast } from "react-toastify";
 const Search = ({ searchPage, setSearchPage }) => {
   const history = useHistory();
   const token = localStorage.getItem("token");
-  
+
   // State management
   const [searchType, setSearchType] = useState("1"); // Default to Medicine
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,22 +26,22 @@ const Search = ({ searchPage, setSearchPage }) => {
 
   // Unified configuration for all search types
   const searchConfigs = {
-    "1": { 
+    "1": {
       label: "Medicine",
-      endpoint: "item-search", 
+      endpoint: "item-search",
       key: "search",
       columns: [
         { id: "iteam_name", label: "Item Name", minWidth: 100 },
         { id: "weightage", label: "Weightage", minWidth: 100 },
-        { id: "drug_group", label: "Drug Group", minWidth: 100 },
+        { id: "drug_group_name", label: "Drug Group", minWidth: 100 },
         { id: "mrp", label: "MRP", minWidth: 100 },
         { id: "stock", label: "Stock", minWidth: 100 },
       ],
       navigationPath: (id) => `/inventoryView/${id}`
     },
-    "2": { 
+    "2": {
       label: "Drug Group",
-      endpoint: "drug-list", 
+      endpoint: "drug-list",
       key: "search",
       columns: [
         { id: "id", label: "Drug Group ID", minWidth: 100 },
@@ -50,9 +50,9 @@ const Search = ({ searchPage, setSearchPage }) => {
       ],
       navigationPath: (id) => `/more/drugGroupView/${id}`
     },
-    "3": { 
+    "3": {
       label: "Distributor",
-      endpoint: "list-distributer", 
+      endpoint: "list-distributer",
       key: "name_mobile_gst_search",
       columns: [
         { id: "name", label: "Distributor Name", minWidth: 100 },
@@ -60,9 +60,9 @@ const Search = ({ searchPage, setSearchPage }) => {
       ],
       navigationPath: (id) => `/DistributerView/${id}`
     },
-    "4": { 
+    "4": {
       label: "Customer",
-      endpoint: "list-customer", 
+      endpoint: "list-customer",
       key: "search",
       columns: [
         { id: "name", label: "Customer Name", minWidth: 100 },
@@ -101,7 +101,7 @@ const Search = ({ searchPage, setSearchPage }) => {
     setSearchQuery("");
     setPage(0);
     setTableData([]); // Clear previous results
-    
+
     // If there's an existing search query, perform search with new type
     if (searchQuery.trim()) {
       debouncedSearch(searchQuery, newSearchType);
@@ -112,7 +112,7 @@ const Search = ({ searchPage, setSearchPage }) => {
   const handleSearchQueryChange = (e) => {
     const newValue = e.target.value;
     setSearchQuery(newValue);
-    
+
     if (newValue.trim()) {
       debouncedSearch(newValue, searchType);
     } else {
@@ -125,7 +125,7 @@ const Search = ({ searchPage, setSearchPage }) => {
     if (!query.trim() || !type) {
       if (!type) {
         toast.dismiss();
-toast.error("Please select a search type");
+        toast.error("Please select a search type");
       }
       return;
     }
@@ -134,7 +134,7 @@ toast.error("Please select a search type");
     if (!config) {
       console.error("Invalid search type");
       toast.dismiss();
-toast.error("Invalid search type selected");
+      toast.error("Invalid search type selected");
       return;
     }
 
@@ -164,20 +164,27 @@ toast.error("Invalid search type selected");
       console.error("API error:", error);
       const errorMessage = error.response?.data?.message || "Search failed. Please try again.";
       toast.dismiss();
-toast.error(errorMessage);
+      toast.error(errorMessage);
       setTableData([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Navigation handler
   const handleNavigation = (row) => {
+    setSearchPage(false);
     const config = getCurrentConfig();
     if (config && row.id) {
-      history.push(config.navigationPath(row.id));
+      const path = config.navigationPath(row.id);
+      if (history.location.pathname === path) {
+        history.replace(path);
+        window.location.reload();
+      } else {
+        history.push(path);
+      }
     }
   };
+  
 
   // Pagination handlers
   const handleChangePage = (event, newPage) => {

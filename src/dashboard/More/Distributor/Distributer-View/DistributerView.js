@@ -57,7 +57,7 @@ const DistributerView = () => {
   useEffect(() => {
     distributerDetail(id);
     purchaseReturnData(id);
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,id]);
 
   const resetAddDialog = () => {
     setCompanyName("");

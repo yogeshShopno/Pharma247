@@ -649,14 +649,18 @@ const Itemmaster = () => {
             (cat) => cat.id == data?.category_id
           );
           setSelectedCategory(category);
+
           const drugGroup = drugGroupList.find(
-            (cat) => cat.id == data?.drug_group_id
+            (drug) => drug.id == data?.drug_group_id
           );
+
           setDrugGroup(drugGroup);
-          const company = companyList.find((cat) => cat.id == data?.company_id);
+
+          const company = companyList.find((comp) => comp.id == data?.company_id);
+
           setSelectedCompany(company);
           const supplier = suppliersList.find(
-            (cat) => cat.id == data?.distributor_id
+            (dis) => dis.id == data?.distributor_id
           );
           setSelectedSuppliers(supplier);
 

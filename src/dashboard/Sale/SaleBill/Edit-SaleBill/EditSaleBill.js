@@ -1752,8 +1752,6 @@ const EditSaleBill = () => {
                                     }
                                   }}
 
-
-
                                   InputProps={{
                                     ...params.InputProps,
                                     style: { height: 40 },
@@ -1890,7 +1888,7 @@ const EditSaleBill = () => {
                       type="number"
                       size="small"
                       value={unit}
-                      sx={{ width: "130px" }}
+                      sx={{ width: "40px" }}
                       onChange={(e) => {
                         setUnit(e.target.value);
                       }}
@@ -1913,7 +1911,7 @@ const EditSaleBill = () => {
                       id="outlined-number"
                       disabled
                       size="small"
-                      sx={{ width: "130px" }}
+                      sx={{ width: "65px" }}
                       value={expiryDate}
                       onChange={handleExpiryDateChange}
                       placeholder="MM/YY"
@@ -1971,7 +1969,7 @@ const EditSaleBill = () => {
                       type="number"
                       disabled
                       size="small"
-                      sx={{ width: "130px" }}
+                      sx={{ width: "40px" }}
                       value={gst}
                       onChange={(e) => {
                         setGst(e.target.value);
@@ -2024,7 +2022,7 @@ const EditSaleBill = () => {
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
-                      sx={{ width: "130px" }}
+                      sx={{ width: "40px" }}
                       size="small"
                       value={order}
                       inputRef={inputRef4}
@@ -2043,7 +2041,7 @@ const EditSaleBill = () => {
                       id="outlined-number"
                       size="small"
                       disabled
-                      sx={{ width: "130px" }}
+                      sx={{ width: "80px" }}
                       value={loc}
                       onChange={(e) => {
                         setLoc(e.target.value);

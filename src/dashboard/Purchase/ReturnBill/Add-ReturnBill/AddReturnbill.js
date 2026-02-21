@@ -492,17 +492,17 @@ const AddReturnbill = () => {
     if (!distributor) {
       newErrors.distributor = "Distributor is required";
       toast.dismiss();
-toast.error("Distributor is required");
+      toast.error("Distributor is required");
     }
     if (!startDate) {
       newErrors.startDate = "Start date is required";
       toast.dismiss();
-toast.error("Start date is required");
+      toast.error("Start date is required");
     }
     if (!endDate) {
       newErrors.endDate = "End date is required";
       toast.dismiss();
-toast.error("End date is required");
+      toast.error("End date is required");
     }
 
     setErrors(newErrors);
@@ -520,7 +520,7 @@ toast.error("End date is required");
 
     if (!distributor) {
       toast.dismiss();
-toast.error("Please select distributor first");
+      toast.error("Please select distributor first");
       return;
     }
 
@@ -615,7 +615,7 @@ toast.error("Please select distributor first");
     if (selectedItem.length === 0) {
       newErrors.ItemId = "Please select at least one item";
       toast.dismiss();
-toast.error("Please select at least one item");
+      toast.error("Please select at least one item");
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
@@ -633,7 +633,7 @@ toast.error("Please select at least one item");
     );
     if (hasUncheckedItems) {
       toast.dismiss();
-toast.error("Please select at least one item");
+      toast.error("Please select at least one item");
     } else {
       let data = new FormData();
       const selectedItems = returnItemList.item_list.filter((item) =>
@@ -681,8 +681,8 @@ toast.error("Please select at least one item");
             setIsLoading(false);
             setSaveValue(true);
             setUnsavedItems(false);
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             setTimeout(() => {
               history.push("/purchase/return");
             }, 2000);
@@ -738,7 +738,7 @@ toast.success(response.data.message);
     } else if (value > availableStockForEdit) {
       setQty(availableStockForEdit);
       toast.dismiss();
-toast.error(
+      toast.error(
         `Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`
       );
     }
@@ -754,7 +754,7 @@ toast.error(
     // if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
     //     newErrors.gst = "Enter valid GST";
     //     toast.dismiss();
-// toast.error("Enter valid GST")
+    // toast.error("Enter valid GST")
     // };
     // if (!free) newErrors.free = 'Free quantity is required';
     if (!ptr) newErrors.ptr = "PTR is required";
@@ -764,7 +764,7 @@ toast.error(
     if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
       newErrors.gst = "Enter valid GST";
       toast.dismiss();
-toast.error("Enter valid GST");
+      toast.error("Enter valid GST");
     }
 
     setErrors(newErrors);
@@ -981,7 +981,7 @@ toast.error("Enter valid GST");
             </div>
             {/*<============================================================================ Top details   ===========================================================================> */}
 
-            <div className="flex gap-4  mt-4">   
+            <div className="flex gap-4  mt-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full ">
                 <div>
                   <span className="title mb-2 flex items-center gap-2">Distributor<span className="text-red-600">*</span></span>
@@ -1154,7 +1154,7 @@ toast.error("Enter valid GST");
                           onKeyDown={e => {
                             if (e.key === "Enter" && !searchQuery) {
                               toast.dismiss();
-toast.error("Please search any items..");
+                              toast.error("Please search any items..");
                               e.preventDefault();
                             }
                           }}
@@ -1179,7 +1179,7 @@ toast.error("Please search any items..");
                         error={!!errors.unit}
                         helperText={errors.unit}
                         value={unit}
-                        sx={{ width: "100px" }}
+                        sx={{ width: "40px" }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
@@ -1191,7 +1191,7 @@ toast.error("Please search any items..");
                               handleKeyDown(e, 6);
                             } else {
                               toast.dismiss();
-toast.error("Please enter unit");
+                              toast.error("Please enter unit");
                               e.preventDefault();
                             }
                           }
@@ -1226,7 +1226,7 @@ toast.error("Please enter unit");
                         id="outlined-number"
                         disabled
                         size="small"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "65px" }}
                         error={!!errors.expiryDate}
                         helperText={errors.expiryDate}
                         value={expiryDate}
@@ -1290,7 +1290,7 @@ toast.error("Please enter unit");
                               handleKeyDown(e, 7);
                             } else {
                               toast.dismiss();
-toast.error("Please enter quantity");
+                              toast.error("Please enter quantity");
                               e.preventDefault();
                             }
                           }
@@ -1303,7 +1303,7 @@ toast.error("Please enter quantity");
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "40px" }}
 
                         value={free}
                         inputRef={(el) => (inputRefs.current[8] = el)}
@@ -1317,7 +1317,7 @@ toast.error("Please enter quantity");
                               handleKeyDown(e, 8);
                             } else {
                               toast.dismiss();
-toast.error("Please enter free quantity");
+                              toast.error("Please enter free quantity");
                             }
                           }
                         }}
@@ -1342,7 +1342,7 @@ toast.error("Please enter free quantity");
                               handleKeyDown(e, 9);
                             } else {
                               toast.dismiss();
-toast.error("Please enter PTR");
+                              toast.error("Please enter PTR");
                             }
                           }
                         }}
@@ -1353,7 +1353,7 @@ toast.error("Please enter PTR");
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "40px" }}
                         size="small"
                         type="number"
                         value={disc}
@@ -1367,7 +1367,7 @@ toast.error("Please enter PTR");
                               handleKeyDown(e, 10);
                             } else {
                               toast.dismiss();
-toast.error("Please enter CD");
+                              toast.error("Please enter CD");
                             }
                           }
                         }}
@@ -1379,7 +1379,7 @@ toast.error("Please enter CD");
                         labelId="dropdown-label"
                         id="dropdown"
                         value={gst}
-                        sx={{ width: "100px" }}
+                        sx={{ width: "40px" }}
                         onKeyDown={(e) => {
                           if (["e", "E", "+", "-", ","].includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
                             e.preventDefault();
@@ -1404,7 +1404,7 @@ toast.error("Please enter CD");
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "80px" }}
 
                         value={loc}
                         inputRef={(el) => (inputRefs.current[12] = el)}

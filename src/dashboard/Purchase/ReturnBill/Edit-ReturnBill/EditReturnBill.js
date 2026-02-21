@@ -181,14 +181,14 @@ const EditReturnBill = () => {
 
             const getNextFocusableIndex = (currentIdx) => {
                 switch (currentIdx) {
-                    case 0: return 1;  
-                    case 1: return 2; 
-                    case 2: return 3;  
-                    case 3: return 4; 
-                    case 4: return 5; 
-                    case 5: return 6;  
-                    case 6: return 7; 
-            
+                    case 0: return 1;
+                    case 1: return 2;
+                    case 2: return 3;
+                    case 3: return 4;
+                    case 4: return 5;
+                    case 5: return 6;
+                    case 6: return 7;
+
                 }
             };
 
@@ -302,7 +302,7 @@ const EditReturnBill = () => {
                     }, 100);
                 } else {
                     toast.dismiss();
-toast.error("Please wait for data to load completely");
+                    toast.error("Please wait for data to load completely");
                 }
 
             } else if (event.key.toLowerCase() === "m") {
@@ -705,7 +705,7 @@ toast.error("Please wait for data to load completely");
         } else if (value > availableStockForEdit) {
             setQty(availableStockForEdit);
             toast.dismiss();
-toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
+            toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStockForEdit}`);
         }
     };
     /*<================================================================ handle PTR MRP validation  ======================================================================> */
@@ -717,11 +717,11 @@ toast.error(`Quantity exceeds the allowed limit. Max available: ${availableStock
         if (newPTR > mrp) {
             setPTR(mrp);
             toast.dismiss();
-toast.error(`PTR should not greater than MRP: ${mrp}`);
+            toast.error(`PTR should not greater than MRP: ${mrp}`);
         } else if (mrp < 0) {
             setPTR(mrp);
             toast.dismiss();
-toast.error(`PTR should not less than MRP: 0`);
+            toast.error(`PTR should not less than MRP: 0`);
         } else {
             setPTR(newPTR)
         }
@@ -744,7 +744,7 @@ toast.error(`PTR should not less than MRP: 0`);
         // if (Number(tempQty) < Number(qty)) {
         //     newErrors.greatqty = 'Quantity should not be greater than purchase quantity ';
         //     toast.dismiss();
-// toast.error('Quantity should not be greater than purchase quantity ')
+        // toast.error('Quantity should not be greater than purchase quantity ')
         //     return
         // }
         // if (!free) newErrors.free = 'Free quantity is required';
@@ -757,7 +757,7 @@ toast.error(`PTR should not less than MRP: 0`);
         if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
             newErrors.gst = "Enter valid GST";
             toast.dismiss();
-toast.error("Enter valid GST")
+            toast.error("Enter valid GST")
         };
 
         setErrors(newErrors);
@@ -865,7 +865,7 @@ toast.error("Enter valid GST")
         // if(checkedItems.length===0){
         //     newErrors.checkedItems = 'Item is not selected';
         //     toast.dismiss();
-// toast.error("Item is not selected");
+        // toast.error("Item is not selected");
 
         // }
         setError(newErrors);
@@ -1211,7 +1211,7 @@ toast.error("Enter valid GST")
                                                         onKeyDown={e => {
                                                             if (e.key === "Enter" && !searchQuery) {
                                                                 toast.dismiss();
-toast.error("Please search any items..");
+                                                                toast.error("Please search any items..");
                                                                 e.preventDefault();
                                                             }
                                                         }}
@@ -1232,7 +1232,7 @@ toast.error("Please search any items..");
                                                     autoComplete="off"
                                                     type="number"
                                                     size="small"
-                                                    sx={{ width: "100px" }}
+                                                    sx={{ width: "40px" }}
                                                     error={!!errors.unit}
                                                     helperText={errors.unit}
                                                     value={unit}
@@ -1247,7 +1247,7 @@ toast.error("Please search any items..");
                                                                 handleKeyDown(e, 1);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter unit");
+                                                                toast.error("Please enter unit");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1277,7 +1277,7 @@ toast.error("Please enter unit");
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     size="small"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '65px' }}
                                                     disabled
                                                     error={!!errors.expiryDate}
                                                     value={expiryDate}
@@ -1330,7 +1330,7 @@ toast.error("Please enter unit");
                                                                 handleKeyDown(e, 2);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter quantity");
+                                                                toast.error("Please enter quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1347,7 +1347,7 @@ toast.error("Please enter quantity");
                                                     id="outlined-number"
                                                     size="small"
                                                     type="number"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '40px' }}
                                                     value={free}
                                                     onChange={(e) => {
                                                         const value = e.target.value.replace(/[^0-9]/g, '');
@@ -1360,7 +1360,7 @@ toast.error("Please enter quantity");
                                                                 handleKeyDown(e, 3);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter free quantity");
+                                                                toast.error("Please enter free quantity");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1387,7 +1387,7 @@ toast.error("Please enter free quantity");
                                                                 handleKeyDown(e, 4);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter PTR");
+                                                                toast.error("Please enter PTR");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1410,7 +1410,7 @@ toast.error("Please enter PTR");
                                                 <TextField
                                                     autoComplete="off"
                                                     id="outlined-number"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '40px' }}
                                                     size="small"
                                                     type="number"
 
@@ -1424,7 +1424,7 @@ toast.error("Please enter PTR");
                                                                 handleKeyDown(e, 5);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter CD");
+                                                                toast.error("Please enter CD");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1449,7 +1449,7 @@ toast.error("Please enter CD");
                                                     labelId="dropdown-label"
                                                     id="dropdown"
                                                     value={gst}
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '40px' }}
                                                     inputRef={(el) => (inputRefs.current[6] = el)}
                                                     onKeyDown={(e) => {
                                                         if (e.key === "Enter") {
@@ -1457,7 +1457,7 @@ toast.error("Please enter CD");
                                                                 handleKeyDown(e, 6);
                                                             } else {
                                                                 toast.dismiss();
-toast.error("Please enter GST");
+                                                                toast.error("Please enter GST");
                                                                 e.preventDefault();
                                                             }
                                                         }
@@ -1483,7 +1483,7 @@ toast.error("Please enter GST");
                                                     size="small"
                                                     value={loc}
                                                     inputRef={(el) => (inputRefs.current[7] = el)}
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '80px' }}
                                                     onChange={(e) => { setLoc(e.target.value) }}
                                                     onKeyDown={async (e) => {
                                                         if (e.key === 'Enter') {

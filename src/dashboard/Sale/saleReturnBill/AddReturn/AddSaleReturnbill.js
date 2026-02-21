@@ -1142,7 +1142,7 @@ const Salereturn = () => {
                                                     onKeyDown={handleKeyDown}
                                                     size="small"
                                                     value={unit}
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '40px' }}
                                                     onChange={(e) => { setUnit(e.target.value) }}
                                                 />
                                             </td>
@@ -1165,7 +1165,7 @@ const Salereturn = () => {
                                                     id="outlined-number"
                                                     disabled
                                                     size="small"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '65px' }}
                                                     inputRef={el => inputRefs.current[8] = el}
                                                     onKeyDown={handleKeyDown}
                                                     value={expiryDate}
@@ -1208,7 +1208,7 @@ const Salereturn = () => {
                                                     size="small"
                                                     inputRef={el => inputRefs.current[11] = el}
                                                     onKeyDown={handleKeyDown}
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '40px' }}
                                                     value={gst}
                                                     onChange={(e) => { setGst(e.target.value) }}
                                                 />
@@ -1234,7 +1234,7 @@ const Salereturn = () => {
                                                     inputRef={el => inputRefs.current[13] = el}
                                                     onKeyDown={handleKeyDown}
                                                     disabled
-                                                    sx={{ width: '100px' }}
+                                                    sx={{ width: '80px' }}
                                                     value={loc}
                                                     onChange={(e) => { setLoc(e.target.value) }}
                                                 />

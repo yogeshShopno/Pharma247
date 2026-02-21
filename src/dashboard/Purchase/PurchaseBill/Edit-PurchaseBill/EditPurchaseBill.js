@@ -209,10 +209,11 @@ const EditPurchaseBill = () => {
   /*<================================================================================== handle shortcut  =========================================================================> */
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (!event.altKey) return; // Exit early if Alt is not pressed
 
-      event.preventDefault(); // Prevent default browser behavior
+    const handleKeyDown = (event) => {
+      if (!event.altKey) return;
+
+      event.preventDefault();
 
       if (event.key.toLowerCase() === "s") {
         handleSubmit();
@@ -220,17 +221,16 @@ const EditPurchaseBill = () => {
 
         handleSubmit("0");
       } else if (event.key.toLowerCase() === "m") {
-
         removeItem();
-
       }
+
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList, purchase]); // Dependencies only affect Alt+S
+  }, [distributor, billNo, ItemPurchaseList, purchase]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -1226,8 +1226,6 @@ const EditPurchaseBill = () => {
 
   const handleInputChange = (event, newInputValue) => {
     setSearchItem(newInputValue);
-    // handleSearch(newInputValue);
-
   };
 
   const handleOptionChange = (event, newValue) => {
@@ -1235,10 +1233,8 @@ const EditPurchaseBill = () => {
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
     setSelectedOption(itemName)
-
     handleSearch(itemName);
   };
-
 
   /*<================================================================= remove item  ============================================================> */
 
@@ -1270,7 +1266,6 @@ const EditPurchaseBill = () => {
     setMargin("");
     setLoc("");
     setItemTotalAmount("");
-    // clear Autocomplete selected option
 
     setTimeout(() => {
       inputRefs.current[2]?.focus();
@@ -1287,7 +1282,6 @@ const EditPurchaseBill = () => {
     setSelectedRows(newSelectedRows);
 
     if (newSelectedRows.includes(id)) {
-      // Enable the input field for the selected row
       setDisabledRows((prev) => ({ ...prev, [id]: false }));
       setCnTotalAmount((prev) => ({ ...prev, [id]: totalAmount }));
       setCnAmount((prev) => prev + parseFloat(totalAmount));
@@ -1299,7 +1293,6 @@ const EditPurchaseBill = () => {
       });
       setCnAmount(0);
 
-      // Disable the input field for the deselected row
       setDisabledRows((prev) => ({ ...prev, [id]: true }));
     }
   };
@@ -1325,8 +1318,6 @@ const EditPurchaseBill = () => {
     }
   };
 
-
-
   const handleSelectAllPending = (e) => {
     if (e.target.checked) {
       setSelectedRows(purchaseReturnPending.map((row) => row.id));
@@ -1335,12 +1326,14 @@ const EditPurchaseBill = () => {
         return acc;
       }, {});
       setCnTotalAmount(updatedAmounts);
+
       setCnAmount(
         purchaseReturnPending.reduce(
           (acc, row) => acc + parseFloat(row.total_amount || 0),
           0
         )
       );
+
     } else {
       setSelectedRows([]);
       setCnTotalAmount({});
@@ -1642,7 +1635,7 @@ const EditPurchaseBill = () => {
                   <th>PTR <span className="text-red-600 ">*</span></th>
                   <th>CD%</th>
                   <th>Base</th>
-                  <th>GST% <span className="text-red-600 ">*</span></th>
+                  <th>GST%<span className="text-red-600 ">*</span></th>
                   <th>Loc.</th>
                   <th>Net Rate</th>
                   <th>Margin%</th>
@@ -1755,7 +1748,7 @@ const EditPurchaseBill = () => {
                         size="small"
                         error={!!error.unit}
                         value={unit}
-                        sx={{ width: "80px" }}
+                        sx={{ width: "40px" }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
@@ -1811,7 +1804,7 @@ const EditPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "65px" }}
                         error={!!error.expiryDate}
                         value={expiryDate}
                         onChange={handleExpiryDate}
@@ -1926,7 +1919,7 @@ const EditPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         type="number"
-                        sx={{ width: "60px" }}
+                        sx={{ width: "40px" }}
                         value={free}
                         error={!!error.free}
                         onChange={(e) => {
@@ -2004,7 +1997,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        sx={{ width: "65px" }}
+                        sx={{ width: "40px" }}
                         size="small"
                         type="number"
                         value={disc}
@@ -2045,7 +2038,7 @@ const EditPurchaseBill = () => {
                         variant="outlined"
                         size="small"
                         value={gst}
-                        sx={{ width: "65px" }}
+                        sx={{ width: "40px" }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
@@ -2085,7 +2078,7 @@ const EditPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={loc?.toUpperCase()}
-                        sx={{ width: "100px" }}
+                        sx={{ width: "80px" }}
                         onChange={(e) => {
                           setLoc(e.target.value.toUpperCase());
                         }}

@@ -399,7 +399,7 @@ const EditSaleReturn = () => {
     );
     if (hasUncheckedItems) {
       toast.dismiss();
-toast.error("Please select at least one item");
+      toast.error("Please select at least one item");
     } else {
       let data = new FormData();
       data.append("bill_no", saleReturnItems?.bill_no);
@@ -438,8 +438,8 @@ toast.error("Please select at least one item");
           })
           .then((response) => {
             setUnsavedItems(false);
-             toast.dismiss();
-toast.success(response.data.message);
+            toast.dismiss();
+            toast.success(response.data.message);
             localStorage.removeItem("RandomNumber");
             setTimeout(() => {
               history.push("/saleReturn/list");
@@ -736,13 +736,13 @@ toast.success(response.data.message);
     if (newQty > tempQty) {
       setQty(tempQty);
       toast.dismiss();
-toast.error(
+      toast.error(
         `Quantity exceeds the allowed limit. Max available: ${tempQty}`
       );
     } else if (newQty < 0) {
       setQty(tempQty);
       toast.dismiss();
-toast.error(`Quantity should not be less than 0`);
+      toast.error(`Quantity should not be less than 0`);
     } else {
       setQty(newQty);
     }
@@ -1148,10 +1148,10 @@ toast.error(`Quantity should not be less than 0`);
                               autoComplete="off"
                               id="outlined-number"
                               type="number"
-                              sx={{ width: "130px", textAlign: "right" }}
+                              sx={{ width: "40px", textAlign: "right" }}
                               size="small"
                               inputRef={inputRef5}
-                              value={qty}
+                              value={unit}
                               onKeyDown={async (e) => {
                                 if (e.key === "Enter") {
                                   e.preventDefault();
@@ -1194,7 +1194,7 @@ toast.error(`Quantity should not be less than 0`);
                               id="outlined-number"
                               disabled
                               size="small"
-                              sx={{ width: "130px" }}
+                              sx={{ width: "65px" }}
                               inputRef={inputRef3}
                               onKeyDown={handleKeyDown}
                               value={expiryDate}
@@ -1257,7 +1257,7 @@ toast.error(`Quantity should not be less than 0`);
                               size="small"
                               inputRef={inputRef8}
                               onKeyDown={handleKeyDown}
-                              sx={{ width: "130px", textAlign: "right" }}
+                              sx={{ width: "40px", textAlign: "right" }}
                               value={gst}
                               onChange={(e) => {
                                 setGst(e.target.value);
@@ -1308,7 +1308,7 @@ toast.error(`Quantity should not be less than 0`);
                               inputRef={inputRef9}
                               onKeyDown={handleKeyDown}
                               disabled
-                              sx={{ width: "130px", textAlign: "right" }}
+                              sx={{ width: "80px", textAlign: "right" }}
                               value={loc}
                               onChange={(e) => {
                                 setLoc(e.target.value);

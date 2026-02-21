@@ -2359,7 +2359,7 @@ const AddPurchaseBill = () => {
                     <th>PTR <span className="text-red-600 ">*</span></th>
                     <th>CD%</th>
                     <th>Base</th>
-                    <th>GST% <span className="text-red-600 ">*</span></th>
+                    <th>GST%<span className="text-red-600 ">*</span></th>
                     <th>Loc.</th>
                     <th>Net Rate</th>
                     <th>Margin%</th>
@@ -2543,7 +2543,7 @@ const AddPurchaseBill = () => {
                         size="small"
                         error={!!error.unit}
                         value={unit}
-                        sx={{ width: "80px" }}
+                        sx={{ width: "40px", }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
@@ -2604,7 +2604,7 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "100px" }}
+                        sx={{ width: "65px" }}
                         error={!!error.expiryDate}
                         value={expiryDate}
                         onChange={handleExpiryDate}
@@ -2736,7 +2736,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         type="number"
-                        sx={{ width: "60px" }}
+                        sx={{ width: "40px" }}
                         value={free}
                         error={!!error.free}
                         onChange={(e) => {
@@ -2815,7 +2815,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        sx={{ width: "65px" }}
+                        sx={{ width: "40px" }}
                         size="small"
                         type="text"
                         value={disc}
@@ -2863,7 +2863,7 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         size="small"
                         value={gst}
-                        sx={{ width: "65px" }}
+                        sx={{ width: "40px" }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
@@ -2909,7 +2909,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={loc?.toUpperCase()}
-                        sx={{ width: "100px" }}
+                        sx={{ width: "80px" }}
                         onChange={(e) => {
                           setLoc(e.target.value.toUpperCase());
                         }}
@@ -3006,7 +3006,7 @@ const AddPurchaseBill = () => {
                           />
                           {item.iteam_name ? item.iteam_name : "-----"}
                         </td>
-                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ width: "40px", textAlign: "center", verticalAlign: "middle" }}>
                           {item.weightage ? item.weightage : "-----"}
                         </td>
                         <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>

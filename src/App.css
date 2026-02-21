@@ -715,7 +715,6 @@ body {
   width: 100% !important;
 }
 
-/* More specific selector for the react-datepicker component */
 .react-datepicker {
   font-size: 14px !important;
   background-color: #fff !important;
@@ -842,6 +841,7 @@ body {
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
   background-color: white;
+  padding:8.5px 5px !important;
 }
 
 button {

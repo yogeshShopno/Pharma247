@@ -1142,7 +1142,7 @@ const Addsale = () => {
 
 
   useEffect(() => {
-    
+
     const loadData = async () => {
       try {
         await Promise.all([
@@ -2726,14 +2726,13 @@ const Addsale = () => {
                 </th>
                 <th>Base</th>
                 <th>
-                  GST% <span className="text-red-600 ">*</span>
+                  GST%<span className="text-red-600 ">*</span>
                 </th>
                 <th>Qty. </th>
                 <th>Loc.</th>
                 <th style={{ textAlign: "center" }}>
-                  {" "}
                   <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                    Order
+                    Order{" "}
                     <Tooltip title="Please Enter only (o)" arrow>
                       <Button
                         style={{
@@ -2743,7 +2742,7 @@ const Addsale = () => {
                       >
                         <GoInfo
                           className="absolute"
-                          style={{ fontSize: "1rem" }}
+                          style={{ fontSize: "1rem", minWidth: "0", margin: "2px" }}
                         />
                       </Button>
                     </Tooltip>
@@ -3098,7 +3097,7 @@ const Addsale = () => {
                     }}
                     size="small"
                     value={unit}
-                    sx={{ width: "100px" }}
+                    sx={{ width: "40px" }}
                     onChange={(e) => {
                       setUnit(e.target.value);
                     }}
@@ -3136,7 +3135,7 @@ const Addsale = () => {
                     id="outlined-number"
                     disabled
                     size="small"
-                    sx={{ width: "100px" }}
+                    sx={{ width: "65px" }}
                     inputRef={inputRef3}
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
@@ -3245,7 +3244,7 @@ const Addsale = () => {
                         }
                       }
                     }}
-                    sx={{ width: "100px" }}
+                    sx={{ width: "40px" }}
                     value={gst}
                     onChange={(e) => {
                       setGst(e.target.value);
@@ -3315,7 +3314,7 @@ const Addsale = () => {
                       }
                     }}
                     disabled
-                    sx={{ width: "100px" }}
+                    sx={{ width: "80px" }}
                     value={loc}
                     onChange={(e) => {
                       setLoc(e.target.value);
@@ -3326,7 +3325,7 @@ const Addsale = () => {
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
-                    sx={{ width: "100px" }}
+                    sx={{ width: "40px" }}
                     size="small"
                     value={order}
                     inputRef={inputRef8}

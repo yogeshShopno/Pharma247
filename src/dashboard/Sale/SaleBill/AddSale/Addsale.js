@@ -1092,8 +1092,6 @@ const Addsale = () => {
       setCustomerDetails(customers);
       setCustomer(customers[0]);
 
-
-      // // Only auto-select on initial load
       // if (!search && customers.length > 0) {
       //   setCustomer(customers[0]);
       //   setPreviousLoyaltyPoints(customers[0].roylti_point || 0);
@@ -1144,6 +1142,7 @@ const Addsale = () => {
 
 
   useEffect(() => {
+    
     const loadData = async () => {
       try {
         await Promise.all([

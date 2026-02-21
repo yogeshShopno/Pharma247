@@ -161,7 +161,7 @@ const ReadyForPickup = ({ orderid }) => {
           <div>{orderData?.payment_method}</div>
 
           <div className="font-semibold">Patient Location</div>
-          <div className="break-all">https://maps.app.goo.gl/LctZArEPAfcqJ</div>
+          {/* <div className="break-all">https://maps.app.goo.gl/LctZArEPAfcqJ</div> */}
 
           <div className="font-semibold ">Prescription</div>
           {/* --- BEGIN CAROUSEL --- */}

@@ -67,7 +67,7 @@ const CustomerView = () => {
   useEffect(() => {
     CustomerGetByID(id);
     BankList();
-  }, [page, rowsPerPage]);
+  }, [page, rowsPerPage,id]);
 
   const CustomerGetByID = (id) => {
     let data = new FormData();

@@ -2257,6 +2257,11 @@ const AddPurchaseBill = () => {
                     variant="outlined"
                     error={!!error.billNo}
                     value={billNo}
+                    sx={{
+                      width: "100%",
+                      minWidth: "200px",
+                      "@media (max-width:600px)": { minWidth: "200px" },
+                    }}
                     onChange={(e) => {
                       setbillNo(e.target.value.toUpperCase());
                     }}
@@ -2323,7 +2328,12 @@ const AddPurchaseBill = () => {
                     placeholder="scan barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
-                    sx={{ width: "250px" }}
+     
+                     sx={{
+                      width: "100%",
+                      minWidth: "200px",
+                      "@media (max-width:600px)": { minWidth: "200px" },
+                    }}
                     onChange={(e) => {
                       generateRandomNumber();
 
@@ -2543,7 +2553,10 @@ const AddPurchaseBill = () => {
                         size="small"
                         error={!!error.unit}
                         value={unit}
-                        sx={{ width: "40px", }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                        }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
@@ -2581,7 +2594,10 @@ const AddPurchaseBill = () => {
                         size="small"
                         error={!!error.batch}
                         value={batch}
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         onChange={(e) => {
                           setBatch((e.target.value).toUpperCase());
                         }}
@@ -2604,7 +2620,10 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "65px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                        }}
                         error={!!error.expiryDate}
                         value={expiryDate}
                         onChange={handleExpiryDate}
@@ -2661,7 +2680,10 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "90px" }}
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         size="small"
                         error={!!error.mrp}
                         value={mrp}
@@ -2703,7 +2725,11 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "80px" }}
+
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         size="small"
                         error={!!error.qty}
                         value={qty}
@@ -2736,7 +2762,11 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         type="number"
-                        sx={{ width: "40px" }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                        }}
+
                         value={free}
                         error={!!error.free}
                         onChange={(e) => {
@@ -2765,7 +2795,10 @@ const AddPurchaseBill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "90px" }}
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         size="small"
                         value={ptr}
                         error={!!error.ptr}
@@ -2815,7 +2848,10 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         autoComplete="off"
                         id="outlined-number"
-                        sx={{ width: "40px" }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                        }}
                         size="small"
                         type="text"
                         value={disc}
@@ -2851,7 +2887,11 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={base === 0 ? "" : base}
                         disabled
-                        sx={{ width: "100px" }}
+
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         onChange={(e) => {
                           setBase(e.target.value);
                         }}
@@ -2863,7 +2903,11 @@ const AddPurchaseBill = () => {
                         variant="outlined"
                         size="small"
                         value={gst}
-                        sx={{ width: "40px" }}
+
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                        }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
                         onChange={(e) => {
@@ -2909,7 +2953,11 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         size="small"
                         value={loc?.toUpperCase()}
-                        sx={{ width: "80px" }}
+
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         onChange={(e) => {
                           setLoc(e.target.value.toUpperCase());
                         }}
@@ -2933,7 +2981,10 @@ const AddPurchaseBill = () => {
                         disabled
                         size="small"
                         value={netRate === 0 ? "" : netRate}
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                       />
                     </td>
 
@@ -2946,7 +2997,10 @@ const AddPurchaseBill = () => {
                         disabled
                         size="small"
                         value={margin === 0 ? "" : margin}
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "100px",
+                          width: "100%",
+                        }}
                         onChange={(e) => {
                           setMargin(e.target.value);
                         }}
@@ -2988,7 +3042,7 @@ const AddPurchaseBill = () => {
                           borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
                         }}
                       >
-                        <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
+                        <td style={{ display: "flex", gap: "8px",  textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                           <BorderColorIcon
                             style={{ color: "var(--color1)" }}
                             onClick={(e) => {
@@ -3006,46 +3060,46 @@ const AddPurchaseBill = () => {
                           />
                           {item.iteam_name ? item.iteam_name : "-----"}
                         </td>
-                        <td style={{ width: "40px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.weightage ? item.weightage : "-----"}
                         </td>
-                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.batch_number ? item.batch_number : "-----"}
                         </td>
-                        <td style={{ width: "105px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.expiry ? item.expiry : "-----"}
                         </td>
-                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.mrp ? item.mrp : "-----"}
                         </td>
-                        <td style={{ width: "85px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.qty ? item.qty : "-----"}
                         </td>
-                        <td style={{ width: "65px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.free_qty ? item.free_qty : "-----"}
                         </td>
-                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.ptr ? item.ptr : "-----"}
                         </td>
-                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.discount ? item.discount : "-----"}
                         </td>
-                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.base_price ? item.base_price : "-----"}
                         </td>
-                        <td style={{ width: "70px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.gst ? item.gst : "-----"}
                         </td>
-                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.location ? item.location : "-----"}
                         </td>
-                        <td style={{ width: "95px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.net_rate ? item.net_rate : "-----"}
                         </td>
-                        <td style={{ width: "108px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.margin ? item.margin : "-----"}
                         </td>
-                        <td style={{ width: "107px", textAlign: "center", verticalAlign: "middle" }}>
+                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.total_amount ? item.total_amount : "-----"}
                         </td>
                       </tr>

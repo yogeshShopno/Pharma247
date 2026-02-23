@@ -16,7 +16,7 @@
 
 .item-table th,
 .item-table td {
-    padding: 8px;
+    padding: 5px;
     text-align: center;
     font-size: 14px;
 }
@@ -106,7 +106,7 @@
     
     .item-table th,
     .item-table td {
-        padding: 6px 4px;
+        padding: 5px 4px;
         font-size: 12px;
         white-space: nowrap;
     }
@@ -188,7 +188,8 @@
 .total {
     background-color: #628A2F;
     color: white;
-    width: 120px;
+    /* width: 100%; */
+    min-width: 100px;
 }
 
 /* Item list container styles */

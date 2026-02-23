@@ -409,7 +409,7 @@ const AddPurchaseBill = () => {
   }, [id]);
 
   useEffect(() => {
-    listOfGst();
+    // listOfGst();
     BankList();
     listDistributor();
 
@@ -920,23 +920,23 @@ const AddPurchaseBill = () => {
 
   /*<=================================================================== Get GST List   ====================================================================> */
 
-  let listOfGst = () => {
-    axios
-      .get("gst-list", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        setGstList(response.data.data);
-        // gstList.filer((gst) =>(
-        //   return age >= 18;
-        // )
-      })
-      .catch((error) => {
-        setUnsavedItems(false);
-      });
-  };
+  // let listOfGst = () => {
+  //   axios
+  //     .get("gst-list", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       setGstList(response.data.data);
+  //       // gstList.filer((gst) =>(
+  //       //   return age >= 18;
+  //       // )
+  //     })
+  //     .catch((error) => {
+  //       setUnsavedItems(false);
+  //     });
+  // };
 
   /*<================================================================ Get Distributor List   =================================================================> */
 
@@ -2386,25 +2386,24 @@ const AddPurchaseBill = () => {
                 <tbody>
                   {/* Input Row */}
                   <tr className="input-row">
-                    <td className="p-0">
+                    <td style={{ fontSize: 15,height:"47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'left', justifyContent: 'center',alignContent:'center', }}>
                       {isEditMode ? (
-                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left', }}>
-                          <DeleteIcon
-                            className="delete-icon mr-2"
-                            onClick={() => {
-                              setIsEditMode(false);
-                              setTimeout(() => {
-                                removeItem();
-                                inputRefs.current[2]?.focus();
-                              }, 0);
-                            }}
-                          />
+                        <div  >
+                          
+
+                            <DeleteIcon
+                              className="delete-icon mr-2"
+                              onClick={() => {
+                                setIsEditMode(false);
+                                setTimeout(() => {
+                                  removeItem();
+                                  inputRefs.current[2]?.focus();
+                                }, 0);
+                              }}
+                            />
                           {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
-                          {error.item && (
-                            <span style={{ color: "red", fontSize: "16px" }}>
-                              {error.item}
-                            </span>
-                          )}
+                          
+
                         </div>
                       ) : (
                         <Autocomplete
@@ -3090,24 +3089,27 @@ const AddPurchaseBill = () => {
                           borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
                         }}
                       >
-                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
-                          <BorderColorIcon
-                            style={{ color: "var(--color1)" }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleEditClick(item);
-                            }}
-                          />
-                          <DeleteIcon
-                            style={{ color: "var(--color6)" }}
-                            className="delete-icon bg-none"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteOpen(item.id);
-                            }}
-                          />
-                          <span style={{alignSelf:"center"}}>
-                          {item.iteam_name ? item.iteam_name : "-----"}
+                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", justifyContent: "center", alignItems: "center" }}>
+                          <div>
+                            <BorderColorIcon
+                              style={{ color: "var(--color1)" }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleEditClick(item);
+                              }}
+                            />
+                            <DeleteIcon
+                              style={{ color: "var(--color6)" }}
+                              className="delete-icon bg-none"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                deleteOpen(item.id);
+                              }}
+                            />
+                          </div>
+
+                          <span style={{ alignSelf: "center" }}>
+                            {item.iteam_name ? item.iteam_name : "-----"}
 
                           </span>
                         </td>

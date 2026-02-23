@@ -404,11 +404,17 @@ const AddPurchaseBill = () => {
     if (id) {
       batchList(id);
     }
-    listDistributor();
-    BankList();
-    listOfGst();
+
     setSrNo(localStorage.getItem("Purchase_SrNo"));
   }, [id]);
+
+  useEffect(() => {
+    listOfGst();
+    BankList();
+    listDistributor();
+
+
+  }, []);
 
   useEffect(() => {
     const delay = setTimeout(() => {
@@ -873,9 +879,10 @@ const AddPurchaseBill = () => {
   /*<=========================================================== delete purchase item data   ====================================================> */
 
   const handlePopState = () => {
+
+    if (!randomNumber) return;
     let data = new FormData();
     data.append("random_number", randomNumber);
-
     const params = {
       random_number: localStorage.getItem("RandomNumber"),
     };
@@ -2328,8 +2335,8 @@ const AddPurchaseBill = () => {
                     placeholder="scan barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
-     
-                     sx={{
+
+                    sx={{
                       width: "100%",
                       minWidth: "200px",
                       "@media (max-width:600px)": { minWidth: "200px" },
@@ -2438,6 +2445,9 @@ const AddPurchaseBill = () => {
                               sx={{
                                 minWidth: 400,
                                 width: "100%",
+                                '& .MuiInputBase-input': {
+                                  textAlign: 'center',
+                                },
                               }}
 
                               InputProps={{
@@ -2556,6 +2566,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "40px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
@@ -2597,6 +2610,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         onChange={(e) => {
                           setBatch((e.target.value).toUpperCase());
@@ -2623,6 +2639,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "65px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         error={!!error.expiryDate}
                         value={expiryDate}
@@ -2683,6 +2702,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         size="small"
                         error={!!error.mrp}
@@ -2729,6 +2751,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         size="small"
                         error={!!error.qty}
@@ -2765,6 +2790,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "40px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
 
                         value={free}
@@ -2798,6 +2826,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         size="small"
                         value={ptr}
@@ -2851,6 +2882,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "40px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         size="small"
                         type="text"
@@ -2891,6 +2925,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         onChange={(e) => {
                           setBase(e.target.value);
@@ -2907,6 +2944,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "40px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         error={!!error.gst}
                         inputRef={(el) => (inputRefs.current[11] = el)}
@@ -2957,6 +2997,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         onChange={(e) => {
                           setLoc(e.target.value.toUpperCase());
@@ -2984,6 +3027,9 @@ const AddPurchaseBill = () => {
                         sx={{
                           minWidth: "100px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                       />
                     </td>
@@ -2998,8 +3044,11 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={margin === 0 ? "" : margin}
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
                         }}
                         onChange={(e) => {
                           setMargin(e.target.value);
@@ -3042,7 +3091,7 @@ const AddPurchaseBill = () => {
                           borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
                         }}
                       >
-                        <td style={{ display: "flex", gap: "8px",  textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
+                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
                           <BorderColorIcon
                             style={{ color: "var(--color1)" }}
                             onClick={(e) => {
@@ -3058,7 +3107,10 @@ const AddPurchaseBill = () => {
                               deleteOpen(item.id);
                             }}
                           />
+                          <span style={{alignSelf:"center"}}>
                           {item.iteam_name ? item.iteam_name : "-----"}
+
+                          </span>
                         </td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.weightage ? item.weightage : "-----"}

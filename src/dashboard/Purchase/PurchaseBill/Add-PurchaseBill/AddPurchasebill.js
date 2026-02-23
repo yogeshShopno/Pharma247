@@ -3024,7 +3024,7 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={netRate === 0 ? "" : netRate}
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',

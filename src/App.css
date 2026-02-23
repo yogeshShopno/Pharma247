@@ -845,6 +845,11 @@ body {
   padding:8.5px 2px !important;
 }
 
+#outlined-number{
+  padding:8.5px 2px !important;
+
+}
+
 button {
   text-transform: capitalize !important;
 }

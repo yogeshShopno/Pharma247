@@ -1444,7 +1444,6 @@ const AddPurchaseBill = () => {
     const params = {
       search: searchValue,
       page: pageNumber,
-      limit: 20,
     };
 
     try {

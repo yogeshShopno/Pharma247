@@ -2699,7 +2699,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         type="number"
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -2748,7 +2748,7 @@ const AddPurchaseBill = () => {
                         type="number"
 
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "40px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -2823,7 +2823,7 @@ const AddPurchaseBill = () => {
                         id="outlined-number"
                         type="number"
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -2922,7 +2922,7 @@ const AddPurchaseBill = () => {
                         disabled
 
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -2994,7 +2994,7 @@ const AddPurchaseBill = () => {
                         value={loc?.toUpperCase()}
 
                         sx={{
-                          minWidth: "100px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -3043,7 +3043,7 @@ const AddPurchaseBill = () => {
                         size="small"
                         value={margin === 0 ? "" : margin}
                         sx={{
-                          minWidth: "65px",
+                          minWidth: "40px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',

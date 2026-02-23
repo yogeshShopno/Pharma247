@@ -847,7 +847,11 @@ body {
 
 #outlined-number{
   padding:8.5px 2px !important;
+ text-align: 'center',
+}
 
+.MuiInputBase-input {
+  text-align: center !important;
 }
 
 button {

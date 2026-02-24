@@ -2331,7 +2331,7 @@ const AddPurchaseBill = () => {
                     size="small"
                     variant="outlined"
                     value={barcode}
-                    placeholder="scan barcode"
+                    // placeholder="scan barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
 
@@ -2386,9 +2386,9 @@ const AddPurchaseBill = () => {
                 <tbody>
                   {/* Input Row */}
                   <tr className="input-row">
-                    <td style={{ fontSize: 15,height:"47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'left', justifyContent: 'center',alignContent:'center', }}>
+                    <td style={{ fontSize: 15,height:"47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start',alignContent:'center', }}>
                       {isEditMode ? (
-                        <div  >
+                        <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           
 
                             <DeleteIcon
@@ -2444,7 +2444,7 @@ const AddPurchaseBill = () => {
                                 minWidth: 400,
                                 width: "100%",
                                 '& .MuiInputBase-input': {
-                                  textAlign: 'center',
+                                  // textAlign: 'center',
                                 },
                               }}
 
@@ -3089,7 +3089,7 @@ const AddPurchaseBill = () => {
                           borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
                         }}
                       >
-                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", justifyContent: "center", alignItems: "center" }}>
+                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left",}}>
                           <div>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}

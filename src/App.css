@@ -842,17 +842,17 @@ body {
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
   background-color: white;
-  padding:8.5px 2px !important;
+  /* padding:8.5px 2px !important; */
 }
 
 #outlined-number{
-  padding:8.5px 2px !important;
- text-align: 'center',
+  padding:8.5px 5px !important;
+ text-align: 'left',
 }
 
-.MuiInputBase-input {
+/* .MuiInputBase-input {
   text-align: center !important;
-}
+} */
 
 button {
   text-transform: capitalize !important;

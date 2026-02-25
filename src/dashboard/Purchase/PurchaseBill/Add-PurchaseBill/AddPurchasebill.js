@@ -2389,8 +2389,6 @@ const AddPurchaseBill = () => {
                     <td style={{ fontSize: 15,height:"47px",  minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
                         <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
-                          
-
                             <DeleteIcon
                               className="delete-icon mr-2"
                               onClick={() => {
@@ -2401,9 +2399,7 @@ const AddPurchaseBill = () => {
                                 }, 0);
                               }}
                             />
-                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
-                          
-
+                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}                    
                         </div>
                       ) : (
                         <Autocomplete

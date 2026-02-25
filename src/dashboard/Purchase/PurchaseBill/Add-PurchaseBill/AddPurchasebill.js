@@ -2188,6 +2188,8 @@ const AddPurchaseBill = () => {
                     sx={{
                       width: "100%",
                       minWidth: "350px",
+                      minHeight:"40px",
+
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
                     freeSolo
@@ -2266,6 +2268,7 @@ const AddPurchaseBill = () => {
                     sx={{
                       width: "100%",
                       minWidth: "200px",
+                      minHeight:"40px",
                       "@media (max-width:600px)": { minWidth: "200px" },
                     }}
                     onChange={(e) => {
@@ -2386,7 +2389,7 @@ const AddPurchaseBill = () => {
                 <tbody>
                   {/* Input Row */}
                   <tr className="input-row">
-                    <td style={{ fontSize: 15,height:"47px",  minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
+                    <td style={{ fontSize: 15,height:"47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
                         <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                             <DeleteIcon
@@ -3051,7 +3054,7 @@ const AddPurchaseBill = () => {
                     </td>
 
                     <td className="total">
-                      <span       className="font-bold">
+                      <span className="font-bold">
                         {ItemTotalAmount.toFixed(2)}
                       </span>
                     </td>
@@ -3081,11 +3084,9 @@ const AddPurchaseBill = () => {
                           handleEditClick(item);
                         }}
                         className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                        style={{
-                          borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',
-                        }}
+                        style={{borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',}}
                       >
-                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left",}}>
+                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left"}}>
                           <div>
                             <BorderColorIcon
                               style={{ color: "var(--color1)" }}
@@ -3103,10 +3104,8 @@ const AddPurchaseBill = () => {
                               }}
                             />
                           </div>
-
                           <span style={{ alignSelf: "center" }}>
                             {item.iteam_name ? item.iteam_name : "-----"}
-
                           </span>
                         </td>
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
@@ -3148,7 +3147,7 @@ const AddPurchaseBill = () => {
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.margin ? item.margin : "-----"}
                         </td>
-                        <td className="total  " style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>
+                        <td className="total" style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>
                           {item.total_amount ? item.total_amount : "-----"}
                         </td>
                       </tr>

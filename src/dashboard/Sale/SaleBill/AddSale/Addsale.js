@@ -48,6 +48,7 @@ import { FaCloudSun } from "react-icons/fa";
 import { FaCrown } from "react-icons/fa";
 
 import TipsModal from "../../../../componets/Tips/TipsModal";
+import Loader from "../../../../componets/loader/Loader";
 
 const Addsale = () => {
   const token = localStorage.getItem("token");
@@ -2395,14 +2396,14 @@ const Addsale = () => {
                   option.phone_number === value.phone_number
                 }
                 // loading={isLoading}
+
                 sx={{
+
                   width: "100%",
-                  minWidth: {
-                    // xs: "350px",
-                    // sm: "400px",
-                    // md: "400px",
-                    // lg: "250px",
-                  },
+                  minWidth: "350px",
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "250px" },
+
                   '& .MuiAutocomplete-inputRoot': {
                     padding: '0 !important',
                     paddingRight: customer ? '65px !important' : '39px !important',
@@ -2575,12 +2576,10 @@ const Addsale = () => {
                 // loading={isLoading}
                 sx={{
                   width: "100%",
-                  minWidth: {
-                    // xs: "350px",
-                    // sm: "400px",
-                    // md: "400px",
-                    // lg: "350px",
-                  },
+                  minWidth: "350px",
+                  minHeight: "40px",
+
+                  "@media (max-width:600px)": { minWidth: "250px" },
                   '& .MuiAutocomplete-inputRoot': {
                     padding: '0 !important',
                   },
@@ -2731,22 +2730,12 @@ const Addsale = () => {
                 <th>Qty. </th>
                 <th>Loc.</th>
                 <th style={{ textAlign: "center" }}>
-                  <div style={{ display: "flex", flexWrap: "nowrap" }}>
-                    Order{" "}
+               
+                  
                     <Tooltip title="Please Enter only (o)" arrow>
-                      <Button
-                        style={{
-                          justifyContent: "left",
-                          color: "var(--color1)",
-                        }}
-                      >
-                        <GoInfo
-                          className="absolute"
-                          style={{ fontSize: "1rem", minWidth: "0", margin: "2px" }}
-                        />
-                      </Button>
+                    Order{" "}
                     </Tooltip>
-                  </div>
+               
                 </th>
                 <th
                   style={{
@@ -2760,324 +2749,315 @@ const Addsale = () => {
             </thead>
             <tbody>
               {/*<============================================== table for autocomplete/batch selection   =============================================> */}
-
-              <tr style={{ borderBottom: "1px solid lightgray" }}>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+              {isVisible && value && !batch && (
+                <Box
+                  sx={{
+                    minWidth: {
+                      xs: "200px",
+                      sm: "500px",
+                      md: "1000px",
+                    },
+                    backgroundColor: "white",
+                    position: "absolute",
+                    marginTop: "50px",
+                    // left: "50%",
+                    zIndex: 2,
+                  }}
+                  id="tempId"
+                >
                   <div
-                    className="flex gap-5 "
+                    className="custom-scroll-sale"
+                    style={{ width: "100%" }}
+                    tabIndex={0}
+                    onKeyDown={handleTableKeyDown}
                   >
-
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexWrap: "wrap",
+                    <table
+                      ref={tableRef}
+                      tabIndex={0}
+                      style={{
                         width: "100%",
-                        alignItems: "center",
+                        borderCollapse: "collapse",
                       }}
-                    ><Autocomplete
-                        key={autocompleteKey}
-                        value={selectedOption}
-                        size="small"
-                        sx={{
-                          width: "100%",
-                          minWidth: "450px",
-                        }}
-
-                        onChange={handleOptionChange}
-                        onInputChange={handleInputChange}
-                        open={autoCompleteOpen}
-                        onOpen={() => setAutoCompleteOpen(true)}
-                        onClose={() => setAutoCompleteOpen(false)}
-                        getOptionLabel={(option) => `${option.iteam_name || ""}`}
-                        options={itemList}
-                        ListboxProps={{
-                          onScroll: handleScroll,
-                        }}
-                        renderOption={(props, option) => (
-                          <ListItem {...props} key={option.id}>
-                            <ListItemText
-                              primary={`${option.iteam_name}`}
-                              secondary={`${option.company_name}`}
-                            />
-                          </ListItem>
+                    >
+                      <thead>
+                        {isAlternative && (
+                          <tr className="customtable">
+                            <th
+                              className="saleTable highlighted-row"
+                              colSpan={8}
+                            >
+                              Alternate Medicine
+                            </th>
+                          </tr>
                         )}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            inputRef={searchInputRef}
-                            variant="outlined"
-                            id="searchResults"
-                            autoFocus
-                            placeholder="Search Item Name..."
-                            InputProps={{
-                              ...params.InputProps,
-                              style: {
-                                height: 40,
-                                textTransform: 'uppercase',
-                              },
-                              startAdornment: (
-                                <InputAdornment position="start">
-                                  <SearchIcon
-                                    sx={{
-                                      color: "var(--color1)",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                </InputAdornment>
 
-                              ),
-                              endAdornment: (
-                                <>
-                                  {selectedOption && (
-                                    <Tooltip
-                                      title="Item Purchase History"
-                                      arrow
-                                      componentsProps={{
-                                        tooltip: {
-                                          sx: {
-                                            backgroundColor: "#3f6212",
-                                            color: 'white',
-                                            fontSize: '14px',
-                                            fontWeight: '500',
-                                            padding: '8px 12px',
-                                            '& .MuiTooltip-arrow': {
-                                              color: '#3f6212',
-                                            }
+                        <tr className="customtable">
+                          <th>Item Name</th>
+                          <th>Batch Number</th>
+                          <th>Unit</th>
+                          <th>Expiry Date</th>
+                          <th>MRP</th>
+                          <th>QTY</th>
+                          <th>Loc</th>
+                        </tr>
+                      </thead>
+
+                      <tbody>
+                        {batchListData.length > 0 ? (
+                          <>
+                            {batchListData.map((item) => (
+                              <tr
+                                className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
+                                  String(item.id)
+                                  ? "highlighted-row"
+                                  : ""
+                                  }`}
+                                key={item.id}
+                                data-id={item.id}
+                                tabIndex={0}
+                                style={{
+                                  border:
+                                    "1px solid rgba(4, 76, 157, 0.1)",
+                                  padding: "10px",
+                                  outline: "none",
+                                }}
+                                onClick={() =>
+                                  handlePassData(item)
+                                }
+                                onFocus={() => setAutoCompleteOpen(false)}
+                                onMouseEnter={(e) => {
+                                  const hoveredRow = e.currentTarget;
+                                  setHighlightedRowId(hoveredRow);
+                                }}
+
+                              >
+                                <td className="text-base font-semibold">
+                                  {item.iteam_name}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.batch_number}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.unit}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.expiry_date}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.mrp}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.qty}
+                                </td>
+                                <td className="text-base font-semibold">
+                                  {item.location}
+                                </td>
+                              </tr>
+                            ))}
+                          </>
+                        ) : (
+                          <tr>
+                            <td
+                              colSpan={6}
+                              style={{
+                                textAlign: "center",
+                                fontSize: "16px",
+                                fontWeight: 600,
+                              }}
+                            >
+                              No record found
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </Box>
+              )}
+              <tr className="input-row">
+
+                <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
+                  <>
+
+                    <Autocomplete
+                      key={autocompleteKey}
+                      value={selectedOption}
+                      size="small"
+                      sx={{
+                        width: "100%",
+                        minWidth: "400px",
+                      }}
+                      onChange={handleOptionChange}
+                      onInputChange={handleInputChange}
+                      open={autoCompleteOpen}
+                      onOpen={() => setAutoCompleteOpen(true)}
+                      onClose={() => setAutoCompleteOpen(false)}
+                      getOptionLabel={(option) => `${option.iteam_name || ""}`}
+                      options={itemList}
+                      ListboxProps={{
+                        onScroll: handleScroll,
+                      }}
+                      renderOption={(props, option) => (
+                        <ListItem {...props} key={option.id}>
+                          <ListItemText
+                            primary={`${option.iteam_name}`}
+                            secondary={`${option.company_name}`}
+                          />
+                        </ListItem>
+                      )}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          inputRef={searchInputRef}
+                          variant="outlined"
+                          id="searchResults"
+                          autoFocus
+                          placeholder="Search Item Name..."
+                          InputProps={{
+                            ...params.InputProps,
+                            style: {
+                              height: 40,
+                              textTransform: 'uppercase',
+                            },
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <SearchIcon
+                                  sx={{
+                                    color: "var(--color1)",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </InputAdornment>
+
+                            ),
+                            endAdornment: (
+                              <>
+                                {selectedOption && (
+                                  <Tooltip
+                                    title="Item Purchase History"
+                                    arrow
+                                    componentsProps={{
+                                      tooltip: {
+                                        sx: {
+                                          backgroundColor: "#3f6212",
+                                          color: 'white',
+                                          fontSize: '14px',
+                                          fontWeight: '500',
+                                          padding: '8px 12px',
+                                          '& .MuiTooltip-arrow': {
+                                            color: '#3f6212',
                                           }
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <IconButton
+                                      size="small"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        fetchItemHistory(selectedOption);
+                                      }}
+                                      sx={{
+                                        marginRight: '-8px',
+                                        zIndex: 1,
+                                        width: '28px',
+                                        height: '28px',
+                                        border: '2px solid var(--color1)',
+                                        borderRadius: '50%',
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                          backgroundColor: 'var(--color1) !important',
+                                          borderColor: 'var(--color1)',
+                                        },
+                                        '&:hover .sales-history-text': {
+                                          color: 'white !important'
                                         }
                                       }}
                                     >
-                                      <IconButton
-                                        size="small"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          fetchItemHistory(selectedOption);
-                                        }}
-                                        sx={{
-                                          marginRight: '-8px',
-                                          zIndex: 1,
-                                          width: '28px',
-                                          height: '28px',
-                                          border: '2px solid var(--color1)',
-                                          borderRadius: '50%',
-                                          transition: 'all 0.3s ease',
-                                          '&:hover': {
-                                            backgroundColor: 'var(--color1) !important',
-                                            borderColor: 'var(--color1)',
-                                          },
-                                          '&:hover .sales-history-text': {
-                                            color: 'white !important'
-                                          }
+                                      <span
+                                        className="sales-history-text"
+                                        style={{
+                                          color: 'var(--color1)',
+                                          fontWeight: 'bold',
+                                          fontSize: '14px',
+                                          transition: 'color 0.3s ease'
                                         }}
                                       >
-                                        <span
-                                          className="sales-history-text"
-                                          style={{
-                                            color: 'var(--color1)',
-                                            fontWeight: 'bold',
-                                            fontSize: '14px',
-                                            transition: 'color 0.3s ease'
-                                          }}
-                                        >
-                                          P
-                                        </span>
-                                      </IconButton>
-                                    </Tooltip>
-                                  )}
-                                  {params.InputProps.endAdornment}
-                                </>
-                              ),
+                                        P
+                                      </span>
+                                    </IconButton>
+                                  </Tooltip>
+                                )}
+                                {params.InputProps.endAdornment}
+                              </>
+                            ),
 
-                            }}
-                            sx={{
-                              "& .MuiInputBase-input": {
-                                textTransform: "uppercase",
-                              },
-                              "& .MuiInputBase-input::placeholder": {
-                                fontSize: "1rem",
-                                color: "black",
-                              },
-                            }}
-                            onFocus={() => setSelectedIndex(-1)}
+                          }}
+                          sx={{
+                            "& .MuiInputBase-input": {
+                              textTransform: "uppercase",
+                            },
+                            "& .MuiInputBase-input::placeholder": {
+                              fontSize: "1rem",
+                              color: "black",
+                            },
+                          }}
+                          onFocus={() => setSelectedIndex(-1)}
 
-                            onKeyDown={(e) => {
-                              const key = e.key;
-                              const isTab = key === "Tab";
-                              const isShiftTab = isTab && e.shiftKey;
-                              const isEnter = key === "Enter";
-                              const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+                          onKeyDown={(e) => {
+                            const key = e.key;
+                            const isTab = key === "Tab";
+                            const isShiftTab = isTab && e.shiftKey;
+                            const isEnter = key === "Enter";
+                            const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
 
-                              if (
-                                isArrowKey &&
-                                !isShiftTab &&
-                                (searchItem === null || searchItem === "") &&
-                                !selectedOption
-                              ) {
-                                e.preventDefault();
-                                setAutocompleteDisabled(true);
-                                setAutoCompleteOpen(false);
-                                setTimeout(() => {
-                                  if (searchInputRef.current) searchInputRef.current.blur();
-                                  if (tableRef1.current) tableRef1.current.focus();
-                                  if (ItemSaleList?.sales_item?.length > 0) {
-                                    setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
-                                  } else {
-                                    setSelectedIndex(-1);
-                                  }
-                                }, 0);
-                                return;
-                              }
-
-                              if ((isEnter || isTab) && autoCompleteOpen) return;
-
-                              if (isEnter || isTab) {
-                                e.preventDefault();
-                                if (!selectedOption) {
-                                  setTimeout(() => {
-                                    toast.dismiss();
-                                    toast.error("Please select an Item")
-                                  }, 100);
+                            if (
+                              isArrowKey &&
+                              !isShiftTab &&
+                              (searchItem === null || searchItem === "") &&
+                              !selectedOption
+                            ) {
+                              e.preventDefault();
+                              setAutocompleteDisabled(true);
+                              setAutoCompleteOpen(false);
+                              setTimeout(() => {
+                                if (searchInputRef.current) searchInputRef.current.blur();
+                                if (tableRef1.current) tableRef1.current.focus();
+                                if (ItemSaleList?.sales_item?.length > 0) {
+                                  setSelectedIndex(key === "ArrowDown" ? 0 : ItemSaleList.sales_item.length - 1);
                                 } else {
-                                  setTimeout(() => {
-                                    if (inputRef1.current) inputRef1.current.focus();
-                                  }, 100);
+                                  setSelectedIndex(-1);
                                 }
-                                return;
+                              }, 0);
+                              return;
+                            }
+
+                            if ((isEnter || isTab) && autoCompleteOpen) return;
+
+                            if (isEnter || isTab) {
+                              e.preventDefault();
+                              if (!selectedOption) {
+                                setTimeout(() => {
+                                  toast.dismiss();
+                                  toast.error("Please select an Item")
+                                }, 100);
+                              } else {
+                                setTimeout(() => {
+                                  if (inputRef1.current) inputRef1.current.focus();
+                                }, 100);
                               }
-                            }}
-                          />
-                        )}
-                      />
+                              return;
+                            }
+                          }}
+                        />
+                      )}
+                    />
 
-                    </Box>
-                    {isVisible && value && !batch && (
-                      <Box
-                        sx={{
-                          minWidth: {
-                            xs: "200px",
-                            sm: "500px",
-                            md: "1000px",
-                          },
-                          backgroundColor: "white",
-                          position: "absolute",
-                          marginTop: "50px",
-                          zIndex: 1,
-                        }}
-                        id="tempId"
-                      >
-                        <div
-                          className="custom-scroll-sale"
-                          style={{ width: "100%" }}
-                          tabIndex={0}
-                          onKeyDown={handleTableKeyDown}
-                        >
-                          <table
-                            ref={tableRef}
-                            tabIndex={0}
-                            style={{
-                              width: "100%",
-                              borderCollapse: "collapse",
-                            }}
-                          >
-                            <thead>
-                              {isAlternative && (
-                                <tr className="customtable">
-                                  <th
-                                    className="saleTable highlighted-row"
-                                    colSpan={8}
-                                  >
-                                    Alternate Medicine
-                                  </th>
-                                </tr>
-                              )}
 
-                              <tr className="customtable">
-                                <th>Item Name</th>
-                                <th>Batch Number</th>
-                                <th>Unit</th>
-                                <th>Expiry Date</th>
-                                <th>MRP</th>
-                                <th>QTY</th>
-                                <th>Loc</th>
-                              </tr>
-                            </thead>
 
-                            <tbody>
-                              {batchListData.length > 0 ? (
-                                <>
-                                  {batchListData.map((item) => (
-                                    <tr
-                                      className={`cursor-pointer saleTable custom-hover ${highlightedRowId ===
-                                        String(item.id)
-                                        ? "highlighted-row"
-                                        : ""
-                                        }`}
-                                      key={item.id}
-                                      data-id={item.id}
-                                      tabIndex={0}
-                                      style={{
-                                        border:
-                                          "1px solid rgba(4, 76, 157, 0.1)",
-                                        padding: "10px",
-                                        outline: "none",
-                                      }}
-                                      onClick={() =>
-                                        handlePassData(item)
-                                      }
-                                      onFocus={() => setAutoCompleteOpen(false)}
-                                      onMouseEnter={(e) => {
-                                        const hoveredRow = e.currentTarget;
-                                        setHighlightedRowId(hoveredRow);
-                                      }}
-
-                                    >
-                                      <td className="text-base font-semibold">
-                                        {item.iteam_name}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.batch_number}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.unit}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.expiry_date}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.mrp}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.qty}
-                                      </td>
-                                      <td className="text-base font-semibold">
-                                        {item.location}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </>
-                              ) : (
-                                <tr>
-                                  <td
-                                    colSpan={6}
-                                    style={{
-                                      textAlign: "center",
-                                      fontSize: "16px",
-                                      fontWeight: 600,
-                                    }}
-                                  >
-                                    No record found
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
-                        </div>
-                      </Box>
-                    )}
-
-                  </div>
+                  </>
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     id="outlined-number"
                     disabled
@@ -3097,16 +3077,28 @@ const Addsale = () => {
                     }}
                     size="small"
                     value={unit}
-                    sx={{ width: "40px" }}
+                    sx={{
+                      minWidth: "40px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     onChange={(e) => {
                       setUnit(e.target.value);
                     }}
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td >
                   <TextField
                     id="outlined-number"
-                    sx={{ width: "100px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     size="small"
                     disabled
                     value={batch}
@@ -3130,12 +3122,18 @@ const Addsale = () => {
                     }}
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     id="outlined-number"
                     disabled
                     size="small"
-                    sx={{ width: "65px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     inputRef={inputRef3}
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {
@@ -3157,12 +3155,18 @@ const Addsale = () => {
                     placeholder="MM/YY"
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     disabled
                     id="outlined-number"
                     type="number"
-                    sx={{ width: "100px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     size="small"
                     inputRef={inputRef4}
                     onKeyDown={(e) => {
@@ -3186,12 +3190,18 @@ const Addsale = () => {
                     }}
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
                     type="number"
-                    sx={{ width: "100px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     size="small"
                     inputRef={inputRef5}
                     onKeyDown={(e) => {
@@ -3222,7 +3232,7 @@ const Addsale = () => {
 
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     id="outlined-number"
                     type="number"
@@ -3244,19 +3254,31 @@ const Addsale = () => {
                         }
                       }
                     }}
-                    sx={{ width: "40px" }}
+                    sx={{
+                      minWidth: "40px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     value={gst}
                     onChange={(e) => {
                       setGst(e.target.value);
                     }}
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td >
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
                     type="number"
-                    sx={{ width: "100px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     size="small"
                     inputRef={inputRef7}
                     value={qty}
@@ -3293,7 +3315,7 @@ const Addsale = () => {
                   />
                 </td>
 
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td >
                   <TextField
                     id="outlined-number"
                     size="small"
@@ -3314,18 +3336,30 @@ const Addsale = () => {
                       }
                     }}
                     disabled
-                    sx={{ width: "80px" }}
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     value={loc}
                     onChange={(e) => {
                       setLoc(e.target.value);
                     }}
                   />
                 </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
+                <td>
                   <TextField
                     autoComplete="off"
                     id="outlined-number"
-                    sx={{ width: "40px" }}
+                    sx={{
+                      minWidth: "40px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
                     size="small"
                     value={order}
                     inputRef={inputRef8}
@@ -3350,62 +3384,59 @@ const Addsale = () => {
                     }}
                   />
                 </td>
-                <td
-                  className="total "
-                  style={{ padding: "10px", textAlign: "center" }}
-                >
-                  {itemAmount}
+                <td className="total">
+                  <span className="font-bold">
+                    {itemAmount}
+                  </span>
                 </td>
               </tr>
 
               {ItemSaleList?.sales_item?.map((item, index) => (
                 <tr
                   key={item.id}
-                  style={{ whiteSpace: "nowrap" }}
                   onClick={() => {
                     handleEditClick(item);
                     setSelectedIndex(index);
                   }}
-                  className={`item-List  cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                >
-                  <td
-                    style={{
-                      display: "flex",
-                      gap: "8px",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    <BorderColorIcon
-                      style={{ color: "var(--color1)" }}
-                      color="primary"
-                      className="cursor-pointer"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleEditClick(item);
-                      }}
-                    />
-                    <DeleteIcon
-                      className="delete-icon"
-                      style={{ color: "#F20000" }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setIsDelete(true);
-                        setSaleItemId(item.id);
+                  className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                  style={{ borderBottom: index !== ItemSaleList.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
 
-                      }}
-                    />
-                    {item.iteam_name || barcodeItemName}
+                >
+                  <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
+                    <div>
+                      <BorderColorIcon
+                        style={{ color: "var(--color1)" }}
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditClick(item);
+                        }}
+                      />
+                      <DeleteIcon
+                        className="delete-icon bg-none"
+                        style={{ color: "var(--color6)" }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setIsDelete(true);
+                          setSaleItemId(item.id);
+                        }}
+                      />
+                    </div>
+                    <span style={{ alignSelf: "center" }}>
+                      {item.iteam_name || barcodeItemName || "-----"}
+                    </span>
+
                   </td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
-                  <td style={{ width: "110px", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
+                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
                 </tr>
               ))}
 

@@ -1665,7 +1665,7 @@ const EditPurchaseBill = () => {
                 <tr className="input-row">
                   <td className="p-0" style={{ fontSize: 15, height: "47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center', }}>
                     {isEditMode ? (
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center', }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', alignContent: 'center', }}>
                         <DeleteIcon
                           className="delete-icon mr-2"
                           onClick={() => {
@@ -2224,7 +2224,7 @@ const EditPurchaseBill = () => {
                       className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
                       style={{ borderBottom: index !== purchase.item_list.length - 1 ? '1px solid #e0e0e0' : 'none' }}
                     >
-                      <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", justifyContent: "center", alignItems: "center" }}>
+                      <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left", }}>
                         <div>
                           <BorderColorIcon
                             style={{ color: "var(--color1)" }}
@@ -2260,10 +2260,9 @@ const EditPurchaseBill = () => {
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : "-----"}</td>
                       <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.margin ? item.margin : "-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
+                      <td className="total " style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
                     </tr>
                   </>
-
                 ))}
               </tbody>
             </table>

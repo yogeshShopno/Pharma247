@@ -2386,7 +2386,7 @@ const AddPurchaseBill = () => {
                 <tbody>
                   {/* Input Row */}
                   <tr className="input-row">
-                    <td style={{ fontSize: 15,height:"47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start',alignContent:'center', }}>
+                    <td style={{ fontSize: 15,height:"47px",  minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
                         <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
                           
@@ -3055,7 +3055,7 @@ const AddPurchaseBill = () => {
                     </td>
 
                     <td className="total">
-                      <span className="font-bold">
+                      <span       className="font-bold">
                         {ItemTotalAmount.toFixed(2)}
                       </span>
                     </td>
@@ -3152,7 +3152,7 @@ const AddPurchaseBill = () => {
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           {item.margin ? item.margin : "-----"}
                         </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        <td className="total  " style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>
                           {item.total_amount ? item.total_amount : "-----"}
                         </td>
                       </tr>

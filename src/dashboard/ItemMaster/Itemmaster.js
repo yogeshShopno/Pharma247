@@ -612,6 +612,10 @@ const Itemmaster = () => {
     }
   };
 
+  useEffect(() => {
+    console.log(drugGroup, "drugGroup")
+  }, [drugGroup])
+
 
   const showItemData = async (itemId) => {
     let data = new FormData();
@@ -650,11 +654,7 @@ const Itemmaster = () => {
           );
           setSelectedCategory(category);
 
-          const drugGroup = drugGroupList.find(
-            (drug) => drug.id == data?.drug_group_id
-          );
-
-          setDrugGroup(drugGroup);
+          setDrugGroup(() => ({ id: data?.drug_group_id, name: data?.drug_group }));
 
           const company = companyList.find((comp) => comp.id == data?.company_id);
 

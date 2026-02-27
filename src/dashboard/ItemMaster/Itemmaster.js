@@ -612,11 +612,6 @@ const Itemmaster = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(drugGroup, "drugGroup")
-  }, [drugGroup])
-
-
   const showItemData = async (itemId) => {
     let data = new FormData();
     data.append("id", itemId);

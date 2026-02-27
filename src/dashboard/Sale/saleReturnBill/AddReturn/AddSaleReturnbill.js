@@ -1108,9 +1108,10 @@ const Salereturn = () => {
                                                         size="small"
                                                         fullWidth
                                                         sx={{
-                                                            minWidth: 350,
+                                                            minWidth: 400,
                                                             width: "100%",
                                                         }}
+                                                        
                                                         value={search}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
@@ -1142,7 +1143,13 @@ const Salereturn = () => {
                                                     onKeyDown={handleKeyDown}
                                                     size="small"
                                                     value={unit}
-                                                    sx={{ width: '40px' }}
+                                                    sx={{
+                                                        minWidth: "40px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     onChange={(e) => { setUnit(e.target.value) }}
                                                 />
                                             </td>
@@ -1151,7 +1158,13 @@ const Salereturn = () => {
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="string"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{
+                                                        minWidth: "65px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     size="small"
                                                     disabled
                                                     value={batch}
@@ -1178,7 +1191,13 @@ const Salereturn = () => {
                                                     disabled
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{
+                                                        minWidth: "65px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[9] = el}
                                                     onKeyDown={handleKeyDown}
@@ -1191,7 +1210,13 @@ const Salereturn = () => {
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{
+                                                        minWidth: "65px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[10] = el}
                                                     onKeyDown={handleKeyDown}
@@ -1208,7 +1233,13 @@ const Salereturn = () => {
                                                     size="small"
                                                     inputRef={el => inputRefs.current[11] = el}
                                                     onKeyDown={handleKeyDown}
-                                                    sx={{ width: '40px' }}
+                                                    sx={{
+                                                        minWidth: "40px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     value={gst}
                                                     onChange={(e) => { setGst(e.target.value) }}
                                                 />
@@ -1218,7 +1249,13 @@ const Salereturn = () => {
                                                     autoComplete="off"
                                                     id="outlined-number"
                                                     type="number"
-                                                    sx={{ width: '100px' }}
+                                                    sx={{
+                                                        minWidth: "65px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     size="small"
                                                     inputRef={el => inputRefs.current[12] = el}
                                                     onKeyDown={handleKeyDown}
@@ -1234,7 +1271,13 @@ const Salereturn = () => {
                                                     inputRef={el => inputRefs.current[13] = el}
                                                     onKeyDown={handleKeyDown}
                                                     disabled
-                                                    sx={{ width: '80px' }}
+                                                    sx={{
+                                                        minWidth: "65px",
+                                                        width: "100%",
+                                                        '& .MuiInputBase-input': {
+                                                            textAlign: 'center',
+                                                        },
+                                                    }}
                                                     value={loc}
                                                     onChange={(e) => { setLoc(e.target.value) }}
                                                 />
@@ -1245,7 +1288,7 @@ const Salereturn = () => {
                                         </tr>
 
                                         {/* Data rows */}
-                                        {saleItems?.sales_item?.length > 0 ? (
+                                        {saleItems?.sales_item?.length > 0 && (
                                             saleItems.sales_item.map((item, index) => (
                                                 <tr
                                                     key={item.id}
@@ -1254,24 +1297,27 @@ const Salereturn = () => {
                                                         setSelectedIndex(index);
                                                     }}
                                                     className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                                                    style={{
-                                                        borderBottom: index !== saleItems.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none',
-                                                    }}
-                                                >
-                                                    <td style={{ display: 'flex', gap: '8px', width: '396px', minWidth: 396, textAlign: 'left', verticalAlign: 'left', justifyContent: 'left', alignItems: 'center' }}>
-                                                        <Checkbox
-                                                            sx={{
-                                                                color: "var(--color2)",
-                                                                '&.Mui-checked': { color: "var(--color1)" },
-                                                                margin: 0,
-                                                                padding: 0
-                                                            }}
-                                                            checked={item?.iss_check}
-                                                            onClick={(event) => event.stopPropagation()}
-                                                            onChange={(event) => handleChecked(item.id, event.target.checked)}
-                                                        />
-                                                        <BorderColorIcon style={{ color: "var(--color1)" }} />
-                                                        {item.iteam_name}
+                                                    style={{ borderBottom: index !== ItemSaleList.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}>
+                                                    <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
+                                                        <div>
+                                                            <Checkbox
+                                                                sx={{
+                                                                    color: "var(--color2)",
+                                                                    '&.Mui-checked': { color: "var(--color1)" },
+                                                                    margin: 0,
+                                                                    padding: 0
+                                                                }}
+                                                                checked={item?.iss_check}
+                                                                onClick={(event) => event.stopPropagation()}
+                                                                onChange={(event) => handleChecked(item.id, event.target.checked)}
+                                                            />
+                                                            <BorderColorIcon
+                                                                style={{ color: "var(--color1)" }}
+                                                                className="cursor-pointer" />
+                                                        </div>
+                                                        <span style={{ alignSelf: "center" }}>
+                                                            {item.iteam_name || "-----"}
+                                                        </span>
                                                     </td>
                                                     <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit}</td>
                                                     <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch}</td>
@@ -1281,14 +1327,10 @@ const Salereturn = () => {
                                                     <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst}</td>
                                                     <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty}</td>
                                                     <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
-                                                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.net_rate}</td>
+                                                    <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate}</td>
                                                 </tr>
                                             ))
-                                        ) : (!isEditMode && (
-                                            <tr>
-                                                <td colSpan={10} style={{ textAlign: 'center', fontSize: '16px', fontWeight: 600 }}>No record found</td>
-                                            </tr>
-                                        ))}
+                                        )}
                                     </tbody>
                                 </table>
                             </div>

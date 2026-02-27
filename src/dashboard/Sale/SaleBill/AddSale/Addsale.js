@@ -2698,7 +2698,7 @@ const Addsale = () => {
         <div className="table-container">
           <table className="w-full border-collapse item-table">
             <thead>
-              <tr  className="input-row">
+              <tr className="input-row">
                 <th>
                   <div className="flex justify-center items-center gap-2">
                     Search Item Name{" "}
@@ -3045,9 +3045,6 @@ const Addsale = () => {
                         />
                       )}
                     />
-
-
-
                   </>
                 </td>
                 <td>
@@ -3392,9 +3389,7 @@ const Addsale = () => {
                     setSelectedIndex(index);
                   }}
                   className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                  style={{ borderBottom: index !== ItemSaleList.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
-
-                >
+                  style={{ borderBottom: index !== ItemSaleList.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}>
                   <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
                     <div>
                       <BorderColorIcon
@@ -3418,7 +3413,6 @@ const Addsale = () => {
                     <span style={{ alignSelf: "center" }}>
                       {item.iteam_name || barcodeItemName || "-----"}
                     </span>
-
                   </td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch || "-----"}</td>

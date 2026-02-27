@@ -2334,7 +2334,7 @@ const AddPurchaseBill = () => {
                     size="small"
                     variant="outlined"
                     value={barcode}
-                    // placeholder="scan barcode"
+                    placeholder="scan barcode"
                     // inputRef={inputRef10}
                     // onKeyDown={handleKeyDown}
 
@@ -2387,7 +2387,6 @@ const AddPurchaseBill = () => {
                 </thead>
 
                 <tbody>
-                  {/* Input Row */}
                   <tr className="input-row">
                     <td style={{ fontSize: 15,height:"47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
@@ -2746,7 +2745,7 @@ const AddPurchaseBill = () => {
                         type="number"
 
                         sx={{
-                          minWidth: "40px",
+                          minWidth: "65px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -3066,7 +3065,6 @@ const AddPurchaseBill = () => {
                     </div>
                   )}
 
-                  {/* ITEM LIST OR LOADER */}
                   {isLoading ? (
                     <tr>
                       <td colSpan={15} style={{ padding: "20px" }}>
@@ -3075,8 +3073,7 @@ const AddPurchaseBill = () => {
                         </div>
                       </td>
                     </tr>
-                  ) : (
-                    ItemPurchaseList?.item?.map((item, index) => (
+                  ) : (ItemPurchaseList?.item?.map((item, index) => (
                       <tr
                         key={item.id}
                         onClick={() => {

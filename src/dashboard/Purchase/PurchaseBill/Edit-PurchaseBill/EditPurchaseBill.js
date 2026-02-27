@@ -1715,7 +1715,7 @@ const EditPurchaseBill = () => {
                               minWidth: 400,
                               width: "100%",
                               '& .MuiInputBase-input': {
-                                textAlign: 'center',
+                                // textAlign: 'center',
                               },
                             }}
 

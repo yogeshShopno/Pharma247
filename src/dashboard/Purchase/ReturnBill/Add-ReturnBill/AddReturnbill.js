@@ -126,7 +126,7 @@ const AddReturnbill = () => {
   const [initialTotalStock, setInitialTotalStock] = useState(0); // or use null if you want
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
 
 
@@ -599,7 +599,7 @@ const AddReturnbill = () => {
     setGst("");
     setLoc("");
     setItemTotalAmount(0);
-    setIsEdit(false);
+    setIsEditMode(false);
 
 
   };
@@ -715,7 +715,7 @@ const AddReturnbill = () => {
   };
 
   const handleEditClick = (item, value) => {
-    setIsEdit(true);
+    setIsEditMode(true);
     setSelectedEditItem(item);
     setSelectedEditItemId(item.id);
     setItemPurchaseId(item.item_id);
@@ -888,7 +888,7 @@ const AddReturnbill = () => {
       setDisc(0);
       setBatch("");
       setLoc("");
-      setIsEdit(false);
+      setIsEditMode(false);
       setUnsavedItems(true);
       if (isNaN(ItemTotalAmount)) {
         setItemTotalAmount(0);
@@ -930,17 +930,19 @@ const AddReturnbill = () => {
         draggable
         pauseOnHover
       />
+      <>
 
-      <div className="p-6">
-        <div
+
+        <div className="p-6"
           style={{
             height: "calc(-125px + 100vh)",
             overflow: "auto",
-          }}
-        >
+          }}>
+
+
           <div >
 
-            {/*<============================================================================ Top header & buttons   ===========================================================================> */}
+            {/*<========================================================== Top header & buttons   =========================================================> */}
             <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
 
               <div className="flex items-center gap-2">
@@ -976,10 +978,10 @@ const AddReturnbill = () => {
                 >
                   Save
                 </button>
-
               </div>
             </div>
-            {/*<============================================================================ Top details   ===========================================================================> */}
+
+            {/*<============================================================= Top details   ============================================================> */}
 
             <div className="flex gap-4  mt-4">
               <div className="flex flex-row gap-4 overflow-x-auto w-full ">
@@ -990,6 +992,8 @@ const AddReturnbill = () => {
                     sx={{
                       width: "100%",
                       minWidth: "350px",
+                      minHeight: "40px",
+
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
                     size="small"
@@ -1018,6 +1022,12 @@ const AddReturnbill = () => {
                     id="outlined-number"
                     size="small"
                     variant="outlined"
+                    sx={{
+                      width: "100%",
+                      minWidth: "200px",
+                      minHeight: "40px",
+                      "@media (max-width:600px)": { minWidth: "200px" },
+                    }}
                     error={!!error.billNo}
                     helperText={error.billNo}
                     value={billNo}
@@ -1105,7 +1115,7 @@ const AddReturnbill = () => {
             <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                 <thead>
-                  <tr>
+                  <tr className="input-row">
                     <th>
                       <div className="flex justify-center items-center gap-2">
                         Search Item Name <span className="text-red-600">*</span>
@@ -1119,21 +1129,19 @@ const AddReturnbill = () => {
                     <th>Free</th>
                     <th>PTR <span className="text-red-600">*</span></th>
                     <th>CD%</th>
-                    <th>GST% <span className="text-red-600">*</span></th>
+                    <th>GST%<span className="text-red-600">*</span></th>
                     <th>Loc.</th>
                     <th>Amount</th>
                   </tr>
                 </thead>
-                {isLoading ? (
-                  <div className="loader-container ">
-                    <Loader />
-                  </div>
-                ) : (<tbody>
+
+                <tbody>
                   <tr className="input-row">
-                    <td className="p-0">
-                      {isEdit ? (
-                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'left' }}>
-                          <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
+                      {isEditMode ? (
+                        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
+                          <DeleteIcon className="delete-icon mr-2"
+                            onClick={removeItem} />
                           {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                         </div>
                       ) : (
@@ -1143,7 +1151,7 @@ const AddReturnbill = () => {
                           size="small"
                           fullWidth
                           sx={{
-                            minWidth: 350,
+                            minWidth: 400,
                             width: "100%",
                           }}
                           value={searchQuery}
@@ -1152,12 +1160,13 @@ const AddReturnbill = () => {
                           placeholder="Please search any items.."
                           inputRef={(el) => (inputRefs.current[5] = el)}
                           onKeyDown={e => {
-                            if (e.key === "Enter" && !searchQuery) {
+                            if (e.key === "Enter" && !searchQuery ) {
                               toast.dismiss();
                               toast.error("Please search any items..");
                               e.preventDefault();
                             }
                           }}
+                          
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="start">
@@ -1179,7 +1188,13 @@ const AddReturnbill = () => {
                         error={!!errors.unit}
                         helperText={errors.unit}
                         value={unit}
-                        sx={{ width: "40px" }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         onChange={(e) => {
                           const value = e.target.value.replace(/[^0-9]/g, "");
                           setUnit(value ? Number(value) : "");
@@ -1208,7 +1223,13 @@ const AddReturnbill = () => {
                         error={!!errors.batch}
                         helperText={errors.batch}
                         value={batch}
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         onChange={(e) => {
                           setBatch(e.target.value);
                         }}
@@ -1226,7 +1247,13 @@ const AddReturnbill = () => {
                         id="outlined-number"
                         disabled
                         size="small"
-                        sx={{ width: "65px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         error={!!errors.expiryDate}
                         helperText={errors.expiryDate}
                         value={expiryDate}
@@ -1245,7 +1272,13 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         size="small"
                         disabled
                         error={!!errors.mrp}
@@ -1274,7 +1307,13 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         size="small"
                         error={!!errors.qty}
                         helperText={errors.qty}
@@ -1303,8 +1342,13 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "40px" }}
-
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         value={free}
                         inputRef={(el) => (inputRefs.current[8] = el)}
                         onChange={(e) => {
@@ -1329,7 +1373,13 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         type="number"
-                        sx={{ width: "100px" }}
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         size="small"
                         value={ptr}
                         inputRef={(el) => (inputRefs.current[9] = el)}
@@ -1353,7 +1403,13 @@ const AddReturnbill = () => {
                       <TextField
                         autoComplete="off"
                         id="outlined-number"
-                        sx={{ width: "40px" }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         size="small"
                         type="number"
                         value={disc}
@@ -1379,7 +1435,13 @@ const AddReturnbill = () => {
                         labelId="dropdown-label"
                         id="dropdown"
                         value={gst}
-                        sx={{ width: "40px" }}
+                        sx={{
+                          minWidth: "40px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         onKeyDown={(e) => {
                           if (["e", "E", "+", "-", ","].includes(e.key) || (e.key === "." && e.target.value.includes("."))) {
                             e.preventDefault();
@@ -1404,8 +1466,13 @@ const AddReturnbill = () => {
                         autoComplete="off"
                         id="outlined-number"
                         size="small"
-                        sx={{ width: "80px" }}
-
+                        sx={{
+                          minWidth: "65px",
+                          width: "100%",
+                          '& .MuiInputBase-input': {
+                            textAlign: 'center',
+                          },
+                        }}
                         value={loc}
                         inputRef={(el) => (inputRefs.current[12] = el)}
                         onChange={(e) => {
@@ -1431,9 +1498,18 @@ const AddReturnbill = () => {
                     </td>
                   </tr>
 
+
                   {/*<======================================================================Added Items Rows =====================================================================> */}
 
-                  {returnItemList?.item_list?.map((item, index) => (
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={15} style={{ padding: "20px" }}>
+                        <div className="loader-container">
+                          <Loader />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : (returnItemList?.item_list?.map((item, index) => (
                     <tr
                       key={item.id}
                       onClick={() => {
@@ -1442,41 +1518,46 @@ const AddReturnbill = () => {
                       }}
                       className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`
                       }
-                      style={{
-                        borderBottom: index !== returnItemList.item_list.length - 1 ? '1px solid #e0e0e0' : 'none',
-                      }}>
+                      style={{ borderBottom: index !== returnItemList.item_list.length - 1 ? '1px solid #e0e0e0' : 'none', }}>
 
-                      <td style={{ display: "flex", gap: "8px", width: "396px", minWidth: 396, textAlign: "left", verticalAlign: "left", justifyContent: "left", alignItems: "center" }}>
-                        <Checkbox
-                          sx={{
-                            color: "var(--color2)",
-                            "&.Mui-checked": { color: "var(--color1)" },
-                            margin: 0,
-                            padding: 0
-                          }}
-                          checked={item?.iss_check}
-                          onClick={(e) => e.stopPropagation()}
-                          onChange={(e) => handleChecked(item.id, e.target.checked)}
-                        />
-                        <BorderColorIcon style={{ color: "var(--color1)" }} />
-                        <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
-                        {item.item_name}
+                      <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
+                        <div>
+
+                          <Checkbox
+                            sx={{
+                              color: "var(--color2)",
+                              "&.Mui-checked": { color: "var(--color1)" },
+                              margin: 0,
+                              padding: 0
+                            }}
+                            checked={item?.iss_check}
+                            onClick={(e) => e.stopPropagation()}
+                            onChange={(e) => handleChecked(item.id, e.target.checked)}
+                          />
+                          <BorderColorIcon style={{ color: "var(--color1)" }} />
+                          <DeleteIcon style={{ color: "var(--color6)" }}
+                            className="delete-icon bg-none" onClick={() => deleteOpen(item.id)} />
+                        </div>
+
+                        <span style={{ alignSelf: "center" }}>
+                          {item.item_name ? item.item_name : "-----"}
+                        </span>
                       </td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.amount}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage? item.weightage:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number? item.batch_number:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry? item.expiry:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp? item.mrp:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock? item.total_stock:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty? item.fr_qty:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr? item.ptr:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt? item.disocunt:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name? item.gst_name:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location? item.location:"-----"}</td>
+                      <td className="total" style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount? item.amount:"-----"}</td>
                     </tr>
-                  ))}
+                  )))}
 
-                </tbody>)}
+                </tbody>
               </table>
             </div>
             {/*<====================================================================== total and other details  =====================================================================> */}
@@ -1714,115 +1795,117 @@ const AddReturnbill = () => {
             </div>
 
           </div>
-        </div>
 
-        <Dialog open={open}>
-          <DialogContent style={{ fontSize: "20px" }}>
-            <h2>Please select Return Type.</h2>
-          </DialogContent>
-          <DialogActions
-            style={{ display: "flex", justifyContent: "space-around" }}
-          >
-            <Button onClick={() => setOpen(false)} variant="contained">
-              OK !
-            </Button>
-          </DialogActions>
-        </Dialog>
 
-        {/*<==========================================================================  Delete PopUP   =========================================================================> */}
-        <Dialog open={IsDelete} className="custom-dialog">
-          <DialogTitle className="primary">Delete Confirmation</DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={() => setIsDelete(false)}
-            sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
-          >
-            <IoMdClose />
-          </IconButton>
-          <DialogContent>
-            <div className="my-4 text-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
-                <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
-                <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
-              </svg>
-              <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
-            </div>
-          </DialogContent>
-          <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => handleDeleteItem(ItemId)}
-              sx={{ minWidth: 120 }}
+          <Dialog open={open}>
+            <DialogContent style={{ fontSize: "20px" }}>
+              <h2>Please select Return Type.</h2>
+            </DialogContent>
+            <DialogActions
+              style={{ display: "flex", justifyContent: "space-around" }}
             >
-              Delete
-            </Button>
-            <Button
-              variant="contained"
-              color="inherit"
+              <Button onClick={() => setOpen(false)} variant="contained">
+                OK !
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/*<==========================================================================  Delete PopUP   =========================================================================> */}
+          <Dialog open={IsDelete} className="custom-dialog">
+            <DialogTitle className="primary">Delete Confirmation</DialogTitle>
+            <IconButton
+              aria-label="close"
               onClick={() => setIsDelete(false)}
-              sx={{ minWidth: 120 }}
+              sx={{ position: "absolute", right: 8, top: 8, color: "#ffffff" }}
             >
-              Cancel
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
-        <Prompt
-          when={unsavedItems}
-          message={(location) => {
-            handleNavigation(location.pathname);
-            return false;
-          }}
-        />
-
-        <div
-          id="modal"
-          value={isOpenBox}
-          className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
-            }`}
-        >
-          <div />
-          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-            <div className="my-4 logout-icon">
-              <VscDebugStepBack
-                className="h-12 w-14"
-                style={{ color: "#628A2F" }}
-              />
-              <h4 className=" font-semibold mt-6 text-center">
-                <span style={{ textTransform: "none" }}>
-                  Are you sure you want to leave this page?
-                </span>
-              </h4>
-            </div>
-            <div className="flex gap-5 justify-center">
-              <button
-                type="submit"
-                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-                onClick={handleLeavePage}
+              <IoMdClose />
+            </IconButton>
+            <DialogContent>
+              <div className="my-4 text-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-12 fill-red-500 inline" viewBox="0 0 24 24">
+                  <path d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z" />
+                  <path d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z" />
+                </svg>
+                <h4 className="text-lg font-semibold mt-6">Are you sure you want to delete it?</h4>
+              </div>
+            </DialogContent>
+            <DialogActions sx={{ justifyContent: "center", gap: 2 }}>
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleDeleteItem(ItemId)}
+                sx={{ minWidth: 120 }}
               >
-                Yes
-              </button>
-              <button
-                type="button"
-                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                onClick={LogoutClose}
+                Delete
+              </Button>
+              <Button
+                variant="contained"
+                color="inherit"
+                onClick={() => setIsDelete(false)}
+                sx={{ minWidth: 120 }}
               >
                 Cancel
-              </button>
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
+          <Prompt
+            when={unsavedItems}
+            message={(location) => {
+              handleNavigation(location.pathname);
+              return false;
+            }}
+          />
+
+          <div
+            id="modal"
+            value={isOpenBox}
+            className={`fixed first-letter:uppercase inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${isOpenBox ? "block" : "hidden"
+              }`}
+          >
+            <div />
+            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+              <div className="my-4 logout-icon">
+                <VscDebugStepBack
+                  className="h-12 w-14"
+                  style={{ color: "#628A2F" }}
+                />
+                <h4 className=" font-semibold mt-6 text-center">
+                  <span style={{ textTransform: "none" }}>
+                    Are you sure you want to leave this page?
+                  </span>
+                </h4>
+              </div>
+              <div className="flex gap-5 justify-center">
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                  onClick={handleLeavePage}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                  onClick={LogoutClose}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
           </div>
+          {showModal && (
+            <TipsModal
+              id="add-purchase"
+              onClose={() => setShowModal(false)}
+            />
+          )}
         </div>
-      </div>
 
 
-      {showModal && (
-        <TipsModal
-          id="add-purchase"
-          onClose={() => setShowModal(false)}
-        />
-      )}
+
+      </>
 
     </>
   );

@@ -1477,12 +1477,15 @@ const EditPurchaseBill = () => {
         draggable
         pauseOnHover
       />
+      <>
+
 
       <div className="p-6"
         style={{
           height: "calc(-125px + 100vh)",
           overflow: "auto",
         }}>
+
         <div>
           {/*<============================================================ Top header & buttons   ===========================================================> */}
           <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
@@ -1490,9 +1493,7 @@ const EditPurchaseBill = () => {
             <div className="flex items-center gap-2">
               <span
                 className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                onClick={() => history.push("/purchase/purchasebill")}
-
-              >
+                onClick={() => history.push("/purchase/purchasebill")}>
                 Purchase
               </span>
               <span className="w-6 h-6">
@@ -1565,7 +1566,7 @@ const EditPurchaseBill = () => {
               </div>
 
               <div>
-                <span className="title mb-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
+                <span className="title mb-2 flex items-center gap-2">Bill No. / Order No.<span className="text-red-600 ">*</span></span>
                 <TextField
                   autoComplete="off"
                   id="outlined-number"
@@ -1574,18 +1575,18 @@ const EditPurchaseBill = () => {
                   error={!!error.billNo}
                   value={billNo}
                   disabled
-                  sx={{
-                    width: "100%",
-                    minWidth: "200px",
-                    "@media (max-width:600px)": { minWidth: "200px" },
-                  }}
+                 sx={{
+                      width: "100%",
+                      minWidth: "200px",
+                      minHeight: "40px",
+                      "@media (max-width:600px)": { minWidth: "200px" },
+                    }}
                 />
               </div>
 
               <div>
                 <span className="title mb-2">Bill Date</span>
                 <DatePicker
-
                   variant="outlined"
                   disabled
                   className="custom-datepicker "
@@ -1634,7 +1635,7 @@ const EditPurchaseBill = () => {
           <div className="table-container">
             <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
               <thead>
-                <tr>
+                <tr className="input-row">
                   <th>
                     <div className="flex justify-center items-center gap-2">
                       Search Item Name <span className="text-red-600 ">*</span>
@@ -2736,6 +2737,8 @@ const EditPurchaseBill = () => {
         )}
       </div >
     </>
+    </>
+
   );
 };
 

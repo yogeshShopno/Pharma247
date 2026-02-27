@@ -931,14 +931,11 @@ const AddReturnbill = () => {
         pauseOnHover
       />
       <>
-
-
         <div className="p-6"
           style={{
             height: "calc(-125px + 100vh)",
             overflow: "auto",
           }}>
-
 
           <div >
 
@@ -1160,13 +1157,13 @@ const AddReturnbill = () => {
                           placeholder="Please search any items.."
                           inputRef={(el) => (inputRefs.current[5] = el)}
                           onKeyDown={e => {
-                            if (e.key === "Enter" && !searchQuery ) {
+                            if (e.key === "Enter" && !searchQuery) {
                               toast.dismiss();
                               toast.error("Please search any items..");
                               e.preventDefault();
                             }
                           }}
-                          
+
                           InputProps={{
                             endAdornment: (
                               <InputAdornment position="start">
@@ -1498,7 +1495,6 @@ const AddReturnbill = () => {
                     </td>
                   </tr>
 
-
                   {/*<======================================================================Added Items Rows =====================================================================> */}
 
                   {isLoading ? (
@@ -1543,22 +1539,23 @@ const AddReturnbill = () => {
                           {item.item_name ? item.item_name : "-----"}
                         </span>
                       </td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage? item.weightage:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number? item.batch_number:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry? item.expiry:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp? item.mrp:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock? item.total_stock:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty? item.fr_qty:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr? item.ptr:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt? item.disocunt:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name? item.gst_name:"-----"}</td>
-                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location? item.location:"-----"}</td>
-                      <td className="total" style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount? item.amount:"-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock ? item.total_stock : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
+                      <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount ? item.amount : "-----"}</td>
                     </tr>
                   )))}
 
                 </tbody>
               </table>
+              
             </div>
             {/*<====================================================================== total and other details  =====================================================================> */}
 
@@ -1902,9 +1899,6 @@ const AddReturnbill = () => {
             />
           )}
         </div>
-
-
-
       </>
 
     </>

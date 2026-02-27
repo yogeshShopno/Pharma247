@@ -1508,7 +1508,7 @@ const EditSaleBill = () => {
                         ...params.InputProps,
                         style: { height: 40 },
                       }}
-                      
+
                     />
                   )}
                 />
@@ -1555,7 +1555,7 @@ const EditSaleBill = () => {
                         style: { height: 40 },
                       }}
                       disabled
-            
+
                     />
                   )}
                 />
@@ -1668,6 +1668,8 @@ const EditSaleBill = () => {
                                     const isTab = key === "Tab";
                                     const isShiftTab = isTab && shiftKey;
                                     const isEnter = key === "Enter";
+                                    const isArrowKey = key === "ArrowDown" || key === "ArrowUp";
+
 
                                     if (isShiftTab) return;
                                     if ((isEnter || isTab) && autoCompleteOpen) return;
@@ -1684,6 +1686,11 @@ const EditSaleBill = () => {
                                           focusBase();
                                         }, 0);
                                       }
+                                    }
+                                    if (saleAllData?.sales_item?.length > 0) {
+                                      setSelectedIndex(key === "ArrowDown" ? 0 : saleAllData.sales_item.length - 1);
+                                    } else {
+                                      setSelectedIndex(-1);
                                     }
                                   }}
 

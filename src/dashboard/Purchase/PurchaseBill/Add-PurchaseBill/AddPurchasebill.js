@@ -2359,7 +2359,7 @@ const AddPurchaseBill = () => {
             <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                 <thead>
-                  <tr>
+                  <tr  className="input-row">
                     <th>
                       <div className="flex justify-center items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>

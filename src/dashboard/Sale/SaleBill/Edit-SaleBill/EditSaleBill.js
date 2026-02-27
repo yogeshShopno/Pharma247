@@ -770,6 +770,8 @@ const EditSaleBill = () => {
   };
 
   const handleEditClick = (item) => {
+    console.log(item)
+
     if (!item) return;
 
     const existingItem = uniqueId.find((obj) => obj.id === item.id);
@@ -797,6 +799,7 @@ const EditSaleBill = () => {
   };
 
   useEffect(() => {
+    console.log(selectedEditItem)
     if (selectedEditItem) {
       setUnit(selectedEditItem.unit);
       setBatch(selectedEditItem.batch);
@@ -1421,15 +1424,9 @@ const EditSaleBill = () => {
 
           <div className="flex gap-4  mt-4">
             <div className="flex flex-row gap-4 overflow-x-auto w-full">
-              <div className="detail custommedia">
+              <div >
                 <span
-                  className="heading mb-2"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
-                  }}
-                >
+                  className="title mb-2 ">
                   Bill No
                 </span>
                 <TextField
@@ -1438,23 +1435,21 @@ const EditSaleBill = () => {
                   size="small"
                   value={saleAllData.bill_no}
                   placeholder="Bill No"
-                  sx={{ width: "250px" }}
+                  sx={{
+                    width: "100%",
+                    minWidth: "200px",
+                    minHeight: "40px",
+                    "@media (max-width:600px)": { minWidth: "200px" },
+                  }}
                   disabled
                 />
               </div>
 
-              <div className="detail custommedia">
-                <span
-                  className="heading mb-2"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
-                  }}
-                >
-                  Bill Date
-                </span>
+              <div >
+                <span className="title mb-2">Bill Date</span>
                 <TextField
+
+
                   id="outlined-number"
                   size="small"
                   value={saleAllData.bill_date || ""}
@@ -1464,12 +1459,7 @@ const EditSaleBill = () => {
                 />
               </div>
 
-              <div
-                className="detail custommedia"
-                style={{
-                  width: "100%",
-                }}
-              >
+              <div>
                 <span
                   className="heading mb-2 title"
                   style={{
@@ -1496,18 +1486,10 @@ const EditSaleBill = () => {
                   disabled
                   sx={{
                     width: "100%",
-                    // minWidth: {
-                    //   xs: "320px",
-                    //   sm: "400px",
-                    // },
-                    "& .MuiInputBase-root": {
-                      // height: 20,
-                      fontSize: "1.10rem",
-                      padding: '0',
-                    },
-                    '& .MuiAutocomplete-inputRoot': {
-                      padding: '0 !important',
-                    },
+                    minWidth: "350px",
+                    minHeight: "40px",
+
+                    "@media (max-width:600px)": { minWidth: "250px" },
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -1526,25 +1508,16 @@ const EditSaleBill = () => {
                         ...params.InputProps,
                         style: { height: 40 },
                       }}
-                      sx={{
-                        "& .MuiInputBase-input::placeholder": {
-                          fontSize: "1rem",
-                          color: "black",
-                        },
-                      }}
+                      
                     />
                   )}
                 />
               </div>
 
-              <div className="detail custommedia" style={{ width: "100%" }}>
+              <div >
                 <span
                   className="heading mb-2"
-                  style={{
-                    fontWeight: "500",
-                    fontSize: "17px",
-                    color: "var(--color1)",
-                  }}
+
                 >
                   Doctor
                 </span>
@@ -1559,18 +1532,10 @@ const EditSaleBill = () => {
                   disabled
                   sx={{
                     width: "100%",
-                    // minWidth: {
-                    //   xs: "320px",
-                    //   sm: "400px",
-                    // },
-                    "& .MuiInputBase-root": {
-                      // height: 20,
-                      fontSize: "1.10rem",
-                      padding: '0',
-                    },
-                    "& .MuiAutocomplete-inputRoot": {
-                      padding: '0 !important',
-                    },
+                    minWidth: "350px",
+                    minHeight: "40px",
+
+                    "@media (max-width:600px)": { minWidth: "250px" },
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -1590,12 +1555,7 @@ const EditSaleBill = () => {
                         style: { height: 40 },
                       }}
                       disabled
-                      sx={{
-                        "& .MuiInputBase-input::placeholder": {
-                          fontSize: "1rem",
-                          color: "black",
-                        },
-                      }}
+            
                     />
                   )}
                 />
@@ -1605,11 +1565,7 @@ const EditSaleBill = () => {
 
           {/*<======================================================================Item Table =====================================================================> */}
 
-          <div
-
-            className="table-container"
-
-          >
+          <div className="table-container" >
             <table
               className="p-30 w-full border-collapse item-table"
               ref={tableRef1}
@@ -1632,29 +1588,15 @@ const EditSaleBill = () => {
                   <th>Base</th>
                   <th>GST% </th>
                   <th>QTY </th>
-                  <th>
-                    <div
-                      style={{ display: "flex", flexWrap: "nowrap" }}
-                    >
-                      Order
-                      <Tooltip title="Please Enter only (o)" arrow>
-                        <Button style={{ justifyContent: "left" }}>
-                          <GoInfo
-                            className="absolute"
-                            style={{ fontSize: "1rem" }}
-                          />
-                        </Button>
-                      </Tooltip>
-                    </div>
-                  </th>
                   <th>Loc.</th>
+                  <th>Order</th>
                   <th>Amount </th>
                 </tr>
               </thead>
 
               <tbody>
                 <tr style={{ borderBottom: "1px solid lightgray" }}>
-                  <td>
+                  <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                     {/* <DeleteIcon
                               className="delete-icon"
                               onClick={resetValue}
@@ -1692,6 +1634,10 @@ const EditSaleBill = () => {
                               getOptionLabel={(option) =>
                                 `${option.iteam_name} `
                               }
+                              sx={{
+                                width: "100%",
+                                minWidth: "400px",
+                              }}
                               options={itemList}
                               ListboxProps={{
                                 onScroll: handleScroll,
@@ -1703,22 +1649,11 @@ const EditSaleBill = () => {
                               renderOption={(props, option) => (
                                 <ListItem {...props}>
                                   <ListItemText
-                                    // primary={`${option.iteam_name} - ${option.stock}`}
-                                    // secondary={`weightage: ${option.weightage}`}
+
                                     primary={`${option.iteam_name}`}
                                     secondary={`${option.company_name}`}
-                                    // secondary={
-                                    //   <>
-                                    //     <span>Stock: <strong style={{ color: 'black' }}>{option.stock || 0}</strong>, </span>
-                                    //     &#8377;: {option.mrp || 0},
-                                    //     <span>Location: <strong style={{ color: 'black' }}>{option.location || 'N/A'}</strong></span>
-                                    //   </>
-                                    // }
-                                    sx={{
-                                      "& .MuiTypography-root": {
-                                        fontSize: "1.1rem",
-                                      },
-                                    }}
+
+
                                   />
                                 </ListItem>
                               )}
@@ -1754,16 +1689,22 @@ const EditSaleBill = () => {
 
                                   InputProps={{
                                     ...params.InputProps,
-                                    style: { height: 40 },
+                                    style: {
+                                      height: 40,
+                                      textTransform: 'uppercase',
+                                    },
                                     startAdornment: (
                                       <InputAdornment position="start">
                                         <SearchIcon
-                                          sx={{ color: "var(--color1)", cursor: "pointer" }}
+                                          sx={{ color: "var(--color1)", cursor: "pointer", textTransform: 'uppercase', }}
                                         />
                                       </InputAdornment>
                                     ),
                                   }}
                                   sx={{
+                                    "& .MuiInputBase-input": {
+                                      textTransform: "uppercase",
+                                    },
                                     "& .MuiInputBase-input::placeholder": {
                                       fontSize: "1rem",
                                       color: "black",
@@ -1888,7 +1829,13 @@ const EditSaleBill = () => {
                       type="number"
                       size="small"
                       value={unit}
-                      sx={{ width: "40px" }}
+                      sx={{
+                        minWidth: "40px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       onChange={(e) => {
                         setUnit(e.target.value);
                       }}
@@ -1897,7 +1844,13 @@ const EditSaleBill = () => {
                   <td>
                     <TextField
                       id="outlined-number"
-                      sx={{ width: "130px" }}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       size="small"
                       disabled
                       value={batch}
@@ -1911,7 +1864,13 @@ const EditSaleBill = () => {
                       id="outlined-number"
                       disabled
                       size="small"
-                      sx={{ width: "65px" }}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       value={expiryDate}
                       onChange={handleExpiryDateChange}
                       placeholder="MM/YY"
@@ -1922,7 +1881,13 @@ const EditSaleBill = () => {
                       disabled
                       id="outlined-number"
                       type="number"
-                      sx={{ width: "130px" }}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       size="small"
                       value={mrp}
                       onChange={(e) => {
@@ -1935,7 +1900,13 @@ const EditSaleBill = () => {
                       autoComplete="off"
                       id="outlined-number"
                       type="number"
-                      sx={{ width: "130px" }}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       size="small"
                       value={base}
                       inputRef={inputRef2}
@@ -1969,7 +1940,13 @@ const EditSaleBill = () => {
                       type="number"
                       disabled
                       size="small"
-                      sx={{ width: "40px" }}
+                      sx={{
+                        minWidth: "40px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       value={gst}
                       onChange={(e) => {
                         setGst(e.target.value);
@@ -1981,7 +1958,13 @@ const EditSaleBill = () => {
                       autoComplete="off"
                       id="outlined-number"
                       type="number"
-                      sx={{ width: "130px" }}
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       size="small"
                       value={qty}
                       inputRef={inputRef3}
@@ -2013,16 +1996,41 @@ const EditSaleBill = () => {
                         localStorage.setItem("unsavedItems", "true");
                       }}
                       InputProps={{
-                        inputProps: { style: { textAlign: "right" } },
                         disableUnderline: true,
                       }}
                     />
                   </td>
+
+                  <td>
+                    <TextField
+                      id="outlined-number"
+                      size="small"
+                      disabled
+                      sx={{
+                        minWidth: "65px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
+                      value={loc}
+                      onChange={(e) => {
+                        setLoc(e.target.value);
+                      }}
+                    />
+                  </td>
+
                   <td>
                     <TextField
                       autoComplete="off"
                       id="outlined-number"
-                      sx={{ width: "40px" }}
+                      sx={{
+                        minWidth: "40px",
+                        width: "100%",
+                        '& .MuiInputBase-input': {
+                          textAlign: 'center',
+                        },
+                      }}
                       size="small"
                       value={order}
                       inputRef={inputRef4}
@@ -2030,31 +2038,24 @@ const EditSaleBill = () => {
                       onChange={handleChange}
                       onKeyDown={async (e) => {
                         if (e.key === "Enter") {
-
                         }
                       }}
 
                     />
                   </td>
-                  <td>
-                    <TextField
-                      id="outlined-number"
-                      size="small"
-                      disabled
-                      sx={{ width: "80px" }}
-                      value={loc}
-                      onChange={(e) => {
-                        setLoc(e.target.value);
-                      }}
-                    />
+
+                  <td className="total">
+                    <span className="font-bold">
+                      {itemAmount}
+                    </span>
                   </td>
-                  <td className="total">{itemAmount}</td>
+
                 </tr>
                 {saleAllData?.sales_item?.map((item, index) => (
                   <tr
                     key={item.id}
                     ref={el => rowRefs.current[index] = el}
-                    style={{ whiteSpace: "nowrap" }}
+                    style={{ borderBottom: index !== saleAllData.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
                     onClick={() => {
                       setSelectedIndex(index);
                       handleEditClick(item);
@@ -2063,41 +2064,40 @@ const EditSaleBill = () => {
                     tabIndex={-1}
                     onFocus={() => setSelectedIndex(index)}
                   >
-                    <td
-                      style={{
-                        display: "flex",
-                        gap: "8px",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      <BorderColorIcon
-                        style={{ color: "var(--color1)" }}
-                        className="cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditClick(item);
-                        }}
-                      />
+                    <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }} >
+                      <div>
+                        <BorderColorIcon
+                          style={{ color: "var(--color1)" }}
+                          className="cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditClick(item);
+                          }}
+                        />
 
-                      <DeleteIcon
-                        className="delete-icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteOpen(item.id);
-                        }}
-                      />
-                      {item.iteam_name}
+                        <DeleteIcon
+                          className="delete-icon"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteOpen(item.id);
+                          }}
+                        />
+                      </div>
+
+                      <span style={{ alignSelf: "center" }}>
+                        {item.iteam_name}
+                      </span>
                     </td>
-                    <td>{item.unit}</td>
-                    <td>{item.batch}</td>
-                    <td>{item.exp}</td>
-                    <td>{item.mrp}</td>
-                    <td>{item.base}</td>
-                    <td>{item.gst_name}</td>
-                    <td>{item.qty}</td>
-                    <td>{item.order}</td>
-                    <td>{item.location}</td>
-                    <td>{item.net_rate}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
                   </tr>
                 ))}
               </tbody>

@@ -2698,7 +2698,7 @@ const Addsale = () => {
         <div className="table-container">
           <table className="w-full border-collapse item-table">
             <thead>
-              <tr>
+              <tr  className="input-row">
                 <th>
                   <div className="flex justify-center items-center gap-2">
                     Search Item Name{" "}
@@ -2729,14 +2729,7 @@ const Addsale = () => {
                 </th>
                 <th>Qty. </th>
                 <th>Loc.</th>
-                <th style={{ textAlign: "center" }}>
-               
-                  
-                    <Tooltip title="Please Enter only (o)" arrow>
-                    Order{" "}
-                    </Tooltip>
-               
-                </th>
+                <th >Order</th>
                 <th
                   style={{
                     padding: "10px 15px",

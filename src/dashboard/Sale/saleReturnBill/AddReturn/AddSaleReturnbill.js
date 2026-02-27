@@ -831,7 +831,13 @@ const Salereturn = () => {
                     draggable
                     pauseOnHover
                 />
-                <div className="sale_rtn_add" style={{ padding: "0px 20px 0px", overflow: "auto" }} >
+
+                <div className="p-6"
+                    style={{
+                        height: "calc(-125px + 100vh)",
+                        overflow: "auto",
+                    }} >
+                        
                     <div className="pt-6 px-2">
                         <div className='flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]' style={{ display: 'flex', gap: '4px', alignItems: "center" }}>
                             <div className="flex items-center gap-2">
@@ -1111,7 +1117,7 @@ const Salereturn = () => {
                                                             minWidth: 400,
                                                             width: "100%",
                                                         }}
-                                                        
+
                                                         value={search}
                                                         onChange={handleInputChange}
                                                         variant="outlined"
@@ -1334,7 +1340,6 @@ const Salereturn = () => {
                                     </tbody>
                                 </table>
                             </div>
-
 
                             {saleItems?.sales_item?.length > 0 && (
                                 <div className="sale_filtr_add" style={{ background: 'var(--color1)', color: 'white', display: "flex", position: 'fixed', width: '100%', bottom: '0', left: '0', justifyContent: 'space-between', alignItems: 'center', overflow: 'auto' }}>

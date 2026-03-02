@@ -309,6 +309,14 @@ const Dashboard = () => {
           setLoyaltiPointTotal(initialData?.today_loyalti_point_total);
         });
     } catch (error) {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();  
+        history.push("/");
+      }
       setIsLoading(false);
     }
   };
@@ -448,7 +456,7 @@ const Dashboard = () => {
                       Rs. {record?.total_mrp === 0 ? 0 : record?.total_mrp}
                     </div>
                   </div>
-              
+
                 </div>
               </div>
               <div
@@ -1008,7 +1016,7 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>            
+            </div>
           </div>
         )}
       </div>

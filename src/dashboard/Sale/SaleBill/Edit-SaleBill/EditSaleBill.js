@@ -1484,11 +1484,19 @@ const EditSaleBill = () => {
                   }
                   disabled
                   sx={{
+
                     width: "100%",
                     minWidth: "350px",
                     minHeight: "40px",
-
                     "@media (max-width:600px)": { minWidth: "250px" },
+
+                    '& .MuiAutocomplete-inputRoot': {
+                      padding: '0 !important',
+                      paddingRight: customer ? '65px !important' : '39px !important',
+                    },
+                    '& .MuiInputBase-root': {
+                      padding: '0',
+                    }
                   }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
@@ -1529,19 +1537,19 @@ const EditSaleBill = () => {
                     option.name === value.name
                   }
                   disabled
-                 sx={{
-                  width: "100%",
-                  minWidth: "350px",
-                  minHeight: "40px",
+                  sx={{
+                    width: "100%",
+                    minWidth: "350px",
+                    minHeight: "40px",
 
-                  "@media (max-width:600px)": { minWidth: "250px" },
-                  '& .MuiAutocomplete-inputRoot': {
-                    padding: '0 !important',
-                  },
-                  '& .MuiInputBase-root': {
-                    padding: '0',
-                  }
-                }}
+                    "@media (max-width:600px)": { minWidth: "250px" },
+                    '& .MuiAutocomplete-inputRoot': {
+                      padding: '0 !important',
+                    },
+                    '& .MuiInputBase-root': {
+                      padding: '0',
+                    }
+                  }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
                       <ListItemText
@@ -1595,28 +1603,28 @@ const EditSaleBill = () => {
                       />
                     </div>
                   </th>
-                   <th>
-                  Unit <span className="text-red-600 ">*</span>
-                </th>
-                <th>
-                  Batch <span className="text-red-600 ">*</span>{" "}
-                </th>
-                <th>
-                  Expiry <span className="text-red-600 ">*</span>
-                </th>
-                <th>
-                  MRP <span className="text-red-600 ">*</span>
-                </th>
-                <th>Base</th>
-                <th>
-                  GST%<span className="text-red-600 ">*</span>
-                </th>
-                <th>Qty. </th>
-                <th>Loc.</th>
-                <th >Order</th>
-                <th>
-                  Amount
-                </th>
+                  <th>
+                    Unit <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>
+                    Batch <span className="text-red-600 ">*</span>{" "}
+                  </th>
+                  <th>
+                    Expiry <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>
+                    MRP <span className="text-red-600 ">*</span>
+                  </th>
+                  <th>Base</th>
+                  <th>
+                    GST%<span className="text-red-600 ">*</span>
+                  </th>
+                  <th>Qty. </th>
+                  <th>Loc.</th>
+                  <th >Order</th>
+                  <th>
+                    Amount
+                  </th>
                 </tr>
               </thead>
 

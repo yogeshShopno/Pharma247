@@ -1529,13 +1529,19 @@ const EditSaleBill = () => {
                     option.name === value.name
                   }
                   disabled
-                  sx={{
-                    width: "100%",
-                    minWidth: "350px",
-                    minHeight: "40px",
+                 sx={{
+                  width: "100%",
+                  minWidth: "350px",
+                  minHeight: "40px",
 
-                    "@media (max-width:600px)": { minWidth: "250px" },
-                  }}
+                  "@media (max-width:600px)": { minWidth: "250px" },
+                  '& .MuiAutocomplete-inputRoot': {
+                    padding: '0 !important',
+                  },
+                  '& .MuiInputBase-root': {
+                    padding: '0',
+                  }
+                }}
                   renderOption={(props, option) => (
                     <ListItem {...props}>
                       <ListItemText

@@ -2363,10 +2363,7 @@ const Addsale = () => {
 
         <div className=" flex gap-4  mt-4">
           <div className="flex flex-row gap-4 overflow-x-auto w-full">
-            <div style={{
-              width: "100%",
-              borderRadius: "15px",
-            }}>
+            <div>
               <span
                 className="title mb-2 flex  items-center gap-2"
               >

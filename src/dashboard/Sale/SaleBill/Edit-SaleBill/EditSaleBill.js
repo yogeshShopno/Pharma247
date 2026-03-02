@@ -31,7 +31,7 @@ import { GoInfo } from "react-icons/go";
 import { toast, ToastContainer } from "react-toastify";
 import { VscDebugStepBack } from "react-icons/vsc";
 import { FaCaretUp, FaStore } from "react-icons/fa6";
-import { FaShippingFast, FaWalking } from "react-icons/fa";
+import { FaPlusCircle, FaShippingFast, FaWalking } from "react-icons/fa";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
 import SaveIcon from "@mui/icons-material/Save";
@@ -113,7 +113,7 @@ const EditSaleBill = () => {
   const [value, setValue] = useState("");
   const [isEditMode, setIsEditMode] = useState(false);
   defaultDate.setDate(defaultDate.getDate() + 3);
-  const [saleAllData, setSaleAllData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [selectedEditItem, setSelectedEditItem] = useState(null);
   const [searchItemID, setSearchItemID] = useState(null);
   const [bankData, setBankData] = useState([]);
@@ -174,7 +174,7 @@ const EditSaleBill = () => {
   // Focus the main table and move selection (clamped). Also focuses the target row immediately.
   // Move selection (clamped) globally. Focus the target row directly (no table focus).
   const focusTableAndMove = (dir /* 'up' | 'down' */) => {
-    const total = saleAllData?.sales_item?.length || 0;
+    const total = tableData?.sales_item?.length || 0;
     if (!total) return;
 
     setSelectedIndex(prev => {
@@ -234,7 +234,7 @@ const EditSaleBill = () => {
       // If not ArrowDown, ArrowUp, or Enter, return early
       if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
 
-      if (!saleAllData?.sales_item?.length) return;
+      if (!tableData?.sales_item?.length) return;
       if (e.defaultPrevented) return;
 
       // Case 1: If the search input is focused and empty, handle ArrowDown key
@@ -292,7 +292,7 @@ const EditSaleBill = () => {
       // Handle the Enter key for editing when the row is focused
       if (key === 'Enter') {
         const idx = selectedIndex === -1 ? 0 : selectedIndex;
-        const selectedRow = saleAllData?.sales_item?.[idx];
+        const selectedRow = tableData?.sales_item?.[idx];
         if (selectedRow && ae !== inputRef1.current) {  // Prevent row selection if the search box is focused
           handleEditClick(selectedRow);
           setTimeout(focusQty, 0);
@@ -304,7 +304,7 @@ const EditSaleBill = () => {
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [
-    saleAllData?.sales_item?.length,
+    tableData?.sales_item?.length,
     autoCompleteOpen,
     selectedIndex
   ]);
@@ -355,7 +355,7 @@ const EditSaleBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [customer, saleAllData, totalAmount, finalDiscount, loyaltyVal, tempOtherAmt, netAmount, roundOff, marginNetProfit, netRateAmount, margin, discountAmount, totalBase, address, doctor, pickup, dueAmount, givenAmt]); // Add all necessary dependencies
+  }, [customer, tableData, totalAmount, finalDiscount, loyaltyVal, tempOtherAmt, netAmount, roundOff, marginNetProfit, netRateAmount, margin, discountAmount, totalBase, address, doctor, pickup, dueAmount, givenAmt]); // Add all necessary dependencies
 
 
   const handleExpiryDateChange = (event) => {
@@ -559,8 +559,8 @@ const EditSaleBill = () => {
         },
       });
       const record = response.data.data;
-      setSaleAllData({ ...record, sales_item: [] });
-      setSaleAllData(record);
+      setTableData({ ...record, sales_item: [] });
+      setTableData(record);
       // setPreviousLoyaltyPoints(record.roylti_point);
 
       setAddress(record.customer_address);
@@ -1198,7 +1198,7 @@ const EditSaleBill = () => {
   const updateSaleData = async (draft) => {
     // Ensure we have the current values
     const currentCustomer = customer;
-    const currentSaleAllData = saleAllData;
+    const currentSaleAllData = tableData;
     const currentAddress = address;
     const currentDoctor = doctor;
     const currentPickup = pickup;
@@ -1326,11 +1326,10 @@ const EditSaleBill = () => {
       rowRefs.current[selectedIndex].focus();
       rowRefs.current[selectedIndex].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     }
-  }, [selectedIndex, saleAllData?.sales_item?.length]);
+  }, [selectedIndex, tableData?.sales_item?.length]);
 
   return (
     <>
-
       <Header />
       <ToastContainer
         position="top-right"
@@ -1353,7 +1352,7 @@ const EditSaleBill = () => {
         }}
       >
         <div>
-          {/*<====================================================================== Top header & buttons   =====================================================================> */}
+          {/*<====================================================== Top header & buttons   =====================================================> */}
 
           <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
 
@@ -1420,7 +1419,7 @@ const EditSaleBill = () => {
             </div>
           </div>
 
-          {/*<============================================================================ Top details   ===========================================================================> */}
+          {/*<============================================================ Top details   ===========================================================> */}
 
           <div className="flex gap-4  mt-4">
             <div className="flex flex-row gap-4 overflow-x-auto w-full">
@@ -1433,7 +1432,7 @@ const EditSaleBill = () => {
                   id="outlined-number"
                   type="number"
                   size="small"
-                  value={saleAllData.bill_no}
+                  value={tableData.bill_no}
                   placeholder="Bill No"
                   sx={{
                     width: "100%",
@@ -1452,7 +1451,7 @@ const EditSaleBill = () => {
 
                   id="outlined-number"
                   size="small"
-                  value={saleAllData.bill_date || ""}
+                  value={tableData.bill_date || ""}
                   placeholder="Bill Date"
                   sx={{ width: "250px" }}
                   disabled
@@ -1563,14 +1562,14 @@ const EditSaleBill = () => {
             </div>
           </div>
 
-          {/*<======================================================================Item Table =====================================================================> */}
+          {/*<==============================================================Item Table =============================================================> */}
 
           <div className="table-container" >
             <table
               className="p-30 w-full border-collapse item-table"
-              ref={tableRef1}
-              tabIndex={0}
-              onBlur={() => setSelectedIndex(-1)}
+              // ref={tableRef1}
+              // tabIndex={0}
+              // onBlur={() => setSelectedIndex(-1)}
               style={{ background: "#F5F5F5", padding: "10px 15px" }}
 
             >
@@ -1580,17 +1579,38 @@ const EditSaleBill = () => {
                     borderBottom: "1px solid lightgray",
                   }}
                 >
-                  <th className="w-1/4">Item Name</th>
-                  <th>Unit </th>
-                  <th>Batch </th>
-                  <th>Expiry</th>
-                  <th>MRP</th>
-                  <th>Base</th>
-                  <th>GST% </th>
-                  <th>QTY </th>
-                  <th>Loc.</th>
-                  <th>Order</th>
-                  <th>Amount </th>
+                  <th>
+                    <div className="flex justify-center items-center gap-2">
+                      Search Item Name{" "}
+                      <span className="text-red-600 ">*</span>
+                      <FaPlusCircle
+                        className="primary cursor-pointer"
+                        onClick={() => history.push('/itemmaster')}
+                      />
+                    </div>
+                  </th>
+                   <th>
+                  Unit <span className="text-red-600 ">*</span>
+                </th>
+                <th>
+                  Batch <span className="text-red-600 ">*</span>{" "}
+                </th>
+                <th>
+                  Expiry <span className="text-red-600 ">*</span>
+                </th>
+                <th>
+                  MRP <span className="text-red-600 ">*</span>
+                </th>
+                <th>Base</th>
+                <th>
+                  GST%<span className="text-red-600 ">*</span>
+                </th>
+                <th>Qty. </th>
+                <th>Loc.</th>
+                <th >Order</th>
+                <th>
+                  Amount
+                </th>
                 </tr>
               </thead>
 
@@ -1687,8 +1707,8 @@ const EditSaleBill = () => {
                                         }, 0);
                                       }
                                     }
-                                    if (saleAllData?.sales_item?.length > 0) {
-                                      setSelectedIndex(key === "ArrowDown" ? 0 : saleAllData.sales_item.length - 1);
+                                    if (tableData?.sales_item?.length > 0) {
+                                      setSelectedIndex(key === "ArrowDown" ? 0 : tableData.sales_item.length - 1);
                                     } else {
                                       setSelectedIndex(-1);
                                     }
@@ -2042,6 +2062,7 @@ const EditSaleBill = () => {
                       value={order}
                       inputRef={inputRef4}
                       disabled
+                      placeholder="O"
                       onChange={handleChange}
                       onKeyDown={async (e) => {
                         if (e.key === "Enter") {
@@ -2058,11 +2079,11 @@ const EditSaleBill = () => {
                   </td>
 
                 </tr>
-                {saleAllData?.sales_item?.map((item, index) => (
+                {tableData?.sales_item?.map((item, index) => (
                   <tr
                     key={item.id}
                     ref={el => rowRefs.current[index] = el}
-                    style={{ borderBottom: index !== saleAllData.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
+                    style={{ borderBottom: index !== tableData.sales_item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
                     onClick={() => {
                       setSelectedIndex(index);
                       handleEditClick(item);
@@ -2102,8 +2123,8 @@ const EditSaleBill = () => {
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty}</td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location}</td>
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.net_rate}</td>
                   </tr>
                 ))}
@@ -2113,7 +2134,7 @@ const EditSaleBill = () => {
 
           </div>
 
-          {/*<====================================================================== total and other details  =====================================================================> */}
+          {/*<======================================================= total and other details  ======================================================> */}
 
           <div
             className=""
@@ -2525,7 +2546,7 @@ const EditSaleBill = () => {
 
         </div>
 
-        {/*<======================================================================== delete  PopUp Box  =======================================================================> */}
+        {/*<====================================================== delete  PopUp Box  =====================================================> */}
 
         <div
           id="modal"
@@ -2583,7 +2604,7 @@ const EditSaleBill = () => {
             </div>
           </div>
         </div>
-        {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
+        {/*<========================================================= Leave page  PopUp Box  ========================================================> */}
 
         <Prompt
           when={unsavedItems}

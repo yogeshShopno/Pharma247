@@ -2696,7 +2696,9 @@ const Addsale = () => {
         {/*<=========================================================== item table   ==========================================================> */}
 
         <div className="table-container">
-          <table className="w-full border-collapse item-table">
+          <table
+            className="p-30 w-full border-collapse item-table"
+            style={{ background: "#F5F5F5", padding: "10px 15px" }}>
             <thead>
               <tr className="input-row">
                 <th>
@@ -2730,12 +2732,7 @@ const Addsale = () => {
                 <th>Qty. </th>
                 <th>Loc.</th>
                 <th >Order</th>
-                <th
-                  style={{
-                    padding: "10px 15px",
-                    textAlign: "center",
-                  }}
-                >
+                <th>
                   Amount
                 </th>
               </tr>
@@ -3352,6 +3349,7 @@ const Addsale = () => {
                     }}
                     size="small"
                     value={order}
+                    placeholder="O"
                     inputRef={inputRef8}
                     onKeyDown={(e) => {
                       if (e.key === "Tab" && e.shiftKey) {

@@ -73,7 +73,7 @@ const EditPurchaseBill = () => {
   const [unit, setUnit] = useState("");
   const [HSN, setHSN] = useState("");
   const [schAmt, setSchAmt] = useState("");
-  const [ItemTotalAmount, setItemTotalAmount] = useState("");
+  const [ItemTotalAmount, setItemTotalAmount] = useState(0.00);
   const [baseNetAmount, setBaseNetAmount] = useState(0);
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
@@ -875,7 +875,7 @@ const EditPurchaseBill = () => {
         setCnTotalAmount({});
       }
       // handleCalNetAmount()
-      setItemTotalAmount(0);
+      setItemTotalAmount(0.00);
       setIsEditMode(false);
       setSelectedEditItemId(null);
 
@@ -1266,7 +1266,7 @@ const EditPurchaseBill = () => {
     setNetRate(0);
     setMargin("");
     setLoc("");
-    setItemTotalAmount("");
+    setItemTotalAmount(0.00);
 
     setTimeout(() => {
       inputRefs.current[2]?.focus();
@@ -1664,7 +1664,8 @@ const EditPurchaseBill = () => {
               <tbody>
                 {/*<======================================================== Input row (add/edit)   =======================================================> */}
                 <tr className="input-row">
-                  <td className="p-0" style={{ fontSize: 15, height: "47px", fontWeight: 600, minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'center', alignContent: 'center', }}>
+
+                  <td  style={{fontSize: 15,height:"47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start',}}>
                     {isEditMode ? (
                       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'start', alignContent: 'center', }}>
                         <DeleteIcon
@@ -1746,7 +1747,6 @@ const EditPurchaseBill = () => {
                     )}
                   </td>
 
-
                   <td>
                     <TextField
                       variant="outlined"
@@ -1788,6 +1788,7 @@ const EditPurchaseBill = () => {
                       inputRef={(el) => (inputRefs.current[3] = el)}
                     />
                   </td>
+
                   <td >
                     <TextField
                       variant="outlined"
@@ -1818,6 +1819,7 @@ const EditPurchaseBill = () => {
                       }}
                     />
                   </td>
+
                   <td >
                     <TextField
                       variant="outlined"
@@ -1923,7 +1925,7 @@ const EditPurchaseBill = () => {
                       type="number"
 
                       sx={{
-                        minWidth: "40px",
+                        minWidth: "65px",
                         width: "100%",
                         '& .MuiInputBase-input': {
                           textAlign: 'center',
@@ -2207,7 +2209,7 @@ const EditPurchaseBill = () => {
                     />
                   </td>
                   <td className="total" >
-                    <span className="font-bold">{ItemTotalAmount}</span>
+                    <span className="font-bold">{ItemTotalAmount.toFixed(2)}</span>
                   </td>
                 </tr>
 

@@ -2354,7 +2354,7 @@ const AddPurchaseBill = () => {
 
               </div>
             </div>
-            {/*<======================================================================Item Table =====================================================================> */}
+            {/*<=====================================================Item Table ====================================================> */}
 
             <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
@@ -2387,7 +2387,9 @@ const AddPurchaseBill = () => {
                 </thead>
 
                 <tbody>
+                {/*<======================================================== Input row (add/edit)   =======================================================> */}
                   <tr className="input-row">
+
                     <td style={{ fontSize: 15,height:"47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
                         <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
@@ -3154,7 +3156,7 @@ const AddPurchaseBill = () => {
               </table>
             </div>
 
-            {/*<============================================================= total and other details  ============================================================> */}
+            {/*<============================================== total and other details  =============================================> */}
 
             <div
               className=""
@@ -3405,7 +3407,7 @@ const AddPurchaseBill = () => {
 
           </div>
 
-          {/*<===================================================================== CN amount PopUp Box  ====================================================================> */}
+          {/*<================================================== CN amount PopUp Box  =================================================> */}
 
           <Dialog open={openAddPopUp} className="custom-dialog max-991">
             <DialogTitle id="alert-dialog-title" className="secondary">
@@ -3525,7 +3527,7 @@ const AddPurchaseBill = () => {
               </Button>
             </DialogActions>
           </Dialog>
-          {/*<====================================================================== Bulk Import csv =====================================================================> */}
+          {/*<==================================================== Bulk Import csv ===================================================> */}
 
           <Dialog open={openFile} className="custom-dialog">
             <DialogTitle className="primary">Import Item</DialogTitle>
@@ -3626,7 +3628,7 @@ const AddPurchaseBill = () => {
             </DialogActions>
           </Dialog>
 
-          {/*<=============================================================== add Distributor PopUp Box  ============================================================> */}
+          {/*<================================================= add Distributor PopUp Box  ==============================================> */}
 
           <Dialog open={openAddDistributorPopUp} className="custom-dialog add-distributor-dialog modal_991">
             <DialogTitle id="alert-dialog-title" className="primary">
@@ -3850,7 +3852,7 @@ const AddPurchaseBill = () => {
             </DialogContent>
           </Dialog>
 
-          {/*<=============================================================== add item PopUp Box  ==============================================================> */}
+          {/*<==================================================== add item PopUp Box  ===================================================> */}
 
           <Dialog open={openAddItemPopUp} className="custom-dialog add-item-dialog modal_991 ">
             <DialogTitle id="alert-dialog-title" className="primary">
@@ -3962,7 +3964,7 @@ const AddPurchaseBill = () => {
             </DialogContent>
           </Dialog>
 
-          {/*<====================================================================== Item History Modal  =====================================================================> */}
+          {/*<==================================================== Item History Modal  ===================================================> */}
           <Dialog
             open={openItemHistory}
             onClose={() => setOpenItemHistory(false)}
@@ -4115,7 +4117,7 @@ const AddPurchaseBill = () => {
             </DialogContent>
           </Dialog>
 
-          {/*<===================================================================  Delete PopUP   ==================================================================> */}
+          {/*<======================================================  Delete PopUP   =====================================================> */}
 
           <div
             id="modal"
@@ -4173,7 +4175,7 @@ const AddPurchaseBill = () => {
             </div>
           </div>
 
-          {/*<================================================================= Leave page  PopUp Box  ================================================================> */}
+          {/*<================================================== Leave page  PopUp Box  =================================================> */}
 
           <Prompt
             when={unsavedItems}

@@ -30,6 +30,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import SaveAsIcon from '@mui/icons-material/SaveAs';
 import IconButton from '@mui/material/IconButton';
 import TipsModal from '../../../../componets/Tips/TipsModal';
+import { FaPlusCircle } from 'react-icons/fa';
 
 const EditReturnBill = () => {
     const history = useHistory();
@@ -1027,6 +1028,7 @@ const EditReturnBill = () => {
                 }}>
 
                 <div>
+
                     {/*<======================================================== Top header & buttons   =======================================================> */}
 
                     <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
@@ -1145,7 +1147,7 @@ const EditReturnBill = () => {
                             </div>
 
                             <div>
-                                <span className="title mb-2">Expiry End Date <span className="text-red-600">*</span></span>
+                                <span className="title mb-2">Expiry End Date </span>
                                 <div>
 
                                     <DatePicker
@@ -1163,13 +1165,19 @@ const EditReturnBill = () => {
                         </div>
                     </div>
                     {/*<===============================================================Item Table ==============================================================> */}
+
                     <div className="table-container">
                         <table className="w-full border-collapse item-table" ref={tableRef} tabIndex={0}>
                             <thead>
                                 <tr className="input-row">
                                     <th>
                                         <div className="flex justify-center items-center gap-2">
-                                            Search Item Name <span className="text-red-600">*</span>
+                                            Search Item Name <span className="text-red-600 ">*</span>
+                                            <FaPlusCircle
+                                                className="primary cursor-pointer"
+                                                onClick={() => history.push('/itemmaster')}
+
+                                            />
                                         </div>
                                     </th>
                                     <th>Unit <span className="text-red-600">*</span></th>
@@ -1185,7 +1193,6 @@ const EditReturnBill = () => {
                                     <th>Amount</th>
                                 </tr>
                             </thead>
-
 
                             <tbody>
                                 <tr className="input-row">
@@ -1233,6 +1240,8 @@ const EditReturnBill = () => {
                                     <td>
                                         <TextField
                                             autoComplete="off"
+                                            id="outlined-number"
+
                                             type="number"
                                             size="small"
                                             sx={{
@@ -1272,7 +1281,7 @@ const EditReturnBill = () => {
                                             id="outlined-number"
                                             size="small"
                                             sx={{
-                                                minWidth: "65px",
+                                                minWidth: "100px",
                                                 width: "100%",
                                                 '& .MuiInputBase-input': {
                                                     textAlign: 'center',
@@ -1554,7 +1563,12 @@ const EditReturnBill = () => {
                                             }}
                                         />
                                     </td>
-                                    <td className="total"> <span className="font-bold">{ItemTotalAmount}</span></td>
+                                    <td className="total">
+                                        <span className="font-bold">
+                                            {ItemTotalAmount}
+                                        </span>
+
+                                    </td>
                                 </tr>
 
                                 {isLoading ? (
@@ -1572,40 +1586,42 @@ const EditReturnBill = () => {
                                             handleEditClick(item)
                                         }}
                                         className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                                        style={{
-                                            borderBottom: index !== tableData.item_list.length - 1 ? '1px solid #e0e0e0' : 'none',
-                                        }}
+                                        style={{ borderBottom: index !== tableData.item_list.length - 1 ? '1px solid #e0e0e0' : 'none', }}
                                     >
                                         <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
-                                            <Checkbox
-                                                sx={{
-                                                    color: "var(--color2)",
-                                                    "&.Mui-checked": { color: "var(--color1)" },
-                                                    margin: 0,
-                                                    padding: 0
-                                                }}
-                                                checked={item.iss_check}
-                                                onClick={(event) => event.stopPropagation()}
-                                                onChange={(event) => handleChecked(item.id, event.target.checked)}
-                                            />
-                                            <BorderColorIcon style={{ color: "var(--color1)" }} />
+                                            <div>
 
-                                            <DeleteIcon className="delete-icon" onClick={() => deleteOpen(item.id)} />
+                                                <Checkbox
+                                                    sx={{
+                                                        color: "var(--color2)",
+                                                        "&.Mui-checked": { color: "var(--color1)" },
+                                                        margin: 0,
+                                                        padding: 0
+                                                    }}
+                                                    checked={item.iss_check}
+                                                    onClick={(event) => event.stopPropagation()}
+                                                    onChange={(event) => handleChecked(item.id, event.target.checked)}
+                                                />
+                                                <BorderColorIcon style={{ color: "var(--color1)" }} />
+
+                                                <DeleteIcon style={{ color: "var(--color6)" }} className="delete-icon bg-none" onClick={() => deleteOpen(item.id)} />
+                                            </div>
+
                                             <span style={{ alignSelf: "center" }}>
                                                 {item.item_name ? item.item_name : "-----"}
                                             </span>
 
                                         </td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name}</td>
-                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.weightage ? item.weightage : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch_number ? item.batch_number : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.expiry ? item.expiry : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.total_stock ? item.total_stock : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.fr_qty ? item.fr_qty : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.ptr ? item.ptr : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.disocunt ? item.disocunt : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst_name ? item.gst_name : "-----"}</td>
+                                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : "-----"}</td>
                                         <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.amount}</td>
                                     </tr>
                                 ))
@@ -1614,6 +1630,7 @@ const EditReturnBill = () => {
                         </table>
 
                     </div>
+
                     {/*<========================================================= total and other details  ========================================================> */}
                     <div
                         className=""
@@ -1654,6 +1671,14 @@ const EditReturnBill = () => {
                                 <label className="font-bold">Total Qty : </label>
                                 <span style={{ fontWeight: 600 }}>  {totalQty}
                                 </span>
+                            </div>
+
+                            <div
+                                className="gap-2 invoice_total_fld"
+                                style={{ display: "flex" }}
+                            >
+                                <label className="font-bold">Net Rate : </label>
+                                <span style={{ fontWeight: 600 }}>{totalNetRate ? totalNetRate : 0}</span>
                             </div>
 
                         </div>
@@ -1747,7 +1772,7 @@ const EditReturnBill = () => {
                                         }}
                                     >
                                         <label className="font-bold">Other Amount : </label>
-                                        <div>
+                                        <div className="border-green">
                                             <Input
                                                 type="number"
                                                 value={otherAmount}

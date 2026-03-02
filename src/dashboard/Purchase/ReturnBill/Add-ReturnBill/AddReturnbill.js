@@ -36,7 +36,7 @@ import Loader from "../../../../componets/loader/Loader";
 import { toast, ToastContainer } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
-import { FaPowerOff } from "react-icons/fa";
+import { FaPlusCircle, FaPowerOff } from "react-icons/fa";
 import { VscDebugStepBack } from "react-icons/vsc";
 import { Modal } from "flowbite-react";
 import { IoMdClose } from "react-icons/io";
@@ -80,7 +80,7 @@ const AddReturnbill = () => {
   const [ItemTotalAmount, setItemTotalAmount] = useState(0);
   const [loc, setLoc] = useState("");
   const [distributorList, setDistributorList] = useState([]);
-  const [returnItemList, setReturnItemList] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [distributor, setDistributor] = useState(null);
   const [remark, setRemark] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -189,7 +189,7 @@ const AddReturnbill = () => {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!returnItemList?.item_list?.length) return;
+      if (!tableData?.item_list?.length) return;
 
       // Check if search TextField is focused
       const searchInput = inputRefs.current[5];
@@ -200,13 +200,13 @@ const AddReturnbill = () => {
         if (e.key === "ArrowDown") {
           e.preventDefault();
           setSelectedIndex((prev) =>
-            Math.min(prev + 1, returnItemList.item_list.length - 1)
+            Math.min(prev + 1, tableData.item_list.length - 1)
           );
         } else if (e.key === "ArrowUp") {
           e.preventDefault();
           setSelectedIndex((prev) => Math.max(prev - 1, 0));
         } else if (e.key === "Enter" && selectedIndex !== -1) {
-          const selectedRow = returnItemList.item_list[selectedIndex];
+          const selectedRow = tableData.item_list[selectedIndex];
           if (!selectedRow) return;
           handleEditClick(selectedRow);
         }
@@ -215,7 +215,7 @@ const AddReturnbill = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [returnItemList, selectedIndex]);
+  }, [tableData, selectedIndex]);
 
   /*<================================================================================== handle shortcut  =========================================================================> */
 
@@ -245,7 +245,7 @@ const AddReturnbill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, returnItemList]);
+  }, [distributor, billNo, tableData]);
 
   /*<================================================================================== handle shortcut  =========================================================================> */
 
@@ -542,7 +542,7 @@ const AddReturnbill = () => {
           },
         })
         .then((response) => {
-          setReturnItemList(response.data.data);
+          setTableData(response.data.data);
           setFinalAmount(response.data.data?.final_amount);
           setNetAmount(response.data.data?.final_amount);
           setTotalMargin(Number(response.data.data?.total_margin));
@@ -628,7 +628,7 @@ const AddReturnbill = () => {
   };
 
   const submitPurchaseData = async () => {
-    const hasUncheckedItems = returnItemList?.item_list.every(
+    const hasUncheckedItems = tableData?.item_list.every(
       (item) => item.iss_check === false
     );
     if (hasUncheckedItems) {
@@ -636,7 +636,7 @@ const AddReturnbill = () => {
       toast.error("Please select at least one item");
     } else {
       let data = new FormData();
-      const selectedItems = returnItemList.item_list.filter((item) =>
+      const selectedItems = tableData.item_list.filter((item) =>
         selectedItem.includes(item.id)
       );
       setIsLoading(true);
@@ -657,7 +657,7 @@ const AddReturnbill = () => {
       );
       data.append(
         "final_amount",
-        returnItemList.final_amount ? returnItemList.final_amount : ""
+        tableData.final_amount ? tableData.final_amount : ""
       );
       data.append("payment_type", paymentType ? paymentType : "");
       // data.append('other_amount', otherAmt || 0);
@@ -823,7 +823,7 @@ const AddReturnbill = () => {
           }
         });
         const allSelected =
-          returnItemList?.item_list.every((item) => item.iss_check) || false;
+          tableData?.item_list.every((item) => item.iss_check) || false;
         // setSelectAll(allSelected);
         purcheseReturnFilter();
       }
@@ -832,8 +832,8 @@ const AddReturnbill = () => {
     }
   };
   const handleSelectAll = async (checked) => {
-    for (let i = 0; i < returnItemList?.item_list?.length; i++) {
-      handleChecked(returnItemList?.item_list[i].id, checked);
+    for (let i = 0; i < tableData?.item_list?.length; i++) {
+      handleChecked(tableData?.item_list[i].id, checked);
     }
   };
 
@@ -1107,7 +1107,7 @@ const AddReturnbill = () => {
               </div>
             </div>
 
-            {/*<======================================================================Item Table =====================================================================> */}
+            {/*<================================================================Item Table ===============================================================> */}
 
             <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
@@ -1115,7 +1115,12 @@ const AddReturnbill = () => {
                   <tr className="input-row">
                     <th>
                       <div className="flex justify-center items-center gap-2">
-                        Search Item Name <span className="text-red-600">*</span>
+                        Search Item Name <span className="text-red-600 ">*</span>
+                        <FaPlusCircle
+                          className="primary cursor-pointer"
+                          onClick={() => history.push('/itemmaster')}
+
+                        />
                       </div>
                     </th>
                     <th>Unit <span className="text-red-600">*</span></th>
@@ -1137,8 +1142,7 @@ const AddReturnbill = () => {
                     <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
                         <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
-                          <DeleteIcon className="delete-icon mr-2"
-                            onClick={removeItem} />
+                          <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                           {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                         </div>
                       ) : (
@@ -1221,7 +1225,7 @@ const AddReturnbill = () => {
                         helperText={errors.batch}
                         value={batch}
                         sx={{
-                          minWidth: "65px",
+                          minWidth: "100px",
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
@@ -1505,7 +1509,7 @@ const AddReturnbill = () => {
                         </div>
                       </td>
                     </tr>
-                  ) : (returnItemList?.item_list?.map((item, index) => (
+                  ) : (tableData?.item_list?.map((item, index) => (
                     <tr
                       key={item.id}
                       onClick={() => {
@@ -1514,7 +1518,7 @@ const AddReturnbill = () => {
                       }}
                       className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`
                       }
-                      style={{ borderBottom: index !== returnItemList.item_list.length - 1 ? '1px solid #e0e0e0' : 'none', }}>
+                      style={{ borderBottom: index !== tableData.item_list.length - 1 ? '1px solid #e0e0e0' : 'none', }}>
 
                       <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
                         <div>
@@ -1555,9 +1559,9 @@ const AddReturnbill = () => {
 
                 </tbody>
               </table>
-              
+
             </div>
-            {/*<====================================================================== total and other details  =====================================================================> */}
+            {/*<========================================================= total and other details  ========================================================> */}
 
             <div
               className=""
@@ -1807,7 +1811,7 @@ const AddReturnbill = () => {
             </DialogActions>
           </Dialog>
 
-          {/*<==========================================================================  Delete PopUP   =========================================================================> */}
+          {/*<=============================================================  Delete PopUP   ============================================================> */}
           <Dialog open={IsDelete} className="custom-dialog">
             <DialogTitle className="primary">Delete Confirmation</DialogTitle>
             <IconButton
@@ -1846,7 +1850,7 @@ const AddReturnbill = () => {
             </DialogActions>
           </Dialog>
 
-          {/*<======================================================================== Leave page  PopUp Box  =======================================================================> */}
+          {/*<========================================================= Leave page  PopUp Box  ========================================================> */}
           <Prompt
             when={unsavedItems}
             message={(location) => {

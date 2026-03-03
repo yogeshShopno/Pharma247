@@ -82,7 +82,7 @@ const EditSaleReturn = () => {
   const [IsDelete, setIsDelete] = useState(false);
 
   const [searchItem, setSearchItem] = useState("");
-  const [saleReturnItems, setSaleReturnItems] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [cgst, setCgst] = useState("");
   const [sgst, setSgst] = useState("");
   const [igst, setIgst] = useState("");
@@ -136,13 +136,13 @@ const EditSaleReturn = () => {
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (!saleReturnItems?.sales_iteam?.length) return;
+      if (!tableData?.sales_iteam?.length) return;
 
       const isInputFocused = ["INPUT", "TEXTAREA"].includes(
         document.activeElement.tagName
       );
       if (e.altKey && e.key === "m") {
-        resetValue();
+        removeItem();
         setSelectedEditItemId(null);
         setSelectedIndex(-1);
         setSearchItem("");
@@ -159,12 +159,12 @@ const EditSaleReturn = () => {
 
       if (e.key === "ArrowDown") {
         setSelectedIndex((prev) =>
-          Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1)
+          Math.min(prev + 1, tableData.sales_iteam.length - 1)
         );
       } else if (e.key === "ArrowUp") {
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
       } else if (e.key === "Enter" && selectedIndex !== -1) {
-        const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
+        const selectedRow = tableData.sales_iteam[selectedIndex];
         if (!selectedRow) return;
         handleEditClick(selectedRow);
         setTimeout(() => {
@@ -175,23 +175,23 @@ const EditSaleReturn = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [saleReturnItems, selectedIndex]);
+  }, [tableData, selectedIndex]);
 
   // New function specifically for arrow key navigation that works even when input is focused
   const handleArrowNavigation = (e) => {
-    if (!saleReturnItems?.sales_iteam?.length) return;
+    if (!tableData?.sales_iteam?.length) return;
 
     if (e.key === "ArrowDown" || e.key === "ArrowUp") {
       e.preventDefault(); // Prevent default scrolling behavior
 
       if (e.key === "ArrowDown") {
-        setSelectedIndex((prev) => Math.min(prev + 1, saleReturnItems.sales_iteam.length - 1));
+        setSelectedIndex((prev) => Math.min(prev + 1, tableData.sales_iteam.length - 1));
       } else if (e.key === "ArrowUp") {
         setSelectedIndex((prev) => Math.max(prev - 1, 0));
       }
     }
     else if (e.key === "Enter" && selectedIndex !== -1) {
-      const selectedRow = saleReturnItems.sales_iteam[selectedIndex];
+      const selectedRow = tableData.sales_iteam[selectedIndex];
       if (!selectedRow) return;
       handleEditClick(selectedRow);
     }
@@ -302,7 +302,7 @@ const EditSaleReturn = () => {
       // );
       // setCustomer(foundCustomer || "");
 
-      setSaleReturnItems(response.data.data);
+      setTableData(response.data.data);
       setTotalBase(response.data.data.total_base);
       setTotalMargin(response.data.data.total_margin);
       setTotalNetRate(response.data.data.total_net_rate);
@@ -394,7 +394,7 @@ const EditSaleReturn = () => {
   };
 
   const editSaleReturnBill = async () => {
-    const hasUncheckedItems = saleReturnItems?.sales_iteam?.every(
+    const hasUncheckedItems = tableData?.sales_iteam?.every(
       (item) => item.iss_check === false
     );
     if (hasUncheckedItems) {
@@ -402,8 +402,8 @@ const EditSaleReturn = () => {
       toast.error("Please select at least one item");
     } else {
       let data = new FormData();
-      data.append("bill_no", saleReturnItems?.bill_no);
-      data.append("bill_date", saleReturnItems?.bill_date);
+      data.append("bill_no", tableData?.bill_no);
+      data.append("bill_date", tableData?.bill_date);
       data.append("customer_id", customer?.id);
       data.append("customer_address", address);
       data.append("customer_name", customer.name);
@@ -422,7 +422,7 @@ const EditSaleReturn = () => {
       data.append("margin", totalMargin);
       data.append("margin_net_profit", marginNetProfit);
       data.append("payment_name", paymentType);
-      data.append("product_list", JSON.stringify(saleReturnItems?.sales_iteam));
+      data.append("product_list", JSON.stringify(tableData?.sales_iteam));
       data.append("draft_save", "1");
 
       const params = {
@@ -485,7 +485,7 @@ const EditSaleReturn = () => {
 
         saleBillGetBySaleID();
 
-        const updatedItems = saleReturnItems.sales_iteam.map((item) => {
+        const updatedItems = tableData.sales_iteam.map((item) => {
           if (item.id === selectedEditItemId) {
             return {
               ...item,
@@ -502,7 +502,7 @@ const EditSaleReturn = () => {
           return item;
         });
 
-        setSaleReturnItems((prevItems) => ({
+        setTableData((prevItems) => ({
           ...prevItems,
           sales_iteam: updatedItems,
         }));
@@ -589,7 +589,7 @@ const EditSaleReturn = () => {
     setSaleItemId(Id);
   };
 
-  const resetValue = () => {
+  const removeItem = () => {
     setSearch("");
     setIsEditMode(false);
     setUnit("");
@@ -622,12 +622,12 @@ const EditSaleReturn = () => {
     }, 400); // 400ms debounce
   };
 
-  // Update useEffect to initialize filteredItems when saleReturnItems changes
+  // Update useEffect to initialize filteredItems when tableData changes
   useEffect(() => {
-    if (saleReturnItems?.sales_iteam) {
-      setFilteredItems(saleReturnItems.sales_iteam);
+    if (tableData?.sales_iteam) {
+      setFilteredItems(tableData.sales_iteam);
     }
-  }, [saleReturnItems]);
+  }, [tableData]);
 
   const handleDeleteItem = async (saleItemId) => {
     if (!saleItemId) return;
@@ -679,7 +679,7 @@ const EditSaleReturn = () => {
         });
 
         // Optionally, update the state of the item to reflect the checked state
-        saleReturnItems.sales_iteam = saleReturnItems.sales_iteam.map(
+        tableData.sales_iteam = tableData.sales_iteam.map(
           (item) => {
             if (item.id === itemId) {
               item.iss_check = checked; // Toggle the checkbox state
@@ -790,6 +790,7 @@ const EditSaleReturn = () => {
       }
     }
   };
+  {/*<================================================================ header   =====================================================> */ }
 
   return (
     <>
@@ -805,814 +806,816 @@ const EditSaleReturn = () => {
         draggable
         pauseOnHover
       />
-      {isLoading ? (
-        <div className="loader-container ">
-          <Loader />
-        </div>
-      ) : (
-        <div>
-          <div
-            className="p-6"
-            style={{
-              height: "calc(100vh - 130px)",
-              overflow: "auto",
-            }}
-          >
-            <div>
-              <div
-                className="mb-4 header_sale_divv"
-                style={{ display: "flex", gap: "4px", alignItems: "center" }}
-              >
-                <div
-                  style={{ display: "flex", gap: "5px", alignItems: "center" }}
-                >
-                  <span
-                    className="cursor-pointer"
-                    style={{
-                      color: "var(--color2)",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                      minWidth: "125px",
-                    }}
-                    onClick={() => {
-                      history.push("/saleReturn/list");
-                    }}
-                  >
-                    Sales Return
-                  </span>
-                  <ArrowForwardIosIcon
-                    style={{ fontSize: "18px", color: "var(--color1)" }}
-                  />
-                  <span
-                    style={{
-                      color: "var(--color1)",
-                      alignItems: "center",
-                      fontWeight: 700,
-                      fontSize: "20px",
-                    }}
-                  >
-                    Edit
-                  </span>
-                  <ArrowForwardIosIcon
-                    style={{ fontSize: "18px", color: "var(--color1)" }}
-                  />
-                  <BsLightbulbFill className="w-6 h-6 secondary hover-yellow" />
-                </div>
 
-                <div className="headerList">
-                  <Select
-                    labelId="dropdown-label"
-                    className="payment_divv"
-                    id="dropdown"
-                    disabled
-                    value={paymentType}
-                    sx={{ minWidth: "150px" }}
-                    onChange={(e) => {
-                      setPaymentType(e.target.value);
+
+      <div
+        className="p-6"
+        style={{
+          height: "calc(-125px + 100vh)",
+          overflow: "auto",
+        }}>
+
+        {/*<================================================================ header   =====================================================> */}
+
+        <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
+          <div className="flex items-center gap-2">
+            <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
+              onClick={() => { history.push("/saleReturn/list") }}
+            >
+              Sales Return
+            </span>
+
+            <span className="w-6 h-6">
+              <ArrowForwardIosIcon
+                fontSize="small"
+                className="text-[var(--color1)]"
+              />
+            </span>
+
+
+            <span className="text-[var(--color1)] font-bold text-[20px]">Edit</span>
+
+            <BsLightbulbFill className="w-6 h-6 text-[var(--color2)] hover-yellow" />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Select
+              labelId="dropdown-label"
+              className="payment_divv"
+              id="dropdown"
+              disabled
+              value={paymentType}
+              sx={{ minWidth: "150px" }}
+              onChange={(e) => {
+                setPaymentType(e.target.value);
+              }}
+              size="small"
+            >
+              <MenuItem value="cash">Cash</MenuItem>
+              <MenuItem value="credit">Credit</MenuItem>
+              {bankData?.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.bank_name}
+                </MenuItem>
+              ))}
+            </Select>
+            <Button
+              variant="contained"
+              className="payment_btn_divv"
+              style={{ background: "var(--color1)" }}
+              onClick={() => handleUpdate()}
+            >
+              Update
+            </Button>
+          </div>
+        </div>
+
+        {/*<=========================================================== Top detail   ==========================================================> */}
+
+
+
+        <div className=" flex gap-4  mt-4">
+
+          <div className="flex flex-row gap-4 overflow-x-auto w-full items-end">
+            <div >
+              <span className="title mb-2">Bill No <span className="text-red-600">*</span></span>
+              <TextField
+                autoComplete="off"
+                id="outlined-number"
+                size="small"
+                value={tableData.bill_no}
+                disabled
+                sx={{
+                  width: "100%",
+                  minWidth: "200px",
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "200px" },
+                }}
+              />
+              {error.billNo && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  {error.billNo}
+                </span>
+              )}
+            </div>
+
+            <div>
+              <span className="title mb-2 flex  items-center gap-2">Customer Mobile / Name <span className="text-red-600">*</span></span>
+
+              <Autocomplete
+                value={customer}
+                options={customerDetails}
+                disabled
+                getOptionLabel={(option) => option.name || ""}
+                isOptionEqualToValue={(option, value) =>
+                  option.id === value.id
+                }
+                sx={{
+                  width: "100%",
+                  minWidth: "350px",
+                  minHeight: "40px",
+
+                  "@media (max-width:600px)": { minWidth: "250px" },
+                }}
+                renderOption={(props, option) => (
+                  <ListItem {...props}>
+                    <ListItemText
+                      primary={`${option.name} `}
+                      secondary={`Mobile No: ${option.phone_number}`}
+                    />
+                  </ListItem>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    autoComplete="off"
+                    {...params}
+                    value={customer}
+                    variant="outlined"
+                    placeholder="Search by Mobile, Name"
+                    InputProps={{
+                      ...params.InputProps,
+
+                    }}
+                    sx={{ textTransform: "uppercase" }}
+                  />
+                )}
+              />
+
+              {error.customer && (
+                <span style={{ color: "red", fontSize: "14px" }}>
+                  {error.customer}
+                </span>
+              )}
+            </div>
+
+            <div>
+              <span
+                className="heading mb-2 title"
+                style={{
+                  fontWeight: "500",
+                  fontSize: "17px",
+                  color: "var(--color1)",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                Doctor
+              </span>
+              <Autocomplete
+                value={doctor || ""}
+                onChange={handleDoctorOption}
+                options={doctorData}
+                disabled
+                getOptionLabel={(option) => option.name || ""}
+                isOptionEqualToValue={(option, value) =>
+                  option.name === value.name
+                }
+                sx={{
+                  width: "100%",
+                  minWidth: "350px",
+                  minHeight: "40px",
+
+                  "@media (max-width:600px)": { minWidth: "250px" },
+                }}
+                renderOption={(props, option) => (
+                  <ListItem {...props}>
+                    <ListItemText
+                      primary={`${option.name} `}
+                      secondary={`Clinic Name: ${option.clinic} `}
+                    />
+                  </ListItem>
+                )}
+                renderInput={(params) => (
+                  <TextField
+                    autoComplete="off"
+                    {...params}
+                    variant="outlined"
+                    placeholder="Search by DR. Name"
+                    InputProps={{
+                      ...params.InputProps,
+
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input::placeholder": {
+                        fontSize: "1rem",
+                        color: "black",
+                      },
+                    }}
+                  />
+                )}
+              />
+            </div>
+
+            <div>
+              <span className="title mb-2">Bill Date</span>
+              <TextField
+                autoComplete="off"
+                sx={{
+                  width: "100%",
+                  minWidth: "200px",
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "200px" },
+                }}
+                id="outlined-number"
+
+                size="small"
+                value={tableData.bill_date}
+                dateFormat="dd/MM/yyyy"
+
+                disabled
+              />
+              {error.billNo && (
+                <span style={{ color: "red", fontSize: "12px" }}>
+                  {error.billNo}
+                </span>
+              )}
+            </div>
+
+          </div>
+        </div>
+
+        {/*<=========================================================== Item Table   ==========================================================> */}
+
+        <div className="table-container">
+          <table className="w-full border-collapse item-table" ref={tableRef} tabIndex={0}>
+            <thead>
+              <tr>
+                <th>
+                  <div className="flex justify-center items-center gap-2">Search Item Name<span className="text-red-600">*</span>
+                  </div>
+                </th>
+                <th>Unit<span className="text-red-600">*</span></th>
+                <th>Batch<span className="text-red-600">*</span></th>
+                <th>Expiry<span className="text-red-600">*</span></th>
+                <th>MRP<span className="text-red-600">*</span></th>
+                <th>Base<span className="text-red-600">*</span></th>
+                <th>GST%<span className="text-red-600">*</span></th>
+                <th>QTY<span className="text-red-600">*</span></th>
+                <th>Loc.</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+
+            <tbody >
+              <tr className="input-row">
+                <td className="p-0">
+                  {isEditMode ? (
+                    <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end' }}>
+                      <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
+                      {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
+                    </div>
+                  ) : (
+                    <TextField
+                      autoComplete="off"
+                      id="outlined-basic"
+                      size="small"
+                      sx={{
+                        minWidth: 400,
+                        width: "100%",
+                      }}
+
+                      value={search}
+                      onChange={handleInputChange}
+                      inputRef={el => inputRefs.current[0] = el}
+                      onKeyDown={e => {
+                        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+                          handleArrowNavigation(e);
+                        }
+                      }}
+                      variant="outlined"
+                      placeholder="Please search any items.."
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="start">
+                            <SearchIcon />
+                          </InputAdornment>
+                        ),
+                        type: "search",
+                      }}
+                    />
+                  )}
+
+                </td>
+
+
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    sx={{
+                      minWidth: "40px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
                     }}
                     size="small"
-                  >
-                    <MenuItem value="cash">Cash</MenuItem>
-                    <MenuItem value="credit">Credit</MenuItem>
-                    {bankData?.map((option) => (
-                      <MenuItem key={option.id} value={option.id}>
-                        {option.bank_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <Button
-                    variant="contained"
-                    className="payment_btn_divv"
-                    style={{ background: "var(--color1)" }}
-                    onClick={() => handleUpdate()}
-                  >
-                    Update
-                  </Button>
-                </div>
-              </div>
-              <div
-                className="row border-b border-dashed"
-                style={{ borderColor: "var(--color2)" }}
-              ></div>
-              <div className="border-b mt-4">
-                <div className=" firstrow flex gap-y-4">
-                  <div
-                    className="detail custommedia"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
+                    inputRef={inputRef5}
+                    value={unit}
+                    onKeyDown={async (e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        await editSaleReturnItem();
+                        setSelectedIndex(-1);
+                        if (inputRef5.current) {
+                          inputRef5.current.blur();
+                          document.activeElement?.blur();
+                        }
+                      } else if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault();
+                      }
                     }}
-                  >
-                    <span className="heading mb-2">Bill No <span className="text-red-600">*</span></span>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      value={saleReturnItems.bill_no}
-                      disabled
-                    />
-                    {error.billNo && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
-                        {error.billNo}
-                      </span>
-                    )}
-                  </div>
-                  <div
-                    className="detail custommedia"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                    }}
-                  >
-                    <span className="heading mb-2">Bill Date</span>
-                    <TextField
-                      autoComplete="off"
-                      id="outlined-number"
-                      size="small"
-                      value={saleReturnItems.bill_date}
-                      disabled
-                    />
-                    {error.billNo && (
-                      <span style={{ color: "red", fontSize: "12px" }}>
-                        {error.billNo}
-                      </span>
-                    )}
-                  </div>
+                  />
+                </td>
 
-                  <div
-                    className="detail custommedia"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="string"
+                    sx={{
+                      minWidth: "100px",
                       width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
                     }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                      }}
-                    >
-                      Customer Mobile / Name <span className="text-red-600">*</span>
-                    </span>
-
-                    <Autocomplete
-                      value={customer}
-                      options={customerDetails}
-                      disabled
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.id === value.id
-                      }
-                      sx={{
-                        width: "100%",
-                        // minWidth: '400px',
-                        "& .MuiInputBase-root": {
-                          // height: 20,
-                          fontSize: "1.10rem",
-                          padding: '0',
-
-                        },
-                        '& .MuiAutocomplete-inputRoot': {
-                          padding: '0 !important',
-                        },
-                        // '@media (max-width:600px)': {
-                        //     minWidth: '300px',
-                        // },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name} `}
-                            secondary={`Mobile No: ${option.phone_number}`}
-                          />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          autoComplete="off"
-                          {...params}
-                          value={customer}
-                          variant="outlined"
-                          placeholder="Search by Mobile, Name"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: { height: 40 },
-                          }}
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-
-                    {error.customer && (
-                      <span style={{ color: "red", fontSize: "14px" }}>
-                        {error.customer}
-                      </span>
-                    )}
-                  </div>
-
-                  <div
-                    className="detail custommedia"
-                    style={{ display: "flex", width: "100%" }}
-                  >
-                    <span
-                      className="heading mb-2 title"
-                      style={{
-                        fontWeight: "500",
-                        fontSize: "17px",
-                        color: "var(--color1)",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      Doctor
-                    </span>
-                    <Autocomplete
-                      value={doctor || ""}
-                      onChange={handleDoctorOption}
-                      options={doctorData}
-                      disabled
-                      getOptionLabel={(option) => option.name || ""}
-                      isOptionEqualToValue={(option, value) =>
-                        option.name === value.name
-                      }
-                      sx={{
-                        width: "100%",
-                        // minWidth: '400px',
-                        "& .MuiInputBase-root": {
-                          // height: 20,
-                          fontSize: "1.10rem",
-                          padding: '0',
-
-                        },
-                        '& .MuiAutocomplete-inputRoot': {
-                          padding: '0 !important',
-                        },
-                        // '@media (max-width:600px)': {
-                        //     minWidth: '300px',
-                        // },
-                      }}
-                      renderOption={(props, option) => (
-                        <ListItem {...props}>
-                          <ListItemText
-                            primary={`${option.name} `}
-                            secondary={`Clinic Name: ${option.clinic} `}
-                          />
-                        </ListItem>
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          autoComplete="off"
-                          {...params}
-                          variant="outlined"
-                          placeholder="Search by DR. Name"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: { height: 40 },
-                          }}
-                          sx={{
-                            "& .MuiInputBase-input::placeholder": {
-                              fontSize: "1rem",
-                              color: "black",
-                            },
-                          }}
-                        />
-                      )}
-                    />
-                  </div>
-
-                  <div className="overflow-x-auto w-full scroll-two">
-                    <table className="w-full border-collapse item-table">
-                      <thead>
-                        <tr
-                          style={{ borderBottom: '1px solid lightgray', background: 'rgba(63, 98, 18, 0.09)' }}
-                        >
-                          <th className="w-1/4" style={{ textAlign: 'center' }}>Item Name</th>
-                          <th>Unit </th>
-                          <th>Batch </th>
-                          <th>Expiry</th>
-                          <th>MRP</th>
-                          <th>Base</th>
-                          <th>GST% </th>
-                          <th>QTY </th>
-                          <th>Loc.</th>
-                          <th>Amount </th>
-                        </tr>
-                      </thead>
-                      <tbody ref={tableRef} tabIndex={0}>
-                        <tr style={{ borderBottom: "1px solid lightgray" }}>
-                          {
-                            isEditMode ? <td>
-                              <div className="flex items-center gap-2">
-                                <DeleteIcon className="delete-icon" onClick={resetValue} />
-                                <span className="text-sm">{searchItem}</span>
-                              </div>
-
-                            </td> : <td style={{ width: "415px" }}>
-                              <TextField
-                                autoComplete="off"
-                                id="outlined-basic"
-                                size="small"
-                                sx={{ width: "415px", marginLeft: "20px", marginBlock: "10px" }}
-                                value={search}
-                                onChange={handleInputChange}
-                                inputRef={el => inputRefs.current[0] = el}
-                                onKeyDown={e => {
-                                  if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
-                                    handleArrowNavigation(e);
-                                  }
-                                }}
-                                variant="outlined"
-                                placeholder="Please search any items.."
-                                InputProps={{
-                                  endAdornment: (
-                                    <InputAdornment position="start">
-                                      <SearchIcon />
-                                    </InputAdornment>
-                                  ),
-                                  type: "search",
-                                }}
-                              />
-                            </td>
-                          }
-
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "40px", textAlign: "right" }}
-                              size="small"
-                              inputRef={inputRef5}
-                              value={unit}
-                              onKeyDown={async (e) => {
-                                if (e.key === "Enter") {
-                                  e.preventDefault();
-                                  await editSaleReturnItem();
-                                  setSelectedIndex(-1);
-                                  if (inputRef5.current) {
-                                    inputRef5.current.blur();
-                                    document.activeElement?.blur();
-                                  }
-                                } else if (
-                                  !/[0-9]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
-                                  e.preventDefault();
-                                }
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="string"
-                              sx={{ width: "130px", textAlign: "right" }}
-                              size="small"
-                              disabled
-                              value={batch}
-                              onChange={(e) => {
-                                setBatch(e.target.value);
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              disabled
-                              size="small"
-                              sx={{ width: "65px" }}
-                              inputRef={inputRef3}
-                              onKeyDown={handleKeyDown}
-                              value={expiryDate}
-                              placeholder="MM/YY"
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              disabled
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px", textAlign: "right" }}
-                              size="small"
-                              inputRef={inputRef4}
-                              onKeyDown={handleKeyDown}
-                              value={mrp}
-                              onChange={(e) => {
-                                setMRP(e.target.value);
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px", textAlign: "right" }}
-                              size="small"
-                              inputRef={inputRef6}
-                              onKeyDown={handleKeyDown}
-                              value={base}
-                              onChange={(e) => {
-                                setBase(e.target.value);
-                                localStorage.setItem(
-                                  "unsavedEditReturnItems",
-                                  "true"
-                                );
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              disabled
-                              size="small"
-                              inputRef={inputRef8}
-                              onKeyDown={handleKeyDown}
-                              sx={{ width: "40px", textAlign: "right" }}
-                              value={gst}
-                              onChange={(e) => {
-                                setGst(e.target.value);
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              type="number"
-                              sx={{ width: "130px", textAlign: "right" }}
-                              size="small"
-                              inputRef={inputRef5}
-                              value={qty}
-                              onKeyDown={(e) => {
-                                if (
-                                  !/[0-9]/.test(e.key) &&
-                                  e.key !== "Backspace"
-                                ) {
-                                  e.preventDefault();
-                                  editSaleReturnItem()
-                                }
-                              }}
-                              onChange={(e) => {
-                                handleQty(e.target.value);
-                                localStorage.setItem(
-                                  "unsavedEditReturnItems",
-                                  "true"
-                                );
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-
-                          <td>
-                            <TextField
-                              autoComplete="off"
-                              id="outlined-number"
-                              size="small"
-                              inputRef={inputRef9}
-                              onKeyDown={handleKeyDown}
-                              disabled
-                              sx={{ width: "80px", textAlign: "right" }}
-                              value={loc}
-                              onChange={(e) => {
-                                setLoc(e.target.value);
-                              }}
-                              InputProps={{
-                                inputProps: { style: { textAlign: "right" } },
-                                disableUnderline: true,
-                              }}
-                            />
-                          </td>
-                          <td className="total ">{itemAmount}</td>
-                        </tr>
-                        {filteredItems.map((item, index) => (
-                          <tr
-                            key={item.id}
-                            className={`input-row cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""
-                              }`}
-                            onClick={() => {
-                              handleEditClick(item);
-                              setSelectedIndex(index);
-                            }}
-                          >
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "8px",
-                                alignItems: "center",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              <Checkbox
-                                sx={{
-                                  color: "var(--color2)",
-                                  "&.Mui-checked": { color: "var(--color1)" }, padding: "0px"
-                                }}
-                                checked={item?.iss_check}
-                                onClick={(event) => event.stopPropagation()}
-                                onChange={(event) => {
-                                  handleChecked(
-                                    item.id,
-                                    event.target.checked
-                                  );
-                                  setUnsavedItems(true);
-                                }}
-                              />
-                              <BorderColorIcon
-                                sx={{
-                                  color: "var(--color1)",
-                                }}
-                                color="primary"
-                                className="cursor-pointer primary"
-                                onClick={() => handleEditClick(item)}
-                              />
-                              {item.iteam_name}
-                            </td>
-                            <td>{item.unit}</td>
-                            <td>{item.batch}</td>
-                            <td>{item.exp}</td>
-                            <td>{item.mrp}</td>
-                            <td>{item.base}</td>
-                            <td>{item.gst}</td>
-                            <td>{item.qty}</td>
-                            <td>{item.location}</td>
-                            <td>{item.net_rate}</td>
-                          </tr>
-                        ))}
-
-                      </tbody>
-                    </table>
-                    <>
-
-                    </>
-                  </div>
-                </div>
-
-                {saleReturnItems?.sales_iteam?.length > 0 && (
-                  <div
-                    className="sale_filtr_add"
-                    style={{
-                      background: 'var(--color1)',
-                      color: 'white',
-                      display: "flex",
-                      position: 'fixed',
-                      width: '100%',
-                      bottom: '0',
-                      left: '0',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      overflow: 'auto',
-                      padding: '20px',
+                    size="small"
+                    disabled
+                    value={batch}
+                    onChange={(e) => {
+                      setBatch(e.target.value);
                     }}
-                  >
-                    <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0' }}>
-                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
-                        <label className="font-bold">Total GST : </label>
-                        <span style={{ fontWeight: 600 }}>{totalGst} </span>
-                      </div>
-                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
-                        <label className="font-bold">Total Base : </label>
-                        <span style={{ fontWeight: 600 }}>{totalBase} </span>
-                      </div>
-                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
-                        <label className="font-bold">Profit : </label>
-                        <span style={{ fontWeight: 600 }}>
-                          &#8377; {marginNetProfit}({Number(totalMargin).toFixed(2)} %)
-                        </span>
-                      </div>
-                      <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
-                        <label className="font-bold">Total Net Rate : </label>
-                        <span style={{ fontWeight: 600 }}>
-                          &#8377; {totalNetRate}
-                        </span>
-                      </div>
-                    </div>
-                    <div style={{ padding: '0 20px', whiteSpace: 'noWrap' }}>
-                      <div className="gap-2" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                        <label className="font-bold">Net Amount : </label>
-                        <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}
-                          <FaCaretUp />
-                        </span>
-                      </div>
-                      <Modal
-                        show={isModalOpen}
-                        onClose={toggleModal}
-                        size="lg"
-                        position="bottom-center"
-                        className="modal_amount"
-                      >
-                        <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
-                          <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
-                          <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
-                        </div>
-                        <div
-                          style={{
-                            background: "white",
-                            padding: "20px",
-                            width: "100%",
-                            maxWidth: "600px",
-                            margin: "0 auto",
-                            lineHeight: "2.5rem"
-                          }}
-                        >
-                          <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
-                            <label className="font-bold">Total Amount : </label>
-                            <span style={{ fontWeight: 600 }}>{totalAmount}</span>
-                          </div>
-                          <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
-                            <label className="font-bold">Other Amount : </label>
-                            <Input
-                              value={otherAmt}
-                              onKeyDown={(e) => {
-                                const value = e.target.value;
-                                const isMinusKey = e.key === '-';
-                                if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
-                                  e.preventDefault();
-                                }
-                                if (isMinusKey && value.includes('-')) {
-                                  e.preventDefault();
-                                }
-                              }}
-                              onChange={(e) => {
-                                setUnsavedItems(true);
-                                const x = e.target.value
-                                const y = (x)
-                                if (-y >= totalAmount) {
-                                  setOtherAmt((-totalAmount))
-                                } else {
-                                  setOtherAmt(y)
-                                }
-                              }}
-                              size="small"
-                              style={{
-                                width: "70px",
-                                background: "none",
-                                justifyItems: "end",
-                                outline: "none",
-                              }} sx={{
-                                '& .MuiInputBase-root': {
-                                  height: '35px',
-                                },
-                                "& .MuiInputBase-input": { textAlign: "end" }
-                              }}
-                            />
-                          </div>
-                          <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
-                            <label className="font-bold">Round Off : </label>
-                            <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
-                          </div>
-                          <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
-                            <label className="font-bold">Net Amount: </label>
-                            <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
-                          </div>
-                        </div>
-                      </Modal>
-                    </div>
-                  </div>
-                )}
-                {/* Delete PopUP */}
-                <div
-                  id="modal"
-                  value={IsDelete}
-                  className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
-                    }`}
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    disabled
+                    size="small"
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    inputRef={inputRef3}
+                    onKeyDown={handleKeyDown}
+                    value={expiryDate}
+                    placeholder="MM/YY"
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    disabled
+                    id="outlined-number"
+                    type="number"
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    size="small"
+                    inputRef={inputRef4}
+                    onKeyDown={handleKeyDown}
+                    value={mrp}
+                    onChange={(e) => {
+                      setMRP(e.target.value);
+                    }}
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    size="small"
+                    inputRef={inputRef6}
+                    onKeyDown={handleKeyDown}
+                    value={base}
+                    onChange={(e) => {
+                      setBase(e.target.value);
+                      localStorage.setItem(
+                        "unsavedEditReturnItems",
+                        "true"
+                      );
+                    }}
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    disabled
+                    size="small"
+                    inputRef={inputRef8}
+                    onKeyDown={handleKeyDown}
+                    sx={{
+                      minWidth: "40px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    value={gst}
+                    onChange={(e) => {
+                      setGst(e.target.value);
+                    }}
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    type="number"
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    size="small"
+                    inputRef={inputRef5}
+                    value={qty}
+                    onKeyDown={(e) => {
+                      if (
+                        !/[0-9]/.test(e.key) &&
+                        e.key !== "Backspace"
+                      ) {
+                        e.preventDefault();
+                        editSaleReturnItem()
+                      }
+                    }}
+                    onChange={(e) => {
+                      handleQty(e.target.value);
+                      localStorage.setItem(
+                        "unsavedEditReturnItems",
+                        "true"
+                      );
+                    }}
+                    InputProps={{
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+
+                <td>
+                  <TextField
+                    autoComplete="off"
+                    id="outlined-number"
+                    size="small"
+                    inputRef={inputRef9}
+                    onKeyDown={handleKeyDown}
+                    disabled
+                    sx={{
+                      minWidth: "65px",
+                      width: "100%",
+                      '& .MuiInputBase-input': {
+                        textAlign: 'center',
+                      },
+                    }}
+                    value={loc}
+                    onChange={(e) => {
+                      setLoc(e.target.value);
+                    }}
+                    InputProps={{
+
+                      disableUnderline: true,
+                    }}
+                  />
+                </td>
+                <td className="total">
+                  <span className="font-bold">{itemAmount}</span>
+                </td>
+              </tr>
+
+
+              {filteredItems.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                    style={{ borderBottom: index !== filteredItems.length - 1 ? '1px solid #e0e0e0' : 'none', }}
+                  onClick={() => {
+                    handleEditClick(item);
+                    setSelectedIndex(index);
+                  }}
                 >
-                  <div />
-                  <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
-                      viewBox="0 0 24 24"
-                      onClick={() => setIsDelete(false)}
-                    >
-                      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
-                    </svg>
-                    <div className="my-4 text-center">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-12 fill-red-500 inline"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
-                          data-original="#000000"
-                        />
-                        <path
-                          d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
-                          data-original="#000000"
-                        />
-                      </svg>
-                      <h4 className="text-lg font-semibold mt-6">
-                        Are you sure you want to delete it?
-                      </h4>
-                    </div>
-                    <div className="flex gap-5 justify-center">
-                      <button
-                        type="submit"
-                        className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
-                        onClick={() => {
-                          handleDeleteItem(saleItemId);
+                  <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
+
+                    <div>
+                      <Checkbox
+                        sx={{
+                          color: "var(--color2)",
+                          '&.Mui-checked': { color: "var(--color1)" },
+                          margin: 0,
+                          padding: 0
+                        }}
+                        checked={item?.iss_check}
+                        onClick={(event) => event.stopPropagation()}
+                        onChange={(event) => {
+                          handleChecked(
+                            item.id,
+                            event.target.checked
+                          );
                           setUnsavedItems(true);
                         }}
-                      >
-                        Delete
-                      </button>
-                      <button
-                        type="button"
-                        className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
-                        onClick={() => setIsDelete(false)}
-                      >
-                        Cancel
-                      </button>
+                      />
+                      <BorderColorIcon
+                        style={{ color: "var(--color1)" }}
+                        className="cursor-pointer"
+                        onClick={() => handleEditClick(item)}
+                      />
                     </div>
-                  </div>
-                </div>
-              </div>
+
+                    <span style={{ alignSelf: "center" }}>
+                      {item.iteam_name || "-----"}
+                    </span>
+
+                  </td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.unit ? item.unit : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.batch ? item.batch : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.exp ? item.exp : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.mrp ? item.mrp : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.base ? item.base : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.gst ? item.gst : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.qty ? item.qty : '-----'}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.location ? item.location : '-----'}</td>
+                  <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>{item.net_rate ? item.net_rate : '-----'}</td>
+                </tr>
+              ))}
+
+            </tbody>
+          </table>
+        </div>
+
+
+        {/*<============================================== total and other details  =============================================> */}
+
+        <div
+          className="sale_filtr_add"
+          style={{
+            background: 'var(--color1)',
+            color: 'white',
+            display: "flex",
+            position: 'fixed',
+            width: '100%',
+            bottom: '0',
+            left: '0',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            overflow: 'auto',
+            padding: '20px',
+          }}
+        >
+          <div className="" style={{ display: 'flex', whiteSpace: 'nowrap', left: '0' }}>
+            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+              <label className="font-bold">Total GST : </label>
+              <span style={{ fontWeight: 600 }}>{totalGst} </span>
+            </div>
+            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+              <label className="font-bold">Total Base : </label>
+              <span style={{ fontWeight: 600 }}>{totalBase} </span>
+            </div>
+            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+              <label className="font-bold">Profit : </label>
+              <span style={{ fontWeight: 600 }}>
+                &#8377; {marginNetProfit}({Number(totalMargin).toFixed(2)} %)
+              </span>
+            </div>
+            <div className="gap-2 invoice_total_fld" style={{ display: 'flex' }}>
+              <label className="font-bold">Total Net Rate : </label>
+              <span style={{ fontWeight: 600 }}>
+                &#8377; {totalNetRate}
+              </span>
             </div>
           </div>
-          <Prompt
-            when={unsavedItems}
-            message={(location) => {
-              handleNavigation(location.pathname);
-              return false;
-            }}
-          />
-          <div
-            id="modal"
-            value={openModal}
-            className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
-              }`}
-          >
-            <div />
-            <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
-              <div className="my-4 logout-icon">
-                <VscDebugStepBack
-                  className=" h-12 w-14"
-                  style={{ color: "#628A2F" }}
+          <div style={{ padding: '0 20px', whiteSpace: 'noWrap' }}>
+            <div className="gap-2" onClick={toggleModal} style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <label className="font-bold">Net Amount : </label>
+              <span className="gap-1" style={{ fontWeight: 800, fontSize: "22px", whiteSpace: 'nowrap', display: 'flex', alignItems: 'center' }}>{!netAmount ? 0 : netAmount}
+                <FaCaretUp />
+              </span>
+            </div>
+            <Modal
+              show={isModalOpen}
+              onClose={toggleModal}
+              size="lg"
+              position="bottom-center"
+              className="modal_amount"
+            >
+              <div style={{ backgroundColor: 'var(--COLOR_UI_PHARMACY)', color: 'white', padding: '20px', fontSize: 'larger', display: "flex", justifyContent: "space-between" }}>
+                <h2 style={{ textTransform: "uppercase" }}>invoice total</h2>
+                <IoMdClose onClick={toggleModal} cursor={"pointer"} size={30} />
+              </div>
+              <div
+                style={{
+                  background: "white",
+                  padding: "20px",
+                  width: "100%",
+                  maxWidth: "600px",
+                  margin: "0 auto",
+                  lineHeight: "2.5rem"
+                }}
+              >
+                <div className="" style={{ display: 'flex', justifyContent: "space-between" }}>
+                  <label className="font-bold">Total Amount : </label>
+                  <span style={{ fontWeight: 600 }}>{totalAmount}</span>
+                </div>
+                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px' }}>
+                  <label className="font-bold">Other Amount : </label>
+                  <Input
+                    value={otherAmt}
+                    onKeyDown={(e) => {
+                      const value = e.target.value;
+                      const isMinusKey = e.key === '-';
+                      if (!/[0-9.-]/.test(e.key) && e.key !== 'Backspace') {
+                        e.preventDefault();
+                      }
+                      if (isMinusKey && value.includes('-')) {
+                        e.preventDefault();
+                      }
+                    }}
+                    onChange={(e) => {
+                      setUnsavedItems(true);
+                      const x = e.target.value
+                      const y = (x)
+                      if (-y >= totalAmount) {
+                        setOtherAmt((-totalAmount))
+                      } else {
+                        setOtherAmt(y)
+                      }
+                    }}
+                    size="small"
+                    style={{
+                      width: "70px",
+                      background: "none",
+                      justifyItems: "end",
+                      outline: "none",
+                    }} sx={{
+                      '& .MuiInputBase-root': {
+                        height: '35px',
+                      },
+                      "& .MuiInputBase-input": { textAlign: "end" }
+                    }}
+                  />
+                </div>
+                <div className="" style={{ display: 'flex', justifyContent: "space-between", paddingBottom: '5px', borderTop: '1px solid var(--toastify-spinner-color-empty-area)', paddingTop: '5px' }}>
+                  <label className="font-bold">Round Off : </label>
+                  <span >{!roundOff ? 0 : roundOff.toFixed(2)}</span>
+                </div>
+                <div className="" style={{ display: "flex", alignItems: "center", cursor: "pointer", justifyContent: "space-between", borderTop: '2px solid var(--COLOR_UI_PHARMACY)', paddingTop: '5px' }}>
+                  <label className="font-bold">Net Amount: </label>
+                  <span style={{ fontWeight: 800, fontSize: "22px", color: "var(--COLOR_UI_PHARMACY)" }}>{netAmount}</span>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        </div>
+
+        {/*<============================================== Delete PopUP  =============================================> */}
+
+        <div
+          id="modal"
+          value={IsDelete}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 cursor-pointer absolute top-4 right-4 fill-current text-gray-600 hover:text-red-500 "
+              viewBox="0 0 24 24"
+              onClick={() => setIsDelete(false)}
+            >
+              <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z" />
+            </svg>
+            <div className="my-4 text-center">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-12 fill-red-500 inline"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M19 7a1 1 0 0 0-1 1v11.191A1.92 1.92 0 0 1 15.99 21H8.01A1.92 1.92 0 0 1 6 19.191V8a1 1 0 0 0-2 0v11.191A3.918 3.918 0 0 0 8.01 23h7.98A3.918 3.918 0 0 0 20 19.191V8a1 1 0 0 0-1-1Zm1-3h-4V2a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v2H4a1 1 0 0 0 0 2h16a1 1 0 0 0 0-2ZM10 4V3h4v1Z"
+                  data-original="#000000"
                 />
-                <h4
-                  className="text-lg font-semibold mt-6 text-center"
-                  style={{ textTransform: "none" }}
-                >
-                  Are you sure you want to leave this page ?
-                </h4>
-              </div>
-              <div className="flex gap-5 justify-center">
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
-                  onClick={handleLeavePage}
-                >
-                  Yes
-                </button>
-                <button
-                  type="button"
-                  className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
-                  onClick={() => setOpenModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
+                <path
+                  d="M11 17v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Zm4 0v-7a1 1 0 0 0-2 0v7a1 1 0 0 0 2 0Z"
+                  data-original="#000000"
+                />
+              </svg>
+              <h4 className="text-lg font-semibold mt-6">
+                Are you sure you want to delete it?
+              </h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none bg-red-500 hover:bg-red-600 active:bg-red-500"
+                onClick={() => {
+                  handleDeleteItem(saleItemId);
+                  setUnsavedItems(true);
+                }}
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-900 hover:text-white"
+                onClick={() => setIsDelete(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>
-      )}
+        <Prompt
+          when={unsavedItems}
+          message={(location) => {
+            handleNavigation(location.pathname);
+            return false;
+          }}
+        />
+
+        <div
+          id="modal"
+          value={openModal}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${openModal ? "block" : "hidden"
+            }`}
+        >
+          <div />
+          <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">
+            <div className="my-4 logout-icon">
+              <VscDebugStepBack
+                className=" h-12 w-14"
+                style={{ color: "#628A2F" }}
+              />
+              <h4
+                className="text-lg font-semibold mt-6 text-center"
+                style={{ textTransform: "none" }}
+              >
+                Are you sure you want to leave this page ?
+              </h4>
+            </div>
+            <div className="flex gap-5 justify-center">
+              <button
+                type="submit"
+                className="px-6 py-2.5 w-44 items-center rounded-md text-white text-sm font-semibold border-none outline-none primary-bg hover:primary-bg active:primary-bg"
+                onClick={handleLeavePage}
+              >
+                Yes
+              </button>
+              <button
+                type="button"
+                className="px-6 py-2.5 w-44 rounded-md text-black text-sm font-semibold border-none outline-none bg-gray-200 hover:bg-gray-400 hover:text-black"
+                onClick={() => setOpenModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </>
   );
 };

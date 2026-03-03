@@ -2221,14 +2221,7 @@ const Addsale = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* <button
-                type="button"
-                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
-                onClick={() => setOpenReminderPopUp(true)}
-              >
-                <FaBell className="mr-2" />
-                Set Reminder
-              </button> */}
+
 
             <button
               type="button"
@@ -3518,6 +3511,7 @@ const Addsale = () => {
                 <label className="font-bold">Today Points : </label>
                 {todayLoyltyPoint || 0}
               </div>
+              
               <div
                 className="gap-2 invoice_total_fld"
                 style={{ display: "flex" }}
@@ -3525,6 +3519,7 @@ const Addsale = () => {
                 <label className="font-bold">Previous Points : </label>
                 {Math.max(0, previousLoyaltyPoints - loyaltyVal) || 0}
               </div>
+
               <div
                 className="gap-2 invoice_total_fld"
                 style={{ display: "flex" }}

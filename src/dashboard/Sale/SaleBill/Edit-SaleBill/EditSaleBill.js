@@ -1595,8 +1595,7 @@ const EditSaleBill = () => {
                 >
                   <th>
                     <div className="flex justify-center items-center gap-2">
-                      Search Item Name{" "}
-                      <span className="text-red-600 ">*</span>
+                      Search Item Name<span className="text-red-600 ">*</span>
                       <FaPlusCircle
                         className="primary cursor-pointer"
                         onClick={() => history.push('/itemmaster')}

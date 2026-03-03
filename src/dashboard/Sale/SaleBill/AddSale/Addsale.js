@@ -2503,22 +2503,8 @@ const Addsale = () => {
               />
 
             </div>
-            <div
-              className="detail custommedia col-12 col-md-3"
-              style={{
-                width: "100%",
-                borderRadius: "15px",
-              }}
-            >
-              <span
-                className="heading mb-2 title flex flex-row justify-between"
-                style={{
-                  fontWeight: "500",
-                  fontSize: "17px",
-                  color: "var(--color1)",
-
-                }}
-              >
+            <div>
+              <span className="title mb-2 flex  items-center gap-2">
                 <span className="flex flex-row gap-1">
                   Doctor
                   <FaPlusCircle
@@ -2558,14 +2544,16 @@ const Addsale = () => {
                 }
 
                 // loading={isLoading}
-                sx={{
+               sx={{
+
                   width: "100%",
                   minWidth: "350px",
                   minHeight: "40px",
-
                   "@media (max-width:600px)": { minWidth: "250px" },
+
                   '& .MuiAutocomplete-inputRoot': {
                     padding: '0 !important',
+                    paddingRight: customer ? '65px !important' : '39px !important',
                   },
                   '& .MuiInputBase-root': {
                     padding: '0',
@@ -2667,7 +2655,12 @@ const Addsale = () => {
                 placeholder="Scan Barcode"
                 // inputRef={inputRef10}
                 // onKeyDown={handleKeyDown}
-                sx={{ width: "50%", backgroundColor: "white" }}
+                    sx={{
+                    width: "100%",
+                    minWidth: "200px",
+                    minHeight: "40px",
+                    "@media (max-width:600px)": { minWidth: "200px" },
+                  }}
                 onChange={(e) => {
                   setBarcode(e.target.value);
                 }}

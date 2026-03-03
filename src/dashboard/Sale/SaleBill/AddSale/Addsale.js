@@ -2395,11 +2395,11 @@ const Addsale = () => {
                   "@media (max-width:600px)": { minWidth: "250px" },
 
                   '& .MuiAutocomplete-inputRoot': {
-                    // padding: '0 !important',
-                    // paddingRight: customer ? '65px !important' : '39px !important',
+                    padding: '0 !important',
+                    paddingRight: customer ? '65px !important' : '39px !important',
                   },
                   '& .MuiInputBase-root': {
-                    // padding: '0',
+                    padding: '0',
                   }
                 }}
 

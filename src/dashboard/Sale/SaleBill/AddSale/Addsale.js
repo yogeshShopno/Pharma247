@@ -2594,14 +2594,7 @@ const Addsale = () => {
               />
             </div>
 
-            <div
-              className="detail custommedia col-12 col-md-3"
-              style={{
-                width: "100%",
-                borderRadius: "15px",
-                marginleft: "10px",
-              }}
-            >
+            <div>
               <span
                 className="heading mb-2 title"
                 style={{
@@ -2615,7 +2608,7 @@ const Addsale = () => {
               </span>
 
               <DatePicker
-                className="custom-datepicker w-100"
+                className="custom-datepicker"
                 selected={selectedDate}
                 variant="outlined"
                 onChange={(newDate) => setSelectedDate(newDate)}
@@ -2624,11 +2617,7 @@ const Addsale = () => {
               />
             </div>
             <div
-              className="detail custommedia col-12 col-md-3"
-              style={{
-                width: "100%",
-                borderRadius: "15px",
-              }}
+        
             >
               <span
                 className="heading mb-2 title"
@@ -2653,8 +2642,6 @@ const Addsale = () => {
                 size="small"
                 value={barcode}
                 placeholder="Scan Barcode"
-                // inputRef={inputRef10}
-                // onKeyDown={handleKeyDown}
                     sx={{
                     width: "100%",
                     minWidth: "200px",

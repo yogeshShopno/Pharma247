@@ -1447,8 +1447,6 @@ const EditSaleBill = () => {
               <div >
                 <span className="title mb-2">Bill Date</span>
                 <TextField
-
-
                   id="outlined-number"
                   size="small"
                   value={tableData.bill_date || ""}
@@ -1471,9 +1469,9 @@ const EditSaleBill = () => {
                   Customer Mobile / Name
                 </span>
                 <Autocomplete
-                  value={customer} // Ensure `customer` is a valid object from `customerDetails`.
-                  options={customerDetails}
+                  value={customer} 
                   onChange={handleCustomerOption}
+                  options={customerDetails}
                   getOptionLabel={(option) =>
                     option.name
                       ? `${option.name} [${option.phone_number}] [${option.roylti_point}]`

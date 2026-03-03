@@ -2373,10 +2373,10 @@ const Addsale = () => {
                 value={customer}
                 onChange={handleCustomerOption}
                 inputValue={CustomerSearchQuery}
+                options={customerDetails}
                 onInputChange={(event, newInputValue) => {
                   setCustomerSearchQuery(newInputValue);
                 }}
-                options={customerDetails}
                 getOptionLabel={(option) =>
                   option.name
                     ? `${option.name} [${option.phone_number}] [${option.roylti_point}] `
@@ -2395,11 +2395,11 @@ const Addsale = () => {
                   "@media (max-width:600px)": { minWidth: "250px" },
 
                   '& .MuiAutocomplete-inputRoot': {
-                    padding: '0 !important',
-                    paddingRight: customer ? '65px !important' : '39px !important',
+                    // padding: '0 !important',
+                    // paddingRight: customer ? '65px !important' : '39px !important',
                   },
                   '& .MuiInputBase-root': {
-                    padding: '0',
+                    // padding: '0',
                   }
                 }}
 
@@ -2497,12 +2497,6 @@ const Addsale = () => {
                           {params.InputProps.endAdornment}
                         </>
                       ),
-                    }}
-                    sx={{
-                      "& .MuiInputBase-input::placeholder": {
-                        fontSize: "1rem",
-                        color: "black",
-                      },
                     }}
                   />
                 )}
@@ -2858,7 +2852,6 @@ const Addsale = () => {
 
                 <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                   <>
-
                     <Autocomplete
                       key={autocompleteKey}
                       value={selectedOption}
@@ -3511,7 +3504,7 @@ const Addsale = () => {
                 <label className="font-bold">Today Points : </label>
                 {todayLoyltyPoint || 0}
               </div>
-              
+
               <div
                 className="gap-2 invoice_total_fld"
                 style={{ display: "flex" }}

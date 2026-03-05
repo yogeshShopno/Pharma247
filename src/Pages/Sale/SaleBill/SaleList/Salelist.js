@@ -287,7 +287,8 @@ const Salelist = () => {
             width: '100%',
           }}
         >
-          <div style={{ flex: 1, overflowY: 'auto', width: '100%' }}>
+          <div style={{ flex: 1, overflowY: 'auto', }}>
+            
             <div className="px-4 py-3">
               <div
                 className="sales_hdr_mn"
@@ -354,6 +355,7 @@ const Salelist = () => {
                 style={{ borderColor: "var(--color2)" }}
               ></div>
             </div>
+
             <div className="firstrow px-4">
               <div className="oreder_list_fld flex flex-col gap-2 md:flex-row lg:flex-row ">
                 <div className="detail flex flex-col">
@@ -403,6 +405,7 @@ const Salelist = () => {
                 </div>
               </div>
             </div>
+            
             <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
               <table
                 className="w-full border-collapse custom-table"
@@ -525,6 +528,7 @@ const Salelist = () => {
               </table>
             </div>
           </div>
+
           <div
             className="flex justify-center mt-4"
             style={{

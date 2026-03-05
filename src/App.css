@@ -704,6 +704,7 @@ body {
   height: 40px;
   width: 100%;
   min-width: 150px;
+  z-index: 10;
   
 
 }

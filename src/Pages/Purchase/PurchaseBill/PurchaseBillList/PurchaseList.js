@@ -386,13 +386,14 @@ const Purchasebill = () => {
 
       <div
         style={{
-          minHeight: 'calc(100vh - 64px)', // adjust 64px to your header height
+          minHeight: 'calc(100vh - 64px)', 
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
         }}
       >
         <div style={{ flex: 1, overflowY: 'auto', }}>
+
           <div className="px-4 py-3 ">
             <div
               className="sales_hdr_mn"
@@ -544,7 +545,7 @@ const Purchasebill = () => {
                             label="Type Here"
                             id="filled-basic"
                             size="small"
-                            sx={{ flex: 1, marginLeft: '4px', minWidth: '100px', maxWidth: '250px' ,zIndex:-1 }}
+                            sx={{ marginLeft: '4px', minWidth: '100px', maxWidth: '250px' , }}
                             value={searchTerms[index + 1]}
                             onChange={(e) => handleSearchChange(index + 1, e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -635,7 +636,8 @@ const Purchasebill = () => {
             </table>
           </div>
         </div>
-        {/*<=================================================================================== pagination ===================================================================================> */}
+
+        {/*<=============================================================== pagination ===============================================================> */}
 
         <div
           className="flex justify-center mt-4"
@@ -702,7 +704,7 @@ const Purchasebill = () => {
       </div>
 
 
-      {/*<=================================================================================== Delete Popup ===================================================================================> */}
+      {/*<======================================================= Delete Popup =======================================================> */}
 
       <div
         id="modal"
@@ -757,7 +759,7 @@ const Purchasebill = () => {
           </div>
         </div>
       </div>
-      {/*<=================================================================================== Generate PDF ===================================================================================> */}
+      {/*<============================================================ Generate PDF ============================================================> */}
 
       <Dialog open={openAddPopUp} className="order_list_ml custom-dialog">
         <DialogTitle

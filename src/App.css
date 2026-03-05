@@ -11,7 +11,6 @@
   --color6: #f31c1c;
 }
 
-/* Success toast background */
 .Toastify__toast--success {
   background-color: #fff !important;
   color: #3f6212 !important;
@@ -22,7 +21,6 @@
   stroke: #3f6212 !important;
 }
 
-/* Optional: progress bar color */
 .Toastify__progress-bar--success {
   background: #3f6212 !important;
 }
@@ -294,17 +292,9 @@ body {
   color: green;
 }
 
-/* body .custom-dialog .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
-  max-width: 1900px !important;
-  width: 800px;
-  padding: 10px;
-} */
-
 .pointlogo {
-  /* background: transparent linear-gradient(231deg, #2f3a97, #2a611d) 0 0 no-repeat padding-box; */
-  /* border: 1px solid #fff; */
+ 
   opacity: 1;
-  /* color: #fff; */
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -441,7 +431,6 @@ body {
 
 .itemListContainer {
   max-height: 300px;
-  /* Set this to your desired height */
   overflow-y: auto;
 }
 
@@ -454,10 +443,8 @@ body {
 }
 
 .text-green-500 {
-  /* background-color: rgb(192 233 207); */
   color: green;
-  /* border-radius: 10px; */
-  /* display: grid; */
+ 
 }
 
 .hover-yellow {
@@ -497,7 +484,6 @@ body {
 }
 
 .report-icon {
-  /* left: 6px; */
   width: 20px;
   height: 18px;
 }
@@ -512,10 +498,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* margin-left: 30px; */
   border-radius: 4px;
   cursor: pointer;
-  /* margin-bottom: 25px; */
   box-shadow: 0 2px 4px rgba(17, 17, 17, 0.1);
 }
 
@@ -592,9 +576,7 @@ body {
 
 .inventory-gif {
   max-width: 30%;
-  /* height: 250px; */
-  /* border: 1px solid rgba(4, 76, 157, .5); */
-  /* transition: all .3s ease; */
+ 
   border-radius: 2px;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(128, 116, 116, 0.16);
@@ -742,11 +724,10 @@ body {
   z-index: 1 !important;
 }
 
-/* Make all MUI TextField input containers have z-index 0 */
 .MuiInputBase-root .textfield-z0 {
   z-index: 0 !important;
   position: relative;
-  /* required for z-index to take effect */
+
 }
 
 .auth-page {
@@ -763,7 +744,6 @@ body {
 }
 
 .auth-bg {
-  /* background-image: url('public/tablet.png'); */
   height: 900px;
   width: 1200px;
   background-size: contain;
@@ -781,7 +761,7 @@ body {
 
 .orderStatus {
   background: rgb(98 138 47 / 24%);
-  /* opacity:0.15; */
+
   padding: 5px 10px;
   border-radius: 5px;
   color: #3f6212;
@@ -789,7 +769,7 @@ body {
 
 .pendingStatus {
   background: rgb(246 166 9 / 21%);
-  /* opacity:0.15; */
+
   padding: 5px 10px;
   border-radius: 5px;
   color: #f6a609;
@@ -797,7 +777,6 @@ body {
 
 .dueStatus {
   background: rgba(246, 9, 9, 0.15);
-  /* opacity:0.15; */
   padding: 5px 10px;
   border-radius: 5px;
   color: #f60909;
@@ -828,7 +807,6 @@ body {
 }
 
 .css-1t1j96h-MuiPaper-root-MuiDialog-paper {
-  /* width: 450px !important; */
   width: 100%;
 }
 
@@ -844,7 +822,7 @@ body {
 
 .css-1n4twyu-MuiInputBase-input-MuiOutlinedInput-input {
   background-color: white;
-  /* padding:8.5px 2px !important; */
+
 }
 
 #outlined-number{
@@ -852,9 +830,7 @@ body {
  text-align: 'left',
 }
 
-/* .MuiInputBase-input {
-  text-align: center !important;
-} */
+
 
 button {
   text-transform: capitalize !important;
@@ -863,7 +839,6 @@ button {
 
 
 
-/* rutikacss */
 .dsh_card_chart {
   margin: 0;
 }
@@ -882,9 +857,6 @@ button {
   padding: 10px 20px;
 }
 
-.custom-dialog button {
-  /* color: #fff; */
-}
 
 .invntry-filter {
   width: 300px;
@@ -914,9 +886,6 @@ button {
   border-color: var(--color1);
 }
 
-/* .saleTable td {
-  padding: 16px 8px !important;
-} */
 
 .customreportasccordion {
   background-color: transparent !important;
@@ -949,4 +918,3 @@ button {
   }
 }
 
-/* rutikacssend */

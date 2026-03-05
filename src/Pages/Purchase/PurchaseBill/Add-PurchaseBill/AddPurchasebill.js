@@ -269,8 +269,9 @@ const AddPurchaseBill = () => {
 
       switch (key) {
         case "s":
+          if (isSubmitting) return;
           setBillSaveDraft("1");
-          handleSubmit();
+          handleSubmit("1");
           break;
         case "g":
           handleSubmit();
@@ -294,7 +295,7 @@ const AddPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList]);
+  }, [distributor, billNo, ItemPurchaseList,isSubmitting]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -2188,7 +2189,7 @@ const AddPurchaseBill = () => {
                     sx={{
                       width: "100%",
                       minWidth: "350px",
-                      minHeight:"40px",
+                      minHeight: "40px",
 
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
@@ -2268,7 +2269,7 @@ const AddPurchaseBill = () => {
                     sx={{
                       width: "100%",
                       minWidth: "200px",
-                      minHeight:"40px",
+                      minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "200px" },
                     }}
                     onChange={(e) => {
@@ -2359,7 +2360,7 @@ const AddPurchaseBill = () => {
             <div className="table-container">
               <table className="w-full border-collapse item-table" tabIndex={0} ref={tableRef}>
                 <thead>
-                  <tr  className="input-row">
+                  <tr className="input-row">
                     <th>
                       <div className="flex justify-center items-center gap-2">
                         Search Item Name <span className="text-red-600 ">*</span>
@@ -2387,23 +2388,23 @@ const AddPurchaseBill = () => {
                 </thead>
 
                 <tbody>
-                {/*<======================================================== Input row (add/edit)   =======================================================> */}
+                  {/*<======================================================== Input row (add/edit)   =======================================================> */}
                   <tr className="input-row">
 
-                    <td style={{ fontSize: 15,height:"47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
+                    <td style={{ fontSize: 15, height: "47px", minWidth: 400, width: "100%", display: 'flex', alignItems: 'center', justifyContent: 'start', }}>
                       {isEditMode ? (
-                        <div  style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
-                            <DeleteIcon
-                              className="delete-icon mr-2"
-                              onClick={() => {
-                                setIsEditMode(false);
-                                setTimeout(() => {
-                                  removeItem();
-                                  inputRefs.current[2]?.focus();
-                                }, 0);
-                              }}
-                            />
-                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}                    
+                        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'left', }}>
+                          <DeleteIcon
+                            className="delete-icon mr-2"
+                            onClick={() => {
+                              setIsEditMode(false);
+                              setTimeout(() => {
+                                removeItem();
+                                inputRefs.current[2]?.focus();
+                              }, 0);
+                            }}
+                          />
+                          {searchItem.slice(0, 30)}{searchItem.length > 30 ? '...' : ''}
                         </div>
                       ) : (
                         <Autocomplete
@@ -3076,81 +3077,81 @@ const AddPurchaseBill = () => {
                       </td>
                     </tr>
                   ) : (ItemPurchaseList?.item?.map((item, index) => (
-                      <tr
-                        key={item.id}
-                        onClick={() => {
-                          setSelectedIndex(index);
-                          handleEditClick(item);
-                        }}
-                        className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                        style={{borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none',}}
-                      >
-                        <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left"}}>
-                          <div>
-                            <BorderColorIcon
-                              style={{ color: "var(--color1)" }}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleEditClick(item);
-                              }}
-                            />
-                            <DeleteIcon
-                              style={{ color: "var(--color6)" }}
-                              className="delete-icon bg-none"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                deleteOpen(item.id);
-                              }}
-                            />
-                          </div>
-                          <span style={{ alignSelf: "center" }}>
-                            {item.iteam_name ? item.iteam_name : "-----"}
-                          </span>
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.weightage ? item.weightage : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.batch_number ? item.batch_number : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.expiry ? item.expiry : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.mrp ? item.mrp : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.qty ? item.qty : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.free_qty ? item.free_qty : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.ptr ? item.ptr : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.discount ? item.discount : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.base_price ? item.base_price : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.gst ? item.gst : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.location ? item.location : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.net_rate ? item.net_rate : "-----"}
-                        </td>
-                        <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                          {item.margin ? item.margin : "-----"}
-                        </td>
-                        <td className="total" style={{fontWeight:"bold", textAlign: "center", verticalAlign: "middle" }}>
-                          {item.total_amount ? item.total_amount : "-----"}
-                        </td>
-                      </tr>
-                    ))
+                    <tr
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedIndex(index);
+                        handleEditClick(item);
+                      }}
+                      className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
+                      style={{ borderBottom: index !== ItemPurchaseList.item.length - 1 ? '1px solid #e0e0e0' : 'none', }}
+                    >
+                      <td style={{ display: "flex", gap: "5px", textAlign: "left", verticalAlign: "left" }}>
+                        <div>
+                          <BorderColorIcon
+                            style={{ color: "var(--color1)" }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditClick(item);
+                            }}
+                          />
+                          <DeleteIcon
+                            style={{ color: "var(--color6)" }}
+                            className="delete-icon bg-none"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              deleteOpen(item.id);
+                            }}
+                          />
+                        </div>
+                        <span style={{ alignSelf: "center" }}>
+                          {item.iteam_name ? item.iteam_name : "-----"}
+                        </span>
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.weightage ? item.weightage : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.batch_number ? item.batch_number : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.expiry ? item.expiry : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.mrp ? item.mrp : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.qty ? item.qty : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.free_qty ? item.free_qty : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.ptr ? item.ptr : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.discount ? item.discount : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.base_price ? item.base_price : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.gst ? item.gst : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.location ? item.location : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.net_rate ? item.net_rate : "-----"}
+                      </td>
+                      <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                        {item.margin ? item.margin : "-----"}
+                      </td>
+                      <td className="total" style={{ fontWeight: "bold", textAlign: "center", verticalAlign: "middle" }}>
+                        {item.total_amount ? item.total_amount : "-----"}
+                      </td>
+                    </tr>
+                  ))
                   )}
                 </tbody>
               </table>

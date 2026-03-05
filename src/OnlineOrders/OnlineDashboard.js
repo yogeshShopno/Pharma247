@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Header from '../dashboard/Header';
+import Header from '../Pages/Header';
 import { Button } from "@mui/material";
 import { useHistory } from "react-router-dom/cjs/react-router-dom";
 import Loader from '../componets/loader/Loader';

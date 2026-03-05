@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import Header from "../../dashboard/Header"
+import Header from "../../Pages/Header"
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const ErrorImage = process.env.PUBLIC_URL + '/errorImage.png';
 

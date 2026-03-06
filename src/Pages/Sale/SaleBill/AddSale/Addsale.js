@@ -1629,7 +1629,7 @@ const Addsale = () => {
         }
 
         const timeout = setTimeout(() => {
-          setIsSubmitting(false);
+      
           history.push("/salelist");
         }, 2000);
 

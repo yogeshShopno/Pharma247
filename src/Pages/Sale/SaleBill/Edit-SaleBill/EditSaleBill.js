@@ -137,6 +137,8 @@ const EditSaleBill = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
 
   const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
@@ -312,7 +314,7 @@ const EditSaleBill = () => {
 
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
+    const handleKeyDown = async (event) => {
       if (!event.altKey || event.repeat) return;
 
       const key = event.key.toLowerCase();
@@ -320,18 +322,10 @@ const EditSaleBill = () => {
 
       switch (key) {
         case "s":
-          // Use setTimeout to ensure state is properly captured
-          setTimeout(() => {
-            handleUpdate("1");
-          }, 0);
+          if (isSubmitting) return;
+          await handleSubmit("1");
           break;
-
-        case "p":
-          setTimeout(() => {
-            handleUpdate("1");
-          }, 0);
-          break;
-
+          
         case "m":
           setIsEditMode(false);
           setSelectedEditItemId(null);
@@ -1176,7 +1170,11 @@ const EditSaleBill = () => {
     }
   };
 
-  const handleUpdate = (draft) => {
+  const handleSubmit = (draft) => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
 
     setUnsavedItems(false);
 
@@ -1192,10 +1190,17 @@ const EditSaleBill = () => {
 
     // Use a small delay to ensure all state updates are captured
     setTimeout(() => {
-      updateSaleData(draft);
+      submitSaleData(draft);
     }, 50);
   };
-  const updateSaleData = async (draft) => {
+  const submitSaleData = async (draft) => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
+    setIsSubmitting(true);
+
+
     // Ensure we have the current values
     const currentCustomer = customer;
     const currentSaleAllData = tableData;
@@ -1263,6 +1268,8 @@ const EditSaleBill = () => {
     } catch (error) {
       console.error("API error:", error);
       toast.dismiss();
+      setIsSubmitting(false);
+
       toast.error("Failed to save the bill");
     }
   };
@@ -1411,7 +1418,7 @@ const EditSaleBill = () => {
                   background: "var(--color1)",
                 }}
                 className="payment_btn_divv"
-                onClick={() => handleUpdate("1")}
+                onClick={() => handleSubmit("1")}
               >
                 Update
               </Button>
@@ -1469,7 +1476,7 @@ const EditSaleBill = () => {
                   Customer Mobile / Name
                 </span>
                 <Autocomplete
-                  value={customer} 
+                  value={customer}
                   onChange={handleCustomerOption}
                   options={customerDetails}
                   getOptionLabel={(option) =>

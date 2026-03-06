@@ -296,7 +296,7 @@ const Addsale = () => {
 
       switch (key) {
         case "s":
-          setIsSubmitting(true);
+          if (isSubmitting) return;
           setBillSaveDraft("1");
           await handleSubmit("1");
           break;
@@ -1490,8 +1490,7 @@ const Addsale = () => {
       toast.warning("Please wait, request in progress...");
       return;
     }
-    setIsSubmitting(true);
-    setUnsavedItems(false);
+
 
     await new Promise(resolve => setTimeout(resolve, 0));
 
@@ -1515,9 +1514,10 @@ const Addsale = () => {
     }
     setError(newErrors);
     if (Object.keys(newErrors).length > 0) {
-      setIsSubmitting(false);
       return;
     }
+    setUnsavedItems(false);
+
     submitSaleData(draft);
   };
 
@@ -1526,6 +1526,8 @@ const Addsale = () => {
       toast.warning("Please wait, request in progress...");
       return;
     }
+    setIsSubmitting(true);
+
 
     let data = new FormData();
     // data.append("bill_no", localStorage.getItem('BillNo') ? localStorage.getItem('BillNo') : '');
@@ -1637,11 +1639,13 @@ const Addsale = () => {
         setIsSubmitting(false);
         toast.dismiss();
         toast.error(response.data.message);
+
+        
       }
 
 
     } catch (error) {
-      const timeout = setTimeout(() => {
+       const timeout = setTimeout(() => {
         setIsSubmitting(false);
       }, 1000);
       setSubmitTimeout(timeout);
@@ -2286,7 +2290,7 @@ const Addsale = () => {
             </Select>
 
             <div
-              className="relative inline-block z-index-1000"
+              className="relative inline-block"
               onMouseEnter={() => {
                 clearTimeout(timeoutRef.current);
                 setIsOpen(true);

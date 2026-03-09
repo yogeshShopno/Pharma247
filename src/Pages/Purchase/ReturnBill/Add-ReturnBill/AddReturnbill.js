@@ -128,6 +128,7 @@ const AddReturnbill = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
 
   /*<============================================================================ Input ref on keydown enter ===================================================================> */
@@ -221,11 +222,15 @@ const AddReturnbill = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-      if (!event.altKey) return; // Exit early if Alt is not pressed
+            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+      if (!isAltCombo || event.repeat) return;
+
 
       event.preventDefault(); // Prevent default browser behavior
 
       if (event.key.toLowerCase() === "s") {
+        if (isSubmitting) return;
+
         handleSubmit();
       } else if (event.key.toLowerCase() === "g") {
         handleSubmit();
@@ -245,7 +250,7 @@ const AddReturnbill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, tableData]);
+  }, [distributor, billNo, tableData,isSubmitting]);
 
   /*<================================================================================== handle shortcut  =========================================================================> */
 
@@ -605,6 +610,10 @@ const AddReturnbill = () => {
   };
 
   const handleSubmit = () => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
     const newErrors = {};
     if (!distributor) {
       newErrors.distributor = "Please select Distributor";
@@ -628,6 +637,13 @@ const AddReturnbill = () => {
   };
 
   const submitPurchaseData = async () => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
+
+    setIsSubmitting(true);
+
     const hasUncheckedItems = tableData?.item_list.every(
       (item) => item.iss_check === false
     );
@@ -684,6 +700,8 @@ const AddReturnbill = () => {
             toast.dismiss();
             toast.success(response.data.message);
             setTimeout(() => {
+              setIsSubmitting(false);
+
               history.push("/purchase/return");
             }, 2000);
             if (response.data.status === 401) {
@@ -693,6 +711,11 @@ const AddReturnbill = () => {
           });
       } catch (error) {
         console.error("API error:", error);
+
+        const timeout = setTimeout(() => {
+          setIsSubmitting(false);
+        }, 1000);
+        setSubmitTimeout(timeout);
       }
     }
   };
@@ -990,7 +1013,6 @@ const AddReturnbill = () => {
                       width: "100%",
                       minWidth: "350px",
                       minHeight: "40px",
-
                       "@media (max-width:600px)": { minWidth: "250px" },
                     }}
                     size="small"
@@ -1002,8 +1024,6 @@ const AddReturnbill = () => {
                         autoFocus
                         autoComplete="off"
                         variant="outlined"
-                        error={!!error.distributor}
-                        helperText={error.distributor}
                         {...params}
                         inputRef={(el) => (inputRefs.current[0] = el)}
                         onKeyDown={(e) => handleKeyDown(e, 0)}
@@ -1025,8 +1045,6 @@ const AddReturnbill = () => {
                       minHeight: "40px",
                       "@media (max-width:600px)": { minWidth: "200px" },
                     }}
-                    error={!!error.billNo}
-                    helperText={error.billNo}
                     value={billNo}
                     disabled
                     inputRef={(el) => (inputRefs.current[1] = el)}
@@ -1058,7 +1076,6 @@ const AddReturnbill = () => {
                       className="custom-datepicker "
                       selected={startDate}
                       error={!!errors.startDate}
-                      helperText={errors.startDate}
                       onChange={(newDate) => setStartDate(newDate)}
                       dateFormat="MM/yyyy"
                       showMonthYearPicker
@@ -1093,9 +1110,7 @@ const AddReturnbill = () => {
                       if (e.key === "Enter") {
                         filterData(searchItem);
                       }
-                    }}
-
-                  >
+                    }}>
                     <span className="flex align-center mr-4">
                       <svg width="20" height="20" fill="white" className="mr-4" ><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"></path></svg>
                       Filter

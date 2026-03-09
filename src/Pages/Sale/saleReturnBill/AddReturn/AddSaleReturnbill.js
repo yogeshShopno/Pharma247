@@ -266,7 +266,7 @@ const Salereturn = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [customer, tableData]);
+    }, [customer, tableData,isSubmitting]);
 
 
     useEffect(() => {

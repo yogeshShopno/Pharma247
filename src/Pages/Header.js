@@ -57,7 +57,9 @@ const Header = () => {
         });
     } catch (error) {
       console.error("API error:", error?.response?.status);
-      if (error?.response?.status === 401) {
+      if (error?.response?.status == 401) {
+        history.push("/");
+        localStorage.clear();
       }
     }
   };
@@ -128,7 +130,13 @@ const Header = () => {
 
           history.push("/");
         });
+
     } catch (error) {
+      if (error.response.status === 401) {
+
+             history.push("/");
+        localStorage.clear();
+      }
       console.error("API error:", error);
       setIsClear(true);
     }

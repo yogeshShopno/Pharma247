@@ -17,7 +17,7 @@ import Select from "@mui/material/Select";
 // import { FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import Loader from "../componets/loader/Loader";
-// import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 // import stockByPTR from '../Image/ptr.jpg'
 // import stockByPTROne from '../Image/stockbyptr.png'
 // import stockByMRP from '../Image/mrp.jpg'
@@ -51,7 +51,7 @@ import {
 // import BarChartIcon from '@mui/icons-material/BarChart';
 // import ListIcon from '@mui/icons-material/List';
 const Dashboard = () => {
-  // const history = useHistory()
+  const history = useHistory()
 
   const token = localStorage.getItem("token");
 

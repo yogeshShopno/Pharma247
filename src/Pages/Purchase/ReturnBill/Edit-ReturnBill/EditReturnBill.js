@@ -900,7 +900,7 @@ const EditReturnBill = () => {
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
         data.append("bill_no", billNo == null ? "0" : billNo);
-        data.append("bill_date",selectedDate ? format(selectedDate, "yyyy-MM-dd") : "")  
+        data.append("bill_date", selectedDate ? format(selectedDate, "yyyy-MM-dd") : "")
         data.append('remark', remark == null ? "0" : remark)
         data.append("discount", 0);
         // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
@@ -936,10 +936,8 @@ const EditReturnBill = () => {
         } catch (error) {
             console.error("API error:", error);
 
-            const timeout = setTimeout(() => {
-                setIsSubmitting(false);
-            }, 1000);
-            setSubmitTimeout(timeout);
+            setIsSubmitting(false);
+
 
         }
     }

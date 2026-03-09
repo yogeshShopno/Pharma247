@@ -102,6 +102,7 @@ const Salereturn = () => {
     const [errors, setErrors] = useState({});
     const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -225,24 +226,33 @@ const Salereturn = () => {
     }, []);
 
     const customerRef = useRef(customer);
+
     useEffect(() => {
         customerRef.current = customer;
     }, [customer]);
 
     useEffect(() => {
         const handleKeyDown = (event) => {
+
             const isAltCombo = event.altKey || event.getModifierState("AltGraph");
             if (!isAltCombo || event.repeat) return;
+
             const key = event.key.toLowerCase();
             event.preventDefault();
+
             if (key === "s") {
+                if (isSubmitting) return;
+
                 if (!customer || !customer.id) {
                     toast.dismiss();
                     toast.error('Please select customer');
                     setError({ customer: "Please select customer" });
                     return;
                 }
-                handleSubmit();
+                setTimeout(() => {
+                    handleSubmit();
+
+                }, 100);
             } else if (key === "m") {
                 removeItem();
                 setSelectedEditItemId(null);
@@ -256,7 +266,7 @@ const Salereturn = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [customer]);
+    }, [customer, tableData]);
 
 
     useEffect(() => {
@@ -583,6 +593,11 @@ const Salereturn = () => {
     };
 
     const handleSubmit = () => {
+        if (isSubmitting) {
+            toast.warning("Please wait, request in progress...");
+            return;
+        }
+
         const newErrors = {};
         if (!customer || !customer.id) {
             newErrors.customer = 'Please select customer';
@@ -592,6 +607,7 @@ const Salereturn = () => {
             return;
         }
         if (!tableData || !Array.isArray(tableData.sales_item) || tableData.sales_item.length === 0) {
+            console.log(tableData, "tableData")
             newErrors.sales_item = 'Please add at least one item';
             toast.dismiss();
             toast.error('Please add at least one item');
@@ -603,6 +619,12 @@ const Salereturn = () => {
     }
 
     const submitSaleReturnData = async () => {
+        if (isSubmitting) {
+            toast.warning("Please wait, request in progress...");
+            return;
+        }
+
+        setIsSubmitting(true);
         const hasUncheckedItems = tableData?.sales_item.every(item => item.iss_check === false)
         if (hasUncheckedItems) {
             toast.dismiss();
@@ -648,11 +670,14 @@ const Salereturn = () => {
                     setUnsavedItems(false);
 
                     setTimeout(() => {
+
+                        setIsSubmitting(false);
                         history.push('/saleReturn/list');
                     }, 2000);
                 })
             } catch (error) {
                 console.error("API error:", error);
+                setIsSubmitting(false);
 
             }
         }
@@ -890,7 +915,6 @@ const Salereturn = () => {
                                 id="outlined-number"
                                 type='number'
                                 size="small"
-                                error={!!error.billNo}
                                 sx={{
                                     width: "100%",
                                     minWidth: "200px",
@@ -958,7 +982,7 @@ const Salereturn = () => {
                                     />
                                 )}
                             />
-                            {error.customer && <span style={{ color: 'red', fontSize: '14px' }}>{error.customer}</span>}
+
                         </div>
 
                         <div >
@@ -1103,7 +1127,7 @@ const Salereturn = () => {
                             <tr className="input-row">
                                 <td className="p-0">
                                     {isEditMode ? (
-                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end'  }}>
+                                        <div style={{ fontSize: 15, fontWeight: 600, minWidth: 366, padding: 0, display: 'flex', alignItems: 'flex-end' }}>
                                             <DeleteIcon className="delete-icon mr-2" onClick={removeItem} />
                                             {searchItem?.slice(0, 30)}{searchItem?.length > 30 ? '...' : ''}
                                         </div>

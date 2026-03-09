@@ -233,7 +233,7 @@ const EditPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList, purchase,isSubmitting]);
+  }, [distributor, billNo, ItemPurchaseList, purchase, isSubmitting]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -1196,7 +1196,7 @@ const EditPurchaseBill = () => {
       toast.dismiss();
       toast.error(error.data.message);
       console.error("API error:", error);
-    setIsSubmitting(false);
+      setIsSubmitting(false);
 
     }
   };

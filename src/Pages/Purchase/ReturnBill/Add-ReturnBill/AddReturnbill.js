@@ -712,10 +712,8 @@ const AddReturnbill = () => {
       } catch (error) {
         console.error("API error:", error);
 
-        const timeout = setTimeout(() => {
           setIsSubmitting(false);
-        }, 1000);
-        setSubmitTimeout(timeout);
+       
       }
     }
   };

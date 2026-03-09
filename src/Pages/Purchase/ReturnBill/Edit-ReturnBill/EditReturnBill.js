@@ -103,6 +103,7 @@ const EditReturnBill = () => {
     const [showModal, setShowModal] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
@@ -292,11 +293,13 @@ const EditReturnBill = () => {
 
     useEffect(() => {
         const handleKeyDown = (event) => {
-            if (!event.altKey) return;
-
+            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+            if (!isAltCombo || event.repeat) return;
             event.preventDefault();
 
             if (event.key.toLowerCase() === "s") {
+
+                if (isSubmitting) return;
                 if (!isLoading && distributor && distributor.id && billNo && billNo.trim() !== '' && tableData) {
                     setTimeout(() => {
                         handleReturnUpdate();
@@ -321,7 +324,7 @@ const EditReturnBill = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isLoading, distributor, billNo, tableData]);
+    }, [isLoading, distributor, billNo, tableData, isSubmitting]);
 
     /*<================================================================ calculation ======================================================================> */
 
@@ -850,7 +853,10 @@ const EditReturnBill = () => {
     /*<================================================================ handle Edit bill validation   ======================================================================> */
 
     const handleReturnUpdate = () => {
-
+        if (isSubmitting) {
+            toast.warning("Please wait, request in progress...");
+            return;
+        }
         const newErrors = {};
 
         // Check if data is loaded and distributor exists
@@ -884,10 +890,17 @@ const EditReturnBill = () => {
 
 
     const updatePurchaseRecord = async () => {
+        if (isSubmitting) {
+            toast.warning("Please wait, request in progress...");
+            return;
+        }
+
+        setIsSubmitting(true);
+
         let data = new FormData();
         data.append("distributor_id", distributor?.id);
         data.append("bill_no", billNo == null ? "0" : billNo);
-        data.append("bill_date", selectedDate == null ? "0" : selectedDate)
+        data.append("bill_date",selectedDate ? format(selectedDate, "yyyy-MM-dd") : "")  
         data.append('remark', remark == null ? "0" : remark)
         data.append("discount", 0);
         // data.append('start_date', startDate ? format(startDate, 'MM-yyyy') : '');
@@ -917,11 +930,16 @@ const EditReturnBill = () => {
             ).then((response) => {
                 setUnsavedItems(false)
                 setSaveValue(true)
+                setIsSubmitting(false);
                 history.push('/purchase/return');
-
             })
         } catch (error) {
             console.error("API error:", error);
+
+            const timeout = setTimeout(() => {
+                setIsSubmitting(false);
+            }, 1000);
+            setSubmitTimeout(timeout);
 
         }
     }

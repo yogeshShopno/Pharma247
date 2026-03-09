@@ -1629,7 +1629,7 @@ const Addsale = () => {
         }
 
         const timeout = setTimeout(() => {
-      
+
           history.push("/salelist");
         }, 2000);
 
@@ -1640,12 +1640,12 @@ const Addsale = () => {
         toast.dismiss();
         toast.error(response.data.message);
 
-        
+
       }
 
 
     } catch (error) {
-       const timeout = setTimeout(() => {
+      const timeout = setTimeout(() => {
         setIsSubmitting(false);
       }, 1000);
       setSubmitTimeout(timeout);
@@ -2548,7 +2548,7 @@ const Addsale = () => {
                 }
 
                 // loading={isLoading}
-               sx={{
+                sx={{
 
                   width: "100%",
                   minWidth: "350px",
@@ -2621,7 +2621,7 @@ const Addsale = () => {
               />
             </div>
             <div
-        
+
             >
               <span
                 className="heading mb-2 title"
@@ -2646,12 +2646,12 @@ const Addsale = () => {
                 size="small"
                 value={barcode}
                 placeholder="Scan Barcode"
-                    sx={{
-                    width: "100%",
-                    minWidth: "200px",
-                    minHeight: "40px",
-                    "@media (max-width:600px)": { minWidth: "200px" },
-                  }}
+                sx={{
+                  width: "100%",
+                  minWidth: "200px",
+                  minHeight: "40px",
+                  "@media (max-width:600px)": { minWidth: "200px" },
+                }}
                 onChange={(e) => {
                   setBarcode(e.target.value);
                 }}
@@ -3486,7 +3486,7 @@ const Addsale = () => {
                 style={{ display: "flex" }}
               >
                 <label className="font-bold">Today Points : </label>
-                {todayLoyltyPoint || 0}
+                {customer ? todayLoyltyPoint : 0}
               </div>
 
               <div

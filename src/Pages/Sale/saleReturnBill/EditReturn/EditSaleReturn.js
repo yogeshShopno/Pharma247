@@ -104,7 +104,8 @@ const EditSaleReturn = () => {
   const [unsavedItems, setUnsavedItems] = useState(false);
   const [nextPath, setNextPath] = useState("");
   const [uniqueId, setUniqueId] = useState([]);
-  const [selectedIndex, setSelectedIndex] = useState(-1); // Index of selected row
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [isAutocompleteDisabled, setAutocompleteDisabled] = useState(true);
 
@@ -151,6 +152,7 @@ const EditSaleReturn = () => {
         }, 100);
       }
       if (e.altKey && e.key === "s") {
+        if (isSubmitting) return;
         editSaleReturnBill();
       }
       if (isInputFocused) return;
@@ -175,7 +177,7 @@ const EditSaleReturn = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [tableData, selectedIndex]);
+  }, [tableData, selectedIndex,isSubmitting]);
 
   // New function specifically for arrow key navigation that works even when input is focused
   const handleArrowNavigation = (e) => {
@@ -394,6 +396,12 @@ const EditSaleReturn = () => {
   };
 
   const editSaleReturnBill = async () => {
+    if (isSubmitting) {
+      toast.warning("Please wait, request in progress...");
+      return;
+    }
+    setIsSubmitting(true);
+
     const hasUncheckedItems = tableData?.sales_iteam?.every(
       (item) => item.iss_check === false
     );
@@ -442,11 +450,15 @@ const EditSaleReturn = () => {
             toast.success(response.data.message);
             localStorage.removeItem("RandomNumber");
             setTimeout(() => {
+              setIsSubmitting(false);
+
               history.push("/saleReturn/list");
             }, 2000);
           });
       } catch (error) {
         console.error("API error:", error);
+        setIsSubmitting(false);
+
       }
     }
   };
@@ -1332,7 +1344,7 @@ const EditSaleReturn = () => {
                 <tr
                   key={item.id}
                   className={`item-List cursor-pointer ${index === selectedIndex ? "highlighted-row" : ""}`}
-                    style={{ borderBottom: index !== filteredItems.length - 1 ? '1px solid #e0e0e0' : 'none', }}
+                  style={{ borderBottom: index !== filteredItems.length - 1 ? '1px solid #e0e0e0' : 'none', }}
                   onClick={() => {
                     handleEditClick(item);
                     setSelectedIndex(index);

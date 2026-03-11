@@ -315,7 +315,7 @@ const Addsale = () => {
           setSearchItem("");
           setValue("");
           setItem("");
-          setItemId(null);
+          setItemId("");
           resetValue();
           setExpiryDate("");
           setMRP("");
@@ -649,6 +649,7 @@ const Addsale = () => {
       setOrder(selectedEditItem.order);
       setItemAmount(selectedEditItem.net_rate);
 
+
       inputRef5.current.focus();
     }
   }, [selectedEditItem]);
@@ -719,18 +720,18 @@ const Addsale = () => {
     const cacheKey = `${normalizedTerm}_page_${pageNumber}`;
 
     // ✅ Cache only first page
-    if (pageNumber === 1 && itemCache.current.has(cacheKey)) {
-      setItemList(itemCache.current.get(cacheKey));
-      setIsFetchingMore(false);
-      return;
-    }
+    // if (pageNumber === 1 && itemCache.current.has(cacheKey)) {
+    //   setItemList(itemCache.current.get(cacheKey));
+    //   setIsFetchingMore(false);
+    //   return;
+    // }
 
-    if (searchAbortController.current) {
-      searchAbortController.current.abort();
-    }
+    // if (searchAbortController.current) {
+    //   searchAbortController.current.abort();
+    // }
 
-    searchAbortController.current = new AbortController();
-    lastSearchTerm.current = normalizedTerm;
+    // searchAbortController.current = new AbortController();
+    // lastSearchTerm.current = normalizedTerm;
 
     let data = new FormData();
     data.append("search", normalizedTerm);
@@ -739,7 +740,7 @@ const Addsale = () => {
 
     try {
       const res = await axios.post("items-list", data, {
-        signal: searchAbortController.current.signal,
+        // signal: searchAbortController.current.signal,
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -749,7 +750,7 @@ const Addsale = () => {
 
       if (pageNumber === 1) {
         setItemList(newData);
-        itemCache.current.set(cacheKey, newData);
+        // itemCache.current.set(cacheKey, newData);
       } else {
         setItemList((prev) => {
           const existingIds = new Set(prev.map((i) => i.id));
@@ -794,7 +795,7 @@ const Addsale = () => {
 
     const itemName = newValue ? newValue.iteam_name : "";
     setSearchItem(itemName);
-    setItemId(newValue?.id);
+    setItemId(newValue?.id || "");
     setIsVisible(!!newValue);
 
 
@@ -826,38 +827,21 @@ const Addsale = () => {
   };
 
   const handlePassData = (event) => {
-    const updates = {
-      itemId: event.item_id,
-      selectedOption: event,
-      selectedEditItemId: event.id,
-      searchItem: event.iteam_name,
-      batch: event.batch_number,
-      item: event.iteam_name,
-      unit: event.unit,
-      expiryDate: event.expiry_date,
-      mrp: event.mrp,
-      maxQty: event.stock,
-      base: event.mrp,
-      gst: event.gst_name,
-      loc: event.location,
-      tempQty: event.qty,
-    };
 
-    setItemId(updates.itemId);
-    setSelectedOption(updates.selectedOption);
-    setSelectedEditItemId(updates.selectedEditItemId);
-    setSearchItem(updates.searchItem);
-    setBatch(updates.batch);
-    setItem(updates.item);
-    setUnit(updates.unit);
-    setExpiryDate(updates.expiryDate);
-    setMRP(updates.mrp);
-    setMaxQty(updates.maxQty);
-    setBase(updates.base);
-    setGst(updates.gst);
-    setLoc(updates.loc);
-    setTempQty(updates.tempQty);
-
+    setItemId(event.item_id);
+    setSelectedOption(event);
+    setSelectedEditItemId(event.id);
+    setSearchItem(event.iteam_name);
+    setBatch(event.batch_number);
+    setItem(event.iteam_name);
+    setUnit(event.unit);
+    setExpiryDate(event.expiryDate);
+    setMRP(event.mrp);
+    setMaxQty(event.stock);
+    setBase(event.base);
+    setGst(event.gst_name);
+    setLoc(event.loc);
+    setTempQty(event.tempQty);
     if (inputRef5.current) {
       inputRef5.current.focus();
     }
@@ -1252,13 +1236,14 @@ const Addsale = () => {
     setIsEditMode(true);
     setSelectedEditItemId();
     setSelectedOption(item);
+    console.log(item)
 
     const found = uniqueItems.find(u => u.id === item.id);
 
     if (found) {
-      setMaxQty(found.stock);
+      setMaxQty(found.total_stock);
     } else {
-      setMaxQty(item.stock);
+      setMaxQty(item.total_stock);
     }
   };
 
@@ -1716,37 +1701,26 @@ const Addsale = () => {
 
   useEffect(() => {
     if (itemId) {
-      batchList(itemId);
+      batchList();
     }
+    console.log(itemId)
   }, [itemId]);
 
-  const batchList = async (id) => {
-    if (!id) return;
+  const batchList = async () => {
+    if (!itemId) return;
 
-    if (batchCache.current.has(id)) {
-      const cachedData = batchCache.current.get(id);
-      setBatchListData(cachedData.batchList);
-      setIsAlternative(cachedData.isAlternative);
-      return;
-    }
-
-    if (batchAbortController.current) {
-      batchAbortController.current.abort();
-    }
-
-    batchAbortController.current = new AbortController();
 
     let data = new FormData();
-    data.append("iteam_id", id);
+    data.append("iteam_id", itemId);
 
     const params = {
-      iteam_id: id,
+      iteam_id: itemId,
     };
 
     try {
       const res = await axios.post("batch-list?", data, {
         params: params,
-        signal: batchAbortController.current.signal,
+        // signal: batchAbortController.current.signal,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -1756,10 +1730,6 @@ const Addsale = () => {
       const batchList = res.data.data;
       const isAlternative = res.data.alternative_item_check;
 
-      batchCache.current.set(id, {
-        batchList,
-        isAlternative,
-      });
 
       setBatchListData(batchList);
       setIsAlternative(isAlternative);
@@ -1772,16 +1742,16 @@ const Addsale = () => {
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (searchAbortController.current) {
-        searchAbortController.current.abort();
-      }
-      if (batchAbortController.current) {
-        batchAbortController.current.abort();
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   return () => {
+  //     if (searchAbortController.current) {
+  //       searchAbortController.current.abort();
+  //     }
+  //     if (batchAbortController.current) {
+  //       batchAbortController.current.abort();
+  //     }
+  //   };
+  // }, []);
 
   /*<=============================================================== generate random number  ==========================================================> */
 
@@ -1816,7 +1786,6 @@ const Addsale = () => {
       setSearchItem("");
       setBarcodeItemName("");
       setSelectedOption(null);
-
     }
 
     const isValid = Object.keys(newErrors).length === 0;
@@ -1912,9 +1881,7 @@ const Addsale = () => {
         setLoc("");
         setOrder("");
         setIsEditMode(false);
-
-
-
+        setItemId("");
         setTotalAmount(0);
         saleItemList();
       }
@@ -1933,31 +1900,7 @@ const Addsale = () => {
   /*<===================================================== qty validation and calculation  ================================================> */
 
   const handleQtyChange = (e) => {
-    const val = e.target.value;
 
-    if (/^0\d+/.test(val)) return;
-
-    if (val === "") {
-      setQty("");
-      setOrder("");
-      return;
-    }
-
-    const enteredValue = Number(val);
-
-    if (enteredValue <= maxQty) {
-      setQty(enteredValue);
-      if (enteredValue === maxQty) {
-        setOrder("O");
-      } else {
-        setOrder("");
-      }
-    } else {
-      toast.dismiss();
-      toast.error("Can't add qty more than stock");
-      setQty(maxQty);
-      setOrder("O");
-    }
   };
 
 
@@ -3258,12 +3201,16 @@ const Addsale = () => {
                       }
                     }}
                     onChange={(e) => {
-                      handleQtyChange(e);
-                      if (
-                        (e.key === "Enter" || e.key === "Tab") &&
-                        Number(qty) === maxQty
-                      ) {
-                        setOrder("O");
+                      const val = e.target.value;
+                      if (/^0\d+/.test(val)) return;
+                      const numVal = Number(val);
+                      if (numVal <= maxQty) {
+                        setQty(val);
+                        setOrder(numVal === maxQty ? "O" : "");
+                      } else {
+                        setQty(maxQty);
+                        toast.dismiss();
+                        toast.error("Can't add qty more than stock");
                       }
                     }}
                   />
@@ -3384,7 +3331,7 @@ const Addsale = () => {
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.mrp || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.base || "-----"}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst || "-----"}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.gst_name || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.qty || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.location || "-----"}</td>
                   <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.order ? item.order : "------"}</td>
@@ -4580,8 +4527,7 @@ const Addsale = () => {
                               style={{
                                 textAlign: "center",
                                 fontSize: "16px",
-                                fontWeight: 600,
-                                padding: "20px"
+                                fontWeight: 600,                            
                               }}
                             >
                               No history found
@@ -4662,6 +4608,7 @@ const Addsale = () => {
             return false;
           }}
         />
+
         <div
           id="modal"
           value={openModal}

@@ -672,6 +672,7 @@ const Addsale = () => {
 
     const isBarcodeInput = inputSpeed < 50;
     const debounceTime = isBarcodeInput ? 100 : 500;
+
     const SearchTimer = setTimeout(() => {
       if (searchItem) {
         setPage(1);
@@ -798,8 +799,6 @@ const Addsale = () => {
     setItemId(newValue?.id || "");
     setIsVisible(!!newValue);
 
-
-
     if (!itemName) {
       setExpiryDate("");
       setMRP("");
@@ -835,9 +834,9 @@ const Addsale = () => {
     setBatch(event.batch_number);
     setItem(event.iteam_name);
     setUnit(event.unit);
-    setExpiryDate(event.expiryDate);
+    setExpiryDate(event.expiry_date);
     setMRP(event.mrp);
-    setMaxQty(event.stock);
+    setMaxQty(event.qty);
     setBase(event.base);
     setGst(event.gst_name);
     setLoc(event.loc);
@@ -1236,15 +1235,15 @@ const Addsale = () => {
     setIsEditMode(true);
     setSelectedEditItemId();
     setSelectedOption(item);
-    console.log(item)
+    setMaxQty(item.total_stock);
 
-    const found = uniqueItems.find(u => u.id === item.id);
+    // const found = uniqueItems.find(u => u.id === item.id);
+    // if (found) {
+    //   setMaxQty(found.total_stock);
+    // } else {
+    //   setMaxQty(item.total_stock);
+    // }
 
-    if (found) {
-      setMaxQty(found.total_stock);
-    } else {
-      setMaxQty(item.total_stock);
-    }
   };
 
   useEffect(() => {
@@ -1703,7 +1702,6 @@ const Addsale = () => {
     if (itemId) {
       batchList();
     }
-    console.log(itemId)
   }, [itemId]);
 
   const batchList = async () => {
@@ -1893,14 +1891,12 @@ const Addsale = () => {
       // if (quantityDifference === 1) {
       //     bulkOrderData();
       // }
-    } catch (e) { } finally {
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.response.data.message)
+    } finally {
       setIsSubmitting(false);
     }
-  };
-  /*<===================================================== qty validation and calculation  ================================================> */
-
-  const handleQtyChange = (e) => {
-
   };
 
 
@@ -4527,7 +4523,7 @@ const Addsale = () => {
                               style={{
                                 textAlign: "center",
                                 fontSize: "16px",
-                                fontWeight: 600,                            
+                                fontWeight: 600,
                               }}
                             >
                               No history found

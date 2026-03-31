@@ -761,7 +761,21 @@ const Purchasebill = () => {
       </div>
       {/*<============================================================ Generate PDF ============================================================> */}
 
-      <Dialog open={openAddPopUp} className="order_list_ml custom-dialog">
+      <Dialog
+        open={openAddPopUp}
+        className="order_list_ml custom-dialog"
+        sx={{
+          "& .MuiDialog-container": {
+            "& .MuiPaper-root": {
+              width: "50%",
+              height: "50%",
+              maxWidth: "500px",
+              maxHeight: "80vh",
+              overflowY: "auto",
+            },
+          },
+        }}
+      >
         <DialogTitle
           id="alert-dialog-title"
           style={{ fontWeight: 700 }}
@@ -798,11 +812,11 @@ const Purchasebill = () => {
                 >
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
                     <div className="flex flex-col md:flex-row w-full h-full gap-2">
-                      <div style={{ width: "100%", height: "325px" }}>
+                      <div style={{ width: "100%" }}>
                         <span className="primary block">Start Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker"
+                            className="custom-datepicker text-black"
                             selected={PdfstartDate}
                             onChange={(newDate) => setPdfStartDate(newDate)}
                             dateFormat="dd/MM/yyyy"
@@ -814,7 +828,7 @@ const Purchasebill = () => {
                         <span className="primary block">End Date</span>
                         <div style={{ width: "100%" }}>
                           <DatePicker
-                            className="custom-datepicker"
+                            className="custom-datepicker text-black"
                             selected={PdfendDate}
                             onChange={(newDate) => setPdfEndDate(newDate)}
                             dateFormat="dd/MM/yyyy"

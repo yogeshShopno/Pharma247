@@ -2171,9 +2171,17 @@ const Addsale = () => {
               className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
               onClick={handelAddItemOpen}
             >
-              <ControlPointIcon className="mr-2" />
               Add New Item
             </button>
+
+            {ItemSaleList?.sales_item?.length > 0 && (
+              <button
+                type="button"
+                className="inline-flex items-center rounded-[4px] bg-[var(--color1)] px-4 py-2 text-white hover:bg-[var(--color2)] transition"
+                onClick={() => setOpenReminderPopUp(true)}
+              >pill /refill Reminder
+              </button>)}
+
 
             <Select
               labelId="dropdown-label"
@@ -2797,7 +2805,7 @@ const Addsale = () => {
                         <ListItem {...props} key={option.id}>
                           <ListItemText
                             primary={`${option.iteam_name}`}
-                            secondary={`${option.company_name}`}
+                            secondary={`${option.company_name}  (Qty:${option.stock})`}
                           />
                         </ListItem>
                       )}

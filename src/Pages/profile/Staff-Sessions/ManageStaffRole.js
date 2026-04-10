@@ -135,7 +135,7 @@ const ManageStaffRole = () => {
                                             background: "var(--color1)",
                                             color: "white", textTransform: 'none', marginBottom: "25px"
                                         }}
-                                        onClick={(() => history.push('/add-roles'))}>
+                                        onClick={(() => history.push('/RolesAdd'))}>
                                         <AddIcon className="mr-2" />Create Role</Button>
                                 </div>
                             </div>
@@ -193,7 +193,7 @@ const ManageStaffRole = () => {
                                                             <BorderColorIcon
                                                                 style={{ color: "var(--color1)" }}
                                                                 className="primary mr-3"
-                                                                onClick={() => history.push(`/edit-role/${item.id}`)}
+                                                                onClick={() => history.push(`/RolesEdit/${item.id}`)}
                                                             />
                                                             <Tooltip title={displayStatus === "Active" ? "Deactivate" : "Activate"}>
                                                                 {displayStatus === "Active" ? (

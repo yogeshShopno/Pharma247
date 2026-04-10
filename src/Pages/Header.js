@@ -406,7 +406,7 @@ const Header = () => {
                           )}
                           {hasPermission(permissions, "sale bill create") && (
                             <div className="">
-                              <Link to="/addsale">
+                              <Link to="/saleAdd">
                                 <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
                               </Link>
                             </div>
@@ -492,7 +492,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li>
-                          <Link to="/drug-group">
+                          <Link to="/drugGroup">
                             <li className="block border-b-2">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -530,7 +530,7 @@ const Header = () => {
 
                         {hasPermission(permissions, "adjust stock create") && (
                           <li className="block border-b-2">
-                            <Link to="/adjust-stock">
+                            <Link to="/adjustStock">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
@@ -780,7 +780,7 @@ const Header = () => {
                     {isOpen && (
                       <div className="absolute right-0 top-8 mt-2 w-48 bg-white shadow-lg user-icon mr-4 z-50">
                         <ul className="transition-all">
-                          <Link to="/about-info">
+                          <Link to="/aboutInfo">
                             <li
                               style={{}}
                               className="px-4 py-2 cursor-pointer text-base font-medium flex gap-2 hover:text-[white] hover:bg-[var(--color2)]"
@@ -998,7 +998,7 @@ const Header = () => {
                       )}
                       {hasPermission(permissions, "sale bill create") && (
                         <div className="">
-                          <Link to="/addsale">
+                          <Link to="/saleAdd">
                             <FaPlusCircle className="fill-current h-3 w-3 " />
                           </Link>
                         </div>
@@ -1094,7 +1094,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/drug-group">
+                      <Link to="/drugGroup">
                         <li className="block border-b border-black">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"

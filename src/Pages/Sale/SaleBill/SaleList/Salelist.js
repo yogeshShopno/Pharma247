@@ -76,7 +76,7 @@ const Salelist = () => {
     });
   }, [currentPage]);
   const goIntoAdd = () => {
-    history.push("/addsale");
+    history.push("/saleAdd");
   };
 
   // const deleteOpen = (id) => {

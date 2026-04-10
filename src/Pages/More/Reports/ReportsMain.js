@@ -53,7 +53,7 @@ const ReportsMain = () => {
     { name: "GSTR-3B", path: "/gst-GSTR-3B", icon: GSTIcon },
 
     { name: "HSN wise GST", path: "/gst-hsn-wise", icon: GSTIcon },
-    // { name: 'Composition GST Report', path: '/margin-report/item-wise', icon: GSTIcon },
+    // { name: 'Composition GST Report', path: '/margin-report/itemWise', icon: GSTIcon },
   ];
   const stockReports = [
     {
@@ -140,7 +140,7 @@ const ReportsMain = () => {
   const marginReports = [
     {
       name: "Item wise Margin",
-      path: "/item-wise",
+      path: "/itemWise",
       icon: MarginIcon,
     },
     {

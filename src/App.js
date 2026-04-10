@@ -622,8 +622,8 @@ function App() {
             <Route path='/sale'>
               <Salelist />
             </Route>
-            <Route path='/addsale'>
-              <Addsale />
+            <Route path='/saleAdd'>
+              <addSale />
             </Route>
             <Route path='/saleView/:id'>
               <SaleView />
@@ -660,7 +660,7 @@ function App() {
                 <BankAccount />
               </Protected>
             </Route>
-            <Route path='/item-wise'>
+            <Route path='/itemWise'>
               <Protected>
                 <ItemWiseMargin />
               </Protected>
@@ -786,7 +786,7 @@ function App() {
                 <Top_Distributor />
               </Protected>
             </Route>
-            <Route path='/about-info'>
+            <Route path='/aboutInfo'>
               <Protected>
                 <AboutInfo />
               </Protected>
@@ -831,12 +831,12 @@ function App() {
                 <OnlineOrders />
               </Protected>
             </Route>
-            <Route path='/add-roles'>
+            <Route path='/RolesAdd'>
               <Protected>
                 <CreateRole />
               </Protected>
             </Route>
-            <Route path='/edit-role/:id'>
+            <Route path='/RolesEdit/:id'>
               <Protected>
                 <CreateRole />
               </Protected>
@@ -847,13 +847,13 @@ function App() {
             <Route path='/company'>
               <Company />
             </Route>
-            <Route path='/drug-group'>
+            <Route path='/drugGroup'>
               <DrugGroup />
             </Route>
             <Route path='/drugGroupView/:id'>
               <DrugGroupView />
             </Route>
-            <Route path='/adjust-stock'>
+            <Route path='/adjustStock'>
               <Protected>
                 <AdjustStock />
               </Protected>

@@ -125,8 +125,8 @@ const ProfileView = () => {
                                 <ul className='list-text_pb'>
                                     {hasPermission(permissions, "profile details update") && (
                                         <li
-                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/about-info' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
-                                            onClick={() => handleItemClick('/about-info', 'About Pharmacy')}
+                                            className={`font-semibold p-2 cursor-pointer flex justify-between ${location.pathname === '/aboutInfo' ? 'bg-[var(--color2)] text-white rounded-lg' : 'hover:bg-[var(--color2)] hover:text-white rounded-lg'}`}
+                                            onClick={() => handleItemClick('/aboutInfo', 'About Pharmacy')}
                                         >
                                             Profile Details
                                         </li>

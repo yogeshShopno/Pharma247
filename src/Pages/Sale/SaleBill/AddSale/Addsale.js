@@ -50,7 +50,7 @@ import { FaCrown } from "react-icons/fa";
 import TipsModal from "../../../../componets/Tips/TipsModal";
 import Loader from "../../../../componets/loader/Loader";
 
-const Addsale = () => {
+const addSale = () => {
   const token = localStorage.getItem("token");
   const searchInputRef = useRef(null);
   const itemNameInputRef = useRef(null);
@@ -4665,4 +4665,4 @@ const Addsale = () => {
     </>
   );
 };
-export default Addsale;
+export default addSale;

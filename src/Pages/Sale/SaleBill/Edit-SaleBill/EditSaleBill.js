@@ -145,7 +145,7 @@ const EditSaleBill = () => {
   const tableRef = useRef(null); // (kept) Reference used in batch dropdown table
   const rowRefs = useRef([]); // Refs for each row
 
-  // NEW: separate ref for main sales items table container (to mirror AddSale behavior)
+  // NEW: separate ref for main sales items table container (to mirror addSale behavior)
   const tableRef1 = useRef(null);
 
 

@@ -1614,7 +1614,7 @@ const Addsale = () => {
 
         const timeout = setTimeout(() => {
 
-          history.push("/salelist");
+          history.push("/sale");
         }, 2000);
 
         setSubmitTimeout(timeout);
@@ -2144,7 +2144,7 @@ const Addsale = () => {
             <span
               className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
               onClick={() => {
-                history.push("/salelist");
+                history.push("/sale");
               }}
             >
               Sales
@@ -4357,7 +4357,7 @@ const Addsale = () => {
                               tabIndex={-1}
                               key={sale.id}
                               onClick={() => {
-                                history.push(`/salebill/view/${sale.id}`)
+                                history.push(`/saleView/${sale.id}`)
                               }}
                             >
                               <td>{customerHistoryData.name}</td>
@@ -4507,7 +4507,7 @@ const Addsale = () => {
                               tabIndex={-1}
                               key={item.id}
                               onClick={() => {
-                                history.push(`/purchase/view/${item.id}`)
+                                history.push(`/purchaseView/${item.id}`)
                               }}
                             >
                               <td>{item.party_name}</td>

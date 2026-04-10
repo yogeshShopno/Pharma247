@@ -566,53 +566,47 @@ function App() {
                 <DistributerView />
               </Protected>
             </Route>
-            <Route path='/purchase/paymentList'>
+            <Route path='/paymentList'>
               <Protected>
                 <PaymentList />
               </Protected>
             </Route>
-            <Route path='/purchase/purchasebill'>
+            <Route path='/purchase'>
               <Protected>
                 <PurchaseList />
               </Protected>
             </Route>
-            <Route path='/purchase/view/:id'>
+            <Route path='/purchaseView/:id'>
               <Protected>
                 <PurchaseView />
               </Protected>
             </Route>
-            <Route path='/purchase/edit/:id/:randomNumber'>
+            <Route path='/purchaseEdit/:id/:randomNumber'>
               <Protected>
                 <EditPurchaseBill />
               </Protected>
             </Route>
-            <Route path='/purchase/return'>
+            <Route path='/purchaseReturn'>
               <Protected>
                 <ReturnList />
               </Protected>
             </Route>
-            <Route path='/return/view/:id'>
+            <Route path='/PurchaseReturnView:id'>
               <Protected>
                 <ReturnView />
               </Protected>
             </Route>
-            <Route path='/return/edit/:id'>
+            <Route path='/PurchaseReturnEdit/:id'>
               <Protected>
                 <EditReturnBill />
               </Protected>
             </Route>
-            <Route path='/purchase/return'>
-              <Protected>
-                <ReturnList />
-              </Protected>
-            </Route>
-
-            <Route path='/purchase/addPurchaseBill'>
+            <Route path='/purchaseAdd'>
               <Protected>
                 <AddPurchaseBill />
               </Protected>
             </Route>
-            <Route path='/return/add'>
+            <Route path='/PurchaseReturnAdd'>
               <Protected>
                 <AddReturnbill />
               </Protected>
@@ -625,28 +619,28 @@ function App() {
                 <AddPurchaseReturn />
               </Protected>
             </Route> */}
-            <Route path='/salelist'>
+            <Route path='/sale'>
               <Salelist />
             </Route>
             <Route path='/addsale'>
               <Addsale />
             </Route>
-            <Route path='/salebill/view/:id'>
+            <Route path='/saleView/:id'>
               <SaleView />
             </Route>
-            <Route path='/salebill/edit/:id/:randomNumber'>
+            <Route path='/saleEdit/:id/:randomNumber'>
               <EditSaleBill />
             </Route>
-            <Route path='/saleReturn/list'>
+            <Route path='/saleReturn'>
               <SalereturnList />
             </Route>
-            <Route path='/saleReturn/Add'>
+            <Route path='/saleReturnAdd'>
               <Salereturn />
             </Route>
-            <Route path='/SaleReturn/View/:id'>
+            <Route path='/SaleReturnView/:id'>
               <SaleReturnView />
             </Route>
-            <Route path='/SaleReturn/Edit/:id'>
+            <Route path='/SaleReturnEdit/:id'>
               <EditSaleReturn />
             </Route>
             <Route path='/OrderList'>

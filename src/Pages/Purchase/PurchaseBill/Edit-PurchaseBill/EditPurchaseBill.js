@@ -1188,7 +1188,7 @@ const EditPurchaseBill = () => {
             toast.dismiss();
             toast.success(response?.data?.message);
             setTimeout(() => {
-              history.push("/purchase/purchasebill");
+              history.push("/purchase");
             }, 2000)
           }
         })
@@ -1508,7 +1508,7 @@ const EditPurchaseBill = () => {
               <div className="flex items-center gap-2">
                 <span
                   className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                  onClick={() => history.push("/purchase/purchasebill")}>
+                  onClick={() => history.push("/purchase")}>
                   Purchase
                 </span>
                 <span className="w-6 h-6">

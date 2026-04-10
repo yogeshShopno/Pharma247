@@ -1263,7 +1263,7 @@ const EditSaleBill = () => {
       toast.dismiss();
       toast.success(response.data.message);
       setTimeout(() => {
-        history.push("/salelist");
+        history.push("/sale");
       }, 2000);
     } catch (error) {
       console.error("API error:", error);
@@ -1367,7 +1367,7 @@ const EditSaleBill = () => {
 
               <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
                 onClick={() => {
-                  history.push("/salelist");
+                  history.push("/sale");
                 }}
               >
                 Sales

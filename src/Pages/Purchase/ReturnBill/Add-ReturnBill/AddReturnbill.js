@@ -702,7 +702,7 @@ const AddReturnbill = () => {
             setTimeout(() => {
               setIsSubmitting(false);
 
-              history.push("/purchase/return");
+              history.push("/purchaseReturn");
             }, 2000);
             if (response.data.status === 401) {
               history.push("/");
@@ -967,7 +967,7 @@ const AddReturnbill = () => {
                 <span
                   className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
                   onClick={() => {
-                    history.push("/purchase/return");
+                    history.push("/purchaseReturn");
                   }}
                 >
                   Purchase Return

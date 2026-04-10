@@ -1605,7 +1605,7 @@ const AddPurchaseBill = () => {
       // Add cooldown period
       const timeout = setTimeout(() => {
         setIsSubmitting(false);
-        history.push("/purchase/purchasebill");
+        history.push("/purchase");
       }, 2000);
       setSubmitTimeout(timeout);
 
@@ -2023,7 +2023,7 @@ const AddPurchaseBill = () => {
               <div className="flex items-center gap-2">
                 <span
                   className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                  onClick={() => history.push("/purchase/purchasebill")}
+                  onClick={() => history.push("/purchase")}
                 >
                   Purchase
                 </span>
@@ -2568,7 +2568,7 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
-                     
+
 
                           },
                         }}
@@ -4081,7 +4081,7 @@ const AddPurchaseBill = () => {
                                 hover
                                 tabIndex={-1}
                                 key={item.id}
-                                onClick={() => { history.push(`/purchase/view/${item.id}`) }}
+                                onClick={() => { history.push(`/purchaseView/${item.id}`) }}
                               >
                                 <td>{item.party_name}</td>
                                 <td>{item.bill_no}</td>

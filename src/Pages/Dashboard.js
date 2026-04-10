@@ -819,14 +819,14 @@ const Dashboard = () => {
                     <div className="flex justify-end mt-4">
                       {value === 0 ? (
                         <Link
-                          to="/purchase/purchasebill"
+                          to="/purchase"
                           className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                         >
                           View all <ChevronRightIcon className="w-4 h-4" />
                         </Link>
                       ) : (
                         <Link
-                          to="/salelist"
+                          to="/sale"
                           className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                         >
                           View all <ChevronRightIcon className="w-4 h-4" />

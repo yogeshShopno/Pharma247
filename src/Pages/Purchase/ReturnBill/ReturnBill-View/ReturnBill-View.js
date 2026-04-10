@@ -56,7 +56,7 @@ const ReturnView = () => {
         const nextId = returnData[nextIndex]?.id;
         if (nextId) {
           setCurrentIndex(nextIndex);
-          history.push(`/return/view/${nextId}`);
+          history.push(`/PurchaseReturnView${nextId}`);
         }
       } else if (e.key === "PageUp" || e.key === "ArrowUp") {
         e.preventDefault();
@@ -65,7 +65,7 @@ const ReturnView = () => {
         const prevId = returnData[prevIndex]?.id;
         if (prevId) {
           setCurrentIndex(prevIndex);
-          history.push(`/return/view/${prevId}`);
+          history.push(`/PurchaseReturnView${prevId}`);
         }
       }
     };
@@ -149,8 +149,8 @@ const ReturnView = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
 
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -203,7 +203,7 @@ toast.success(response.data.meassage);
                     whiteSpace: "nowrap",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/purchase/return")}
+                  onClick={() => history.push("/purchaseReturn")}
                 >
                   Purchase Return
                 </span>
@@ -255,7 +255,7 @@ toast.success(response.data.meassage);
                     style={{ backgroundColor: "var(--color1)" }}
                     variant="contained"
                     onClick={() => {
-                      history.push("/return/edit/" + tableData.id);
+                      history.push("/PurchaseReturnEdit/" + tableData.id);
                     }}
                   >
                     <BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />
@@ -443,7 +443,7 @@ toast.success(response.data.meassage);
                       const prevId = returnData[prevIndex]?.id;
                       if (prevId) {
                         setCurrentIndex(prevIndex);
-                        history.push(`/return/view/${prevId}`);
+                        history.push(`/PurchaseReturnView${prevId}`);
                       }
                     }}
                   >
@@ -467,7 +467,7 @@ toast.success(response.data.meassage);
                       const nextId = returnData[nextIndex]?.id;
                       if (nextId) {
                         setCurrentIndex(nextIndex);
-                        history.push(`/return/view/${nextId}`);
+                        history.push(`/PurchaseReturnView${nextId}`);
                       }
                     }}
                   >

@@ -56,7 +56,7 @@ const SaleReturnView = () => {
         const nextId = saleReturnData[nextIndex]?.id;
         if (nextId) {
           setCurrentIndex(nextIndex);
-          history.push(`/SaleReturn/View/${nextId}`);
+          history.push(`/SaleReturnView/${nextId}`);
         }
       } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
         e.preventDefault();
@@ -65,7 +65,7 @@ const SaleReturnView = () => {
         const prevId = saleReturnData[prevIndex]?.id;
         if (prevId) {
           setCurrentIndex(prevIndex);
-          history.push(`/SaleReturn/View/${prevId}`);
+          history.push(`/SaleReturnView/${prevId}`);
         }
       }
     };
@@ -89,8 +89,8 @@ const SaleReturnView = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
 
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -195,7 +195,7 @@ toast.success(response.data.meassage);
                           whiteSpace: "nowrap",
                         }}
                         onClick={() => {
-                          history.push("/saleReturn/list");
+                          history.push("/saleReturn");
                         }}
                       >
                         Sale Return
@@ -252,7 +252,7 @@ toast.success(response.data.meassage);
                           style={{ backgroundColor: "var(--color1)" }}
                           className="sale_add_btn sale_dnlssale_dnls gap-2"
                           onClick={() => {
-                            history.push("/SaleReturn/Edit/" + tableData.id);
+                            history.push("/SaleReturnEdit/" + tableData.id);
                           }}
                         >
                           <BorderColorIcon className="w-7 h-6 text-white   p-1 cursor-pointer" />
@@ -468,7 +468,7 @@ toast.success(response.data.meassage);
                           const prevId = saleReturnData[prevIndex]?.id;
                           if (prevId) {
                             setCurrentIndex(prevIndex);
-                            history.push(`/SaleReturn/view/${prevId}`);
+                            history.push(`/SaleReturnView/${prevId}`);
                           }
                         }}
                       >
@@ -493,7 +493,7 @@ toast.success(response.data.meassage);
                           const nextId = saleReturnData[nextIndex]?.id;
                           if (nextId) {
                             setCurrentIndex(nextIndex);
-                            history.push(`/SaleReturn/view/${nextId}`);
+                            history.push(`/SaleReturnView/${nextId}`);
                           }
                         }}
                       >
@@ -651,7 +651,7 @@ toast.success(response.data.meassage);
                                     const prevIndex = (currentIndex - 1 + saleReturnData.length) % saleReturnData.length;
                                     const prevId = saleReturnData[prevIndex]?.id;
                                     if (prevId) {
-                                        history.push(`/SaleReturn/view/${prevId}`);
+                                        history.push(`/SaleReturnView/${prevId}`);
                                     }
                                 }} >
                                     <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >
@@ -664,7 +664,7 @@ toast.success(response.data.meassage);
                                     const nextIndex = (currentIndex + 1) % saleReturnData.length;
                                     const nextId = saleReturnData[nextIndex]?.id;
                                     if (nextId) {
-                                        history.push(`/SaleReturn/view/${nextId}`);
+                                        history.push(`/SaleReturnView/${nextId}`);
                                     }
                                 }}>
                                     <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >

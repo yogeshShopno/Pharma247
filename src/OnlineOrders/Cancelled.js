@@ -38,7 +38,7 @@ const Cancelled = ({ orderid }) => {
   // Carousel hooks (moved to top level)
   const scrollRef = React.useRef(null);
   const [modal, setModal] = React.useState({ open: false, index: -1 });
-const [imageUrls,setImageUrls] =useState([])
+  const [imageUrls, setImageUrls] = useState([])
 
   // Responsive scroll offset
   const getScrollOffset = () => {
@@ -159,7 +159,7 @@ const [imageUrls,setImageUrls] =useState([])
 
           <div className="font-semibold">Payment mode</div>
           <div>{orderData?.payment_method}</div>
-{/* 
+          {/* 
           <div className="font-semibold">Patient Location</div>
           <div className="break-all">https://maps.app.goo.gl/LctZArEPAfcqJ</div> */}
 
@@ -308,9 +308,9 @@ const [imageUrls,setImageUrls] =useState([])
 
         {/* Right: Button at bottom-right */}
         <div className="w-1/2 flex flex-col justify-between items-end p-6">
-        <button
+          <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
-                          onClick={() => window.open(`https://wa.me/91${orderData?.patient_number}`, '_blank')}
+            onClick={() => window.open(`https://wa.me/91${orderData?.patient_number}`, '_blank')}
 
             style={{
               backgroundColor: "var(--color1)",
@@ -318,13 +318,13 @@ const [imageUrls,setImageUrls] =useState([])
             }}
           >
 
-            WhatsApp 
+            WhatsApp
           </button>
-       
+
 
           <button
             className="text-white px-4 py-2 rounded-lg shadow  transition-colors"
-            onClick={() => history.push('/purchase/addPurchaseBill')}
+            onClick={() => history.push('/purchaseAdd')}
             style={{
               backgroundColor: "var(--color1)",
               boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",

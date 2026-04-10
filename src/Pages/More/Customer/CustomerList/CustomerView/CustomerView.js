@@ -131,9 +131,9 @@ const CustomerView = () => {
 
   const viewBill = (item) => {
     if (tabValue === 0) {
-      history.push(`/salebill/view/${item.sales_id}`);
+      history.push(`/saleView/${item.sales_id}`);
     } else if (tabValue === 1) {
-      history.push(`/SaleReturn/View/${item.sales_id}`);
+      history.push(`/SaleReturnView/${item.sales_id}`);
     } else {
       // toast.dismiss();
       // toast.error('Route not Found')

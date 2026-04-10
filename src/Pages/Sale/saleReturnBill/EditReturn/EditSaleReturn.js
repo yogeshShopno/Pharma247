@@ -177,7 +177,7 @@ const EditSaleReturn = () => {
 
     document.addEventListener("keydown", handleKeyPress);
     return () => document.removeEventListener("keydown", handleKeyPress);
-  }, [tableData, selectedIndex,isSubmitting]);
+  }, [tableData, selectedIndex, isSubmitting]);
 
   // New function specifically for arrow key navigation that works even when input is focused
   const handleArrowNavigation = (e) => {
@@ -452,7 +452,7 @@ const EditSaleReturn = () => {
             setTimeout(() => {
               setIsSubmitting(false);
 
-              history.push("/saleReturn/list");
+              history.push("/saleReturn");
             }, 2000);
           });
       } catch (error) {
@@ -832,7 +832,7 @@ const EditSaleReturn = () => {
         <div className="flex flex-wrap items-center justify-between gap-2 row border-b border-dashed pb-4 border-[var(--color1)]">
           <div className="flex items-center gap-2">
             <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-              onClick={() => { history.push("/saleReturn/list") }}
+              onClick={() => { history.push("/saleReturn") }}
             >
               Sales Return
             </span>

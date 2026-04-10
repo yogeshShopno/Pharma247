@@ -21,7 +21,7 @@ import { toast, ToastContainer } from "react-toastify";
 import SearchIcon from "@mui/icons-material/Search";
 import { Prompt } from "react-router-dom/cjs/react-router-dom";
 
-// import '../../../Purchase/ReturnBill/Add-ReturnBill/AddReturnbill.css'
+// import '../../../purchaseReturnBill/Add-ReturnBill/AddReturnbill.css'
 import { VscDebugStepBack } from "react-icons/vsc";
 import { IoMdClose } from "react-icons/io";
 import { FaCaretUp } from "react-icons/fa6";
@@ -266,7 +266,7 @@ const Salereturn = () => {
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
-    }, [customer, tableData,isSubmitting]);
+    }, [customer, tableData, isSubmitting]);
 
 
     useEffect(() => {
@@ -672,7 +672,7 @@ const Salereturn = () => {
                     setTimeout(() => {
 
                         setIsSubmitting(false);
-                        history.push('/saleReturn/list');
+                        history.push('/saleReturn');
                     }, 2000);
                 })
             } catch (error) {
@@ -869,7 +869,7 @@ const Salereturn = () => {
 
                     <div className="flex items-center gap-2">
                         <span className="text-[var(--color2)] font-bold text-[20px] cursor-pointer"
-                            onClick={() => { history.push('/saleReturn/list') }} >Sales Return</span>
+                            onClick={() => { history.push('/saleReturn') }} >Sales Return</span>
 
                         <span className="w-6 h-6">
                             <ArrowForwardIosIcon

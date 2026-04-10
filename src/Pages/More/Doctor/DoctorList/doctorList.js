@@ -93,10 +93,10 @@ const DoctorList = () => {
     direction: "ascending",
   });
   const handlePrint = () => {
-    window.print("/return/add");
+    window.print("/PurchaseReturnAdd");
   };
   const goIntoAdd = () => {
-    history.push("/return/add");
+    history.push("/PurchaseReturnAdd");
   };
 
   const handleChange = (e) => {

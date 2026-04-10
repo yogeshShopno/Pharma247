@@ -499,7 +499,7 @@ const DistributerView = () => {
                             {/* {item[column.id]} */}
                             {column.id === "bill_no" ? (
                               <a
-                                href={`/purchase/view/${item.purches_id}`}
+                                href={`/purchaseView/${item.purches_id}`}
                                 target="_blank"
                                 className="primary"
                                 rel="noopener"

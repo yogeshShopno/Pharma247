@@ -288,7 +288,7 @@ const Salelist = () => {
           }}
         >
           <div style={{ flex: 1, overflowY: 'auto', }}>
-            
+
             <div className="px-4 py-3">
               <div
                 className="sales_hdr_mn"
@@ -405,7 +405,7 @@ const Salelist = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
               <table
                 className="w-full border-collapse custom-table"
@@ -479,7 +479,7 @@ const Salelist = () => {
                                 <td
                                   key={column.id}
                                   onClick={() => {
-                                    history.push("/salebill/view/" + row.id);
+                                    history.push("/saleView/" + row.id);
                                   }}
                                 >
                                   {name && mobileNumber
@@ -492,7 +492,7 @@ const Salelist = () => {
                                 <td
                                   key={column.id}
                                   onClick={() => {
-                                    history.push("/salebill/view/" + row.id);
+                                    history.push("/saleView/" + row.id);
                                   }}
                                 >
                                   {row[column.id]}
@@ -505,7 +505,7 @@ const Salelist = () => {
                               <VisibilityIcon
                                 className="cursor-pointer primary hover:secondary"
                                 onClick={() => {
-                                  history.push(`/salebill/view/${row.id}`);
+                                  history.push(`/saleView/${row.id}`);
                                 }}
                               />
                               <FaFilePdf
@@ -515,9 +515,9 @@ const Salelist = () => {
                               {hasPermission(permissions, "sale whatsapp bill status check") && (
                                 <IoLogoWhatsapp
                                   className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => handleWhatsAppmsg(row)} 
+                                  onClick={() => handleWhatsAppmsg(row)}
                                 />
-                                )}
+                              )}
                             </div>
                           </td>
                         </tr>

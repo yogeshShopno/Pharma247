@@ -314,7 +314,7 @@ const Header = () => {
                         <li className="block flex items-center border-b bg-white hover:bg-[var(--color2)]  hover:text-white">
                           {hasPermission(permissions, "purchase bill view") && (
                             <div className="w-36 border-r">
-                              <Link to="/purchase/purchasebill">
+                              <Link to="/purchase">
                                 <span
                                   className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                   href=""
@@ -330,7 +330,7 @@ const Header = () => {
                             "purchase bill create"
                           ) && (
                               <div className="">
-                                <Link to="/purchase/addPurchaseBill">
+                                <Link to="/purchaseAdd">
                                   <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
                                 </Link>
                               </div>
@@ -342,7 +342,7 @@ const Header = () => {
                             "purchase return bill view"
                           ) && (
                               <div className="w-36 border-r">
-                                <Link to="/purchase/return">
+                                <Link to="/purchaseReturn">
                                   <span
                                     className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                     href=""
@@ -358,7 +358,7 @@ const Header = () => {
                             "purchase return bill create"
                           ) && (
                               <div className="">
-                                <Link to="/return/add">
+                                <Link to="/PurchaseReturnAdd">
                                   <FaPlusCircle className="fill-current h-3 w-3 ml-4" />
                                 </Link>
                               </div>
@@ -370,7 +370,7 @@ const Header = () => {
                           "purchase payment view"
                         ) && (
                             <li className="block">
-                              <Link to="/purchase/paymentList">
+                              <Link to="/paymentList">
                                 <span
                                   className="bg-white   hover:bg-[var(--color2)]   transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black  hover:text-white flex"
                                   href=""
@@ -394,7 +394,7 @@ const Header = () => {
                         <li className="block flex items-center bg-white border-b-2 hover:bg-[var(--color2)]   hover:text-white">
                           {hasPermission(permissions, "sale bill view") && (
                             <div className="w-36 border-r-2">
-                              <Link to="/salelist">
+                              <Link to="/sale">
                                 <span
                                   className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                   href=""
@@ -419,7 +419,7 @@ const Header = () => {
                             "sale return bill view"
                           ) && (
                               <div className="w-36 border-r-2">
-                                <Link to="/saleReturn/list">
+                                <Link to="/saleReturn">
                                   <span
                                     className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap text-black hover:text-white flex"
                                     href=""
@@ -434,7 +434,7 @@ const Header = () => {
                             "sale return bill create"
                           ) && (
                               <div>
-                                <Link to="/saleReturn/Add">
+                                <Link to="/saleReturnAdd">
                                   <FaPlusCircle className="fill-current h-3 w-3 ml-4 " />
                                 </Link>
                               </div>
@@ -917,7 +917,7 @@ const Header = () => {
                     <li className="block flex items-center bg-slate-300 border-b border-black justify-evenly">
                       {hasPermission(permissions, "purchase bill view") && (
                         <div className="w-11/12 border-r border-black">
-                          <Link to="/purchase/purchasebill">
+                          <Link to="/purchase">
                             <span
                               className="bg-slate-300 transition-all py-2  px-4 block  text-black text-black flex"
                               href=""
@@ -929,7 +929,7 @@ const Header = () => {
                       )}
                       {hasPermission(permissions, "purchase bill create") && (
                         <div className="">
-                          <Link to="/purchase/addPurchaseBill">
+                          <Link to="/purchaseAdd">
                             <FaPlusCircle className="fill-current h-3 w-3" />
                           </Link>
                         </div>
@@ -941,7 +941,7 @@ const Header = () => {
                         "purchase return bill view"
                       ) && (
                           <div className="w-11/12 border-r border-black">
-                            <Link to="/purchase/return">
+                            <Link to="/purchaseReturn">
                               <span
                                 className="bg-slate-300  py-2 px-4 pr-12 block  text-black flex"
                                 href=""
@@ -956,7 +956,7 @@ const Header = () => {
                         "purchase return bill create"
                       ) && (
                           <div>
-                            <Link to="/return/add">
+                            <Link to="/PurchaseReturnAdd">
                               <FaPlusCircle className="fill-current h-3 w-3 text-black" />
                             </Link>
                           </div>
@@ -965,7 +965,7 @@ const Header = () => {
                     {hasPermission(permissions, "purchase payment view") && (
                       <li className="block">
                         <div className="bg-slate-300 transition-all  py-2 px-4 pr-15 block whitespace-no-wrap text-black flex justify-center">
-                          <Link to="/purchase/paymentList">
+                          <Link to="/paymentList">
                             <span>Payment</span>
                           </Link>
                         </div>
@@ -986,7 +986,7 @@ const Header = () => {
                     <li className="block flex items-center bg-slate-300 border-b border-black justify-evenly">
                       {hasPermission(permissions, "sale bill view") && (
                         <div className="w-11/12 border-r border-black ">
-                          <Link to="/salelist">
+                          <Link to="/sale">
                             <span
                               className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                               href=""
@@ -1008,7 +1008,7 @@ const Header = () => {
                     <li className="block flex items-center  bg-slate-300 transition-all  text-black  justify-evenly">
                       {hasPermission(permissions, "sale return bill view") && (
                         <div className="w-11/12 border-r border-black ">
-                          <Link to="/saleReturn/list">
+                          <Link to="/saleReturn">
                             <span
                               className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                               href=""
@@ -1023,7 +1023,7 @@ const Header = () => {
                         "sale return bill create"
                       ) && (
                           <div>
-                            <Link to="/saleReturn/Add">
+                            <Link to="/saleReturnAdd">
                               <FaPlusCircle className="fill-current h-3 w-3 " />
                             </Link>
                           </div>

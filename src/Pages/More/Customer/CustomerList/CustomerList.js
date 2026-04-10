@@ -97,10 +97,10 @@ const CustomerList = () => {
   });
   const excelIcon = process.env.PUBLIC_URL + "/excel.png";
   const handlePrint = () => {
-    window.print("/return/add");
+    window.print("/PurchaseReturnAdd");
   };
   const goIntoAdd = () => {
-    history.push("/return/add");
+    history.push("/PurchaseReturnAdd");
   };
   const allOptions = [
     "dueOnly",

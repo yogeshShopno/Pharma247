@@ -103,8 +103,8 @@ const SaleView = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
 
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -131,7 +131,7 @@ toast.success(response.data.meassage);
         const nextId = saleData[nextIndex]?.id;
         if (nextId) {
           setCurrentIndex(nextIndex);
-          history.push(`/salebill/view/${nextId}`);
+          history.push(`/saleView/${nextId}`);
         }
       } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
         e.preventDefault();
@@ -140,7 +140,7 @@ toast.success(response.data.meassage);
         const prevId = saleData[prevIndex]?.id;
         if (prevId) {
           setCurrentIndex(prevIndex);
-          history.push(`/salebill/view/${prevId}`);
+          history.push(`/saleView/${prevId}`);
         }
       }
     };
@@ -225,7 +225,7 @@ toast.success(response.data.meassage);
                         cursor: "pointer",
                       }}
                       onClick={() => {
-                        history.push("/salelist");
+                        history.push("/sale");
                       }}
                     >
                       Sale
@@ -287,7 +287,7 @@ toast.success(response.data.meassage);
                         onClick={() => {
                           history.push({
                             pathname:
-                              "/salebill/edit/" +
+                              "/saleEdit/" +
                               tableData.id +
                               "/" +
                               tableData?.sales_item[0].random_number,
@@ -501,7 +501,7 @@ toast.success(response.data.meassage);
                         const prevId = saleData[prevIndex]?.id;
                         if (prevId) {
                           setCurrentIndex(prevIndex);
-                          history.push(`/salebill/view/${prevId}`);
+                          history.push(`/saleView/${prevId}`);
                         }
                       }}
                     >
@@ -523,7 +523,7 @@ toast.success(response.data.meassage);
                         const nextId = saleData[nextIndex]?.id;
                         if (nextId) {
                           setCurrentIndex(nextIndex);
-                          history.push(`/salebill/view/${nextId}`);
+                          history.push(`/saleView/${nextId}`);
                         }
                       }}
                     >
@@ -715,7 +715,7 @@ toast.success(response.data.meassage);
                                 const prevIndex = (currentIndex - 1 + saleData.length) % saleData.length;
                                 const prevId = saleData[prevIndex]?.id;
                                 if (prevId) {
-                                    history.push(`/salebill/view/${prevId}`);
+                                    history.push(`/saleView/${prevId}`);
                                 }
                             }} >
                                 <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >
@@ -726,7 +726,7 @@ toast.success(response.data.meassage);
                                 const nextIndex = (currentIndex + 1) % saleData.length;
                                 const nextId = saleData[nextIndex]?.id;
                                 if (nextId) {
-                                    history.push(`/salebill/view/${nextId}`);
+                                    history.push(`/saleView/${nextId}`);
                                 }
                             }}>
                                 <Button className="gap-4" variant="contained" style={{ background: 'var(--color1)', color: 'white', textTransform: 'none', display: 'flex', alignItems: 'center' }} >

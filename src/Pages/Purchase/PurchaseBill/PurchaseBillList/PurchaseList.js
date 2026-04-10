@@ -386,7 +386,7 @@ const Purchasebill = () => {
 
       <div
         style={{
-          minHeight: 'calc(100vh - 64px)', 
+          minHeight: 'calc(100vh - 64px)',
           display: 'flex',
           flexDirection: 'column',
           width: '100%',
@@ -416,7 +416,7 @@ const Purchasebill = () => {
                       fontSize: "20px",
                     }}
                     onClick={() => {
-                      history.push("/purchase/purchasebill");
+                      history.push("/purchase");
                     }}
                   >
                     Purchase
@@ -438,7 +438,7 @@ const Purchasebill = () => {
                       size="small"
                       style={{ background: "var(--color1)", fontSize: "12px" }}
                       onClick={() => {
-                        history.push("/purchase/addPurchaseBill");
+                        history.push("/purchaseAdd");
                       }}
                     >
                       <AddIcon />
@@ -545,7 +545,7 @@ const Purchasebill = () => {
                             label="Type Here"
                             id="filled-basic"
                             size="small"
-                            sx={{ marginLeft: '4px', minWidth: '100px', maxWidth: '250px' , }}
+                            sx={{ marginLeft: '4px', minWidth: '100px', maxWidth: '250px', }}
                             value={searchTerms[index + 1]}
                             onChange={(e) => handleSearchChange(index + 1, e.target.value)}
                             onKeyDown={handleKeyDown}
@@ -596,7 +596,7 @@ const Purchasebill = () => {
                               key={column.id}
                               className="capitalize"
                               onClick={() =>
-                                history.push(`/purchase/view/${row.id}`)
+                                history.push(`/purchaseView/${row.id}`)
                               }
                             >
                               {column.format && typeof value === "number"
@@ -610,7 +610,7 @@ const Purchasebill = () => {
                             <VisibilityIcon
                               className="cursor-pointer primary hover:secondary"
                               onClick={() =>
-                                history.push(`/purchase/view/${row.id}`)
+                                history.push(`/purchaseView/${row.id}`)
                               }
                             />
                             <FaFilePdf
@@ -780,7 +780,7 @@ const Purchasebill = () => {
           id="alert-dialog-title"
           style={{ fontWeight: 700 }}
         >
-          Generate PDF 
+          Generate PDF
         </DialogTitle>
         <IconButton
           aria-label="close"

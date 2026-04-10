@@ -217,7 +217,7 @@ const SalereturnList = () => {
   });
 
   const goIntoAdd = () => {
-    history.push("/saleReturn/Add");
+    history.push("/saleReturnAdd");
   };
 
   const AllPDFGenerate = async () => {
@@ -238,8 +238,8 @@ const SalereturnList = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setOpenAddPopUp(false);
           setIsLoading(false);
           handlePdf(PDFURL);
@@ -264,8 +264,8 @@ toast.success(response.data.meassage);
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setIsLoading(false);
           handlePdf(PDFURL);
         });
@@ -449,7 +449,7 @@ toast.success(response.data.meassage);
                                     key={column.id}
                                     onClick={() => {
                                       history.push(
-                                        "/SaleReturn/View/" + row.id
+                                        "/SaleReturnView/" + row.id
                                       );
                                     }}
                                   >
@@ -464,7 +464,7 @@ toast.success(response.data.meassage);
                                     key={column.id}
                                     onClick={() => {
                                       history.push(
-                                        "/SaleReturn/View/" + row.id
+                                        "/SaleReturnView/" + row.id
                                       );
                                     }}
                                   >
@@ -478,7 +478,7 @@ toast.success(response.data.meassage);
                                 <VisibilityIcon
                                   className="cursor-pointer primary"
                                   onClick={() => {
-                                    history.push(`/purchase/view/${row.id}`);
+                                    history.push(`/purchaseView/${row.id}`);
                                   }}
                                 />
                                 <FaFilePdf

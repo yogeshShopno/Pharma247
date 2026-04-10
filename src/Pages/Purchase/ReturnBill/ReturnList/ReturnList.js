@@ -142,7 +142,7 @@ const ReturnList = () => {
   }, [tableData, currentPage]);
 
   const goIntoAdd = () => {
-    history.push("/return/add");
+    history.push("/PurchaseReturnAdd");
   };
 
   // Enhanced search functionality (copied from PaymentList)
@@ -218,8 +218,8 @@ const ReturnList = () => {
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setIsLoading(false);
           handlePdf(PDFURL);
         });
@@ -344,8 +344,8 @@ toast.success(response.data.meassage);
         })
         .then((response) => {
           const PDFURL = response.data.data.pdf_url;
-           toast.dismiss();
-toast.success(response.data.meassage);
+          toast.dismiss();
+          toast.success(response.data.meassage);
           setIsLoading(false);
           handlePdf(PDFURL);
         });
@@ -406,7 +406,7 @@ toast.success(response.data.meassage);
                           whiteSpace: "nowrap",
                         }}
                         onClick={() => {
-                          history.push("/purchase/purchasebill");
+                          history.push("/purchase");
                         }}
                       >
                         Purchase Return
@@ -564,7 +564,7 @@ toast.success(response.data.meassage);
                                       key={column.id}
                                       align={column.align}
                                       onClick={() => {
-                                        history.push(`/return/view/${row.id}`);
+                                        history.push(`/PurchaseReturnView${row.id}`);
                                       }}
                                       className="text-lg"
                                     >
@@ -624,7 +624,7 @@ toast.success(response.data.meassage);
                                     <VisibilityIcon
                                       className="cursor-pointer cursor-pointer primary hover:secondary"
                                       onClick={() => {
-                                        history.push(`/return/view/${row.id}`);
+                                        history.push(`/PurchaseReturnView${row.id}`);
                                       }}
                                     />
                                     <FaFilePdf

@@ -242,7 +242,7 @@ const InventoryView = () => {
     // saleData()
     // saleReturnData()
     // ledgerData()
-  }, [page, rowsPerPage,id]);
+  }, [page, rowsPerPage, id]);
 
   let listOfPack = () => {
     axios
@@ -357,8 +357,8 @@ const InventoryView = () => {
       });
 
       if (response.data.status === 200) {
-         toast.dismiss();
-toast.success(response.data.message);
+        toast.dismiss();
+        toast.success(response.data.message);
         setOpenAddPopUp(false);
         itemGetByID();
       } else if (response.data.status === 400) {
@@ -795,25 +795,25 @@ toast.success(response.data.message);
 
   const openBill = (item) => {
     if (item.transction == "Purchase Invoice") {
-      history.push(`/purchase/view/${item.bill_id}`);
+      history.push(`/purchaseView/${item.bill_id}`);
     } else if (item.transction == "Purchase Return Invoice") {
-      history.push(`/return/view/${item.bill_id}`);
+      history.push(`/PurchaseReturnView${item.bill_id}`);
     } else if (item.transction == "Sales Invoice") {
-      history.push(`/salebill/view/${item.bill_id}`);
+      history.push(`/saleView/${item.bill_id}`);
     } else if (item.transction == "Sales Return Invoice") {
-      history.push(`/SaleReturn/View/${item.bill_id}`);
+      history.push(`/SaleReturnView/${item.bill_id}`);
     }
   };
 
   const viewBill = (item) => {
     if (tabValue === 1) {
-      history.push(`/purchase/view/${item.purchase_id}`);
+      history.push(`/purchaseView/${item.purchase_id}`);
     } else if (tabValue === 4) {
-      history.push(`/SaleReturn/View/${item.sales_id}`);
+      history.push(`/SaleReturnView/${item.sales_id}`);
     } else if (tabValue === 3) {
-      history.push(`/salebill/view/${item.sales_id}`);
+      history.push(`/saleView/${item.sales_id}`);
     } else if (tabValue === 2) {
-      history.push(`/return/view/${item.purchase_return_id}`);
+      history.push(`/PurchaseReturnView${item.purchase_return_id}`);
     } else {
       toast.error("Route not Found");
     }
@@ -901,11 +901,10 @@ toast.success(response.data.message);
 
                   <div className="flex flex-col">
                     <span
-                      className={`text-lg font-medium ${
-                        itemAllData.status === "Not Available"
-                          ? "text-red-500"
-                          : "text-emerald-500"
-                      }`}
+                      className={`text-lg font-medium ${itemAllData.status === "Not Available"
+                        ? "text-red-500"
+                        : "text-emerald-500"
+                        }`}
                     >
                       {itemAllData?.status}
                     </span>
@@ -986,9 +985,9 @@ toast.success(response.data.message);
             </div>
           </div>
           <div
-          className="row border-b border-dashed"
-          style={{ borderColor: "var(--color2)" }}
-        ></div>
+            className="row border-b border-dashed"
+            style={{ borderColor: "var(--color2)" }}
+          ></div>
           <div className="invntry-tab">
             <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
               <Tabs
@@ -1260,8 +1259,8 @@ toast.success(response.data.message);
                                         ? { borderRadius: "10px 0 0 10px" }
                                         : colIndex ===
                                           purchaseColumns.length - 1 // Last column for right-side radius
-                                        ? { borderRadius: "0 10px 10px 0" }
-                                        : {}
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
                                     }
                                   >
                                     {column.id === "bill_no" ? (
@@ -1429,14 +1428,14 @@ toast.success(response.data.message);
                                       style={
                                         colIndex === 0
                                           ? {
-                                              borderRadius: "10px 0 0 10px",
-                                            }
+                                            borderRadius: "10px 0 0 10px",
+                                          }
                                           : colIndex ===
                                             purchaseReturnColumns.length - 1
-                                          ? {
+                                            ? {
                                               borderRadius: "0 10px 10px 0",
                                             }
-                                          : {}
+                                            : {}
                                       }
                                     >
                                       {column.id === "bill_no" ? (
@@ -1604,11 +1603,11 @@ toast.success(response.data.message);
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex === saleColumns.length - 1
-                                        ? { borderRadius: "0 10px 10px 0" }
-                                        : {}
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
                                     }
                                   >
                                     {column.id === "bill_no" ? (
@@ -1793,8 +1792,8 @@ toast.success(response.data.message);
                                         ? { borderRadius: "10px 0 0 10px" }
                                         : colIndex ===
                                           saleReturnColumns.length - 1
-                                        ? { borderRadius: "0 10px 10px 0" }
-                                        : {}
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
                                     }
                                   >
                                     {column.id === "bill_no" ? (
@@ -1880,8 +1879,8 @@ toast.success(response.data.message);
                                       colIndex === 0
                                         ? { borderRadius: "10px 0 0 10px" }
                                         : colIndex === ledger.length - 1
-                                        ? { borderRadius: "0 10px 10px 0" }
-                                        : {}
+                                          ? { borderRadius: "0 10px 10px 0" }
+                                          : {}
                                     }
                                   >
                                     {column.id === "bill_no" ? (
@@ -1932,7 +1931,7 @@ toast.success(response.data.message);
               )}
             </Box>
           </div>
-        </div> 
+        </div>
         <Dialog className="custom-dialog modal_991 " open={openAddPopUp}>
           <DialogTitle id="alert-dialog-title" className="secondary">
             Edit Inventory Details
@@ -1992,7 +1991,7 @@ toast.success(response.data.message);
                       <TextField
                         autoComplete="off"
                         {...params}
-                        // label="Select Company"
+                      // label="Select Company"
                       />
                     )}
                   />
@@ -2102,9 +2101,8 @@ toast.success(response.data.message);
         <div
           id="modal"
           value={IsDelete}
-          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-            IsDelete ? "block" : "hidden"
-          }`}
+          className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+            }`}
         >
           <div />
           <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

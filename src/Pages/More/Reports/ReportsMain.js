@@ -140,12 +140,12 @@ const ReportsMain = () => {
   const marginReports = [
     {
       name: "Item wise Margin",
-      path: "margin-report/item-wise",
+      path: "/item-wise",
       icon: MarginIcon,
     },
     {
       name: "Bill-Item wise Margin",
-      path: "margin-report/bill-item-wise-margin",
+      path: "/bill-item-wise-margin",
       icon: MarginIcon,
     },
   ];

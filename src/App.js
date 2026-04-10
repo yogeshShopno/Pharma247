@@ -660,12 +660,12 @@ function App() {
                 <BankAccount />
               </Protected>
             </Route>
-            <Route path='/margin-report/item-wise'>
+            <Route path='/item-wise'>
               <Protected>
                 <ItemWiseMargin />
               </Protected>
             </Route>
-            <Route path='/margin-report/bill-item-wise-margin'>
+            <Route path='/bill-item-wise-margin'>
               <Protected>
                 <BillItemWiseMargin />
               </Protected>

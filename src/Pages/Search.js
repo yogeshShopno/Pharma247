@@ -262,7 +262,7 @@ const Search = ({ searchPage, setSearchPage }) => {
               size="small"
               disabled={!searchType}
               autoFocus
-              value={searchQuery}
+              value={searchQuery.toUpperCase()}
               sx={{ width: "100%", marginTop: "0px" }}
               onChange={handleSearchQueryChange}
               variant="standard"

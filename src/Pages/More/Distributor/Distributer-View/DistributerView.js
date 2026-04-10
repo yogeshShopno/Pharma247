@@ -57,7 +57,7 @@ const DistributerView = () => {
   useEffect(() => {
     distributerDetail(id);
     purchaseReturnData(id);
-  }, [page, rowsPerPage,id]);
+  }, [page, rowsPerPage, id]);
 
   const resetAddDialog = () => {
     setCompanyName("");
@@ -71,7 +71,7 @@ const DistributerView = () => {
     if (!companyName) {
       newErrors.companyName = "Company Name is required";
       toast.dismiss();
-toast.error(newErrors.companyName);
+      toast.error(newErrors.companyName);
     }
     setErrors(newErrors);
     const isValid = Object.keys(newErrors).length === 0;
@@ -184,7 +184,7 @@ toast.error(newErrors.companyName);
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
       }
     }
@@ -273,7 +273,7 @@ toast.error(error.response.data.message);
                     fontSize: "20px",
                   }}
                   onClick={() => {
-                    history.push("/more/DistributorList");
+                    history.push("/DistributorList");
                   }}
                   className="cursor-pointer cust_header_txt_main_og"
                 >

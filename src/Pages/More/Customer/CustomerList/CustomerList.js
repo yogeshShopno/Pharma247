@@ -273,14 +273,14 @@ const CustomerList = () => {
           setArea("");
           setAmount("");
           setAddress("");
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
       // console.error("API error:", error);
     }
@@ -299,16 +299,16 @@ toast.error(error.response.data.message);
         .then((response) => {
           customerAllData();
           setOpenUpload(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {
         toast.dismiss();
-toast.error("Please Select file");
+        toast.error("Please Select file");
       }
       toast.dismiss();
-toast.error(error.data.message)
+      toast.error(error.data.message)
       console.error("API error:", error);
     }
   };
@@ -334,8 +334,8 @@ toast.error(error.data.message)
         .then((response) => {
           customerAllData();
           setOpenAddPopUp(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setCustomer("");
           setIsEditMode(false);
           setEmailId("");
@@ -350,7 +350,7 @@ toast.success(response.data.message);
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
       console.error("API error:", error);
     }
@@ -386,7 +386,7 @@ toast.error(error.response.data.message);
         setFile(selectedFile);
       } else {
         toast.dismiss();
-toast.error("Please select an Excel or CSV file.");
+        toast.error("Please select an Excel or CSV file.");
       }
     }
   };
@@ -738,8 +738,8 @@ toast.error("Please select an Excel or CSV file.");
                         return (
                           <tr hover role="checkbox" tabIndex={-1} key={row.code}>
                             <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {currentPage==1?index:startIndex + index} 
-                              
+                              {currentPage == 1 ? index : startIndex + index}
+
                             </td>
                             {columns.map((column) => {
                               let value = row[column.id];
@@ -756,23 +756,23 @@ toast.error("Please select an Excel or CSV file.");
                                 row.status === ""
                               )
 
-                              // Lowercase email if it's not already in lowercase
-                              if (column.id === "email") {
-                                if (
-                                  value &&
-                                  value[0] !== value[0].toLowerCase()
-                                ) {
-                                  value = value.toLowerCase();
+                                // Lowercase email if it's not already in lowercase
+                                if (column.id === "email") {
+                                  if (
+                                    value &&
+                                    value[0] !== value[0].toLowerCase()
+                                  ) {
+                                    value = value.toLowerCase();
+                                  }
+                                  style.textTransform = "none";
                                 }
-                                style.textTransform = "none";
-                              }
 
                               return (
                                 <td
                                   key={column.id}
                                   align={column.align}
                                   onClick={() => {
-                                    history.push(`/more/customerView/${row.id}`);
+                                    history.push(`/customerView/${row.id}`);
                                   }}
                                   style={style}
                                 >
@@ -795,7 +795,7 @@ toast.error("Please select an Excel or CSV file.");
                                 <VisibilityIcon
                                   style={{ color: "var(--color1)" }}
                                   onClick={() => {
-                                    history.push(`/more/customerView/${row.id}`);
+                                    history.push(`/customerView/${row.id}`);
                                   }}
                                 />
                                 {hasPermission(permissions, "customer edit") &&

@@ -84,32 +84,32 @@ const OnlineDashboard = () => {
     }
   };
 
- const getStatusBadgeStyle = (status) => {
-  const baseStyle = "px-3 py-1 rounded-full text-xs font-medium";
-  const statusClassMap = {
-    "Assigned Pharmacy": "bg-blue-100 text-blue-800",
-    "Order Confirmed": "bg-yellow-100 text-yellow-800",
-    "Ready For Pickup": "bg-orange-100 text-orange-800",
-    "Completed": "bg-emerald-100 text-emerald-800",
-    "Cancelled By Customer": "bg-red-100 text-red-800",
-    "Cancelled By Pharmacy": "bg-red-100 text-red-800",
+  const getStatusBadgeStyle = (status) => {
+    const baseStyle = "px-3 py-1 rounded-full text-xs font-medium";
+    const statusClassMap = {
+      "Assigned Pharmacy": "bg-blue-100 text-blue-800",
+      "Order Confirmed": "bg-yellow-100 text-yellow-800",
+      "Ready For Pickup": "bg-orange-100 text-orange-800",
+      "Completed": "bg-emerald-100 text-emerald-800",
+      "Cancelled By Customer": "bg-red-100 text-red-800",
+      "Cancelled By Pharmacy": "bg-red-100 text-red-800",
+    };
+    return `${baseStyle} ${statusClassMap[status] || "bg-gray-100 text-gray-800"}`;
   };
-  return `${baseStyle} ${statusClassMap[status] || "bg-gray-100 text-gray-800"}`;
-};
 
 
   const getButtonStatusStyle = (statusId) => {
-  const classMap = {
-    "1": "bg-blue-100 text-blue-800 hover:bg-blue-200",
-    "4": "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
-    "5": "bg-orange-100 text-orange-800 hover:bg-orange-200",
-    "6": "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
-    "2": "bg-red-100 text-red-800 hover:bg-red-200",
-    "3": "bg-red-100 text-red-800 hover:bg-red-200",
-    "": "bg-gray-100 text-gray-700 hover:bg-gray-200", // All orders
+    const classMap = {
+      "1": "bg-blue-100 text-blue-800 hover:bg-blue-200",
+      "4": "bg-yellow-100 text-yellow-800 hover:bg-yellow-200",
+      "5": "bg-orange-100 text-orange-800 hover:bg-orange-200",
+      "6": "bg-emerald-100 text-emerald-800 hover:bg-emerald-200",
+      "2": "bg-red-100 text-red-800 hover:bg-red-200",
+      "3": "bg-red-100 text-red-800 hover:bg-red-200",
+      "": "bg-gray-100 text-gray-700 hover:bg-gray-200", // All orders
+    };
+    return classMap[statusId] || "bg-gray-100 text-gray-700 hover:bg-gray-200";
   };
-  return classMap[statusId] || "bg-gray-100 text-gray-700 hover:bg-gray-200";
-};
 
 
   {/*<========================================================================= ui ===================================================================> */ }
@@ -157,7 +157,7 @@ const OnlineDashboard = () => {
                   className="sale_add_pdf"
                   style={{ background: "var(--color1)" }}
                   onClick={() => {
-                    history.push("/settings/online-orders");
+                    history.push("/onlineOrders");
                   }}
                 >
                   Settings

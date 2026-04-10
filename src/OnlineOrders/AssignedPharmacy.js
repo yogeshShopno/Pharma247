@@ -119,7 +119,7 @@ const AssignedPharmacy = ({ orderid }) => {
     let data = new FormData();
     data.append("order_id", orderid);
     data.append("status", selectedStatus);
-    data.append("reason", reason? reason : "");
+    data.append("reason", reason ? reason : "");
 
     // data.append("order_status", 0)
     // data.append("start_date", "2025-03-10")
@@ -135,10 +135,10 @@ const AssignedPharmacy = ({ orderid }) => {
         })
         .then((response) => {
           setIsLoading(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setSelectedStatus("");
-         setTimeout(() => history.push("/onlinedashboard"), 2000);
+          setTimeout(() => history.push("/onlineDashboard"), 2000);
 
 
         });

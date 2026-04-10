@@ -222,7 +222,7 @@ const AddReturnbill = () => {
 
   useEffect(() => {
     const handleKeyDown = (event) => {
-            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+      const isAltCombo = event.altKey || event.getModifierState("AltGraph");
       if (!isAltCombo || event.repeat) return;
 
 
@@ -250,7 +250,7 @@ const AddReturnbill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, tableData,isSubmitting]);
+  }, [distributor, billNo, tableData, isSubmitting]);
 
   /*<================================================================================== handle shortcut  =========================================================================> */
 
@@ -712,8 +712,8 @@ const AddReturnbill = () => {
       } catch (error) {
         console.error("API error:", error);
 
-          setIsSubmitting(false);
-       
+        setIsSubmitting(false);
+
       }
     }
   };
@@ -1131,7 +1131,7 @@ const AddReturnbill = () => {
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
-                          onClick={() => history.push('/itemmaster')}
+                          onClick={() => history.push('/itemMaster')}
 
                         />
                       </div>

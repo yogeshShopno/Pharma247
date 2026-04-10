@@ -61,9 +61,9 @@ const LoginSignup = () => {
   useEffect(() => {
     const role = localStorage.getItem("role");
     if (role == "Owner") {
-      history.push("/admindashboard");
+      history.push("/adminDashboard");
     } else if (role == "Staff") {
-      history.push("/more/reconciliation");
+      history.push("/reconciliation");
     }
   }, []);
   {/*<========================================================================== get referral code  =================================================================> */ }
@@ -306,7 +306,7 @@ const LoginSignup = () => {
     } catch (error) {
       console.error("API error:", error?.response?.status);
       if (error?.response?.status === 401) {
-    
+
       }
     }
   };
@@ -359,11 +359,11 @@ const LoginSignup = () => {
           if (role === "Owner") {
             if (NewUser) {
               setTimeout(() => {
-                history.push("/admindashboard");
+                history.push("/adminDashboard");
               }, 3000);
             } else {
               setTimeout(() => {
-                history.push("/admindashboard");
+                history.push("/adminDashboard");
               }, 3000);
             }
           } else if (
@@ -373,15 +373,15 @@ const LoginSignup = () => {
           ) {
             if (NewUser) {
               setTimeout(() => {
-                history.push("/admindashboard");
+                history.push("/adminDashboard");
               }, 3000);
             } else {
               setTimeout(() => {
-                history.push("/more/reconciliation");
+                history.push("/reconciliation");
               }, 3000);
             }
           } else {
-            history.push("/admindashboard");
+            history.push("/adminDashboard");
           }
         } else {
           toast.dismiss();

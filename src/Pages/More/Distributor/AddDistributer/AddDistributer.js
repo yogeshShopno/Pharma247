@@ -98,22 +98,22 @@ const AddDistributer = () => {
     if (!distributorName) {
       newErrors.distributorName = "Distributor is required";
       toast.dismiss();
-toast.error("Distributor is required");
+      toast.error("Distributor is required");
     }
     if (!GSTNumber) {
       newErrors.GSTNumber = "GST Number is required";
       toast.dismiss();
-toast.error("GST Number is required");
+      toast.error("GST Number is required");
     }
 
     if (!mobileno) {
       newErrors.mobileno = "Mobile No is required";
       toast.dismiss();
-toast.error("Mobile No is required");
+      toast.error("Mobile No is required");
     } else if (!/^\d{10}$/.test(mobileno)) {
       newErrors.mobileno = "Mobile number must be 10 digits";
       toast.dismiss();
-toast.error("Mobile number must be 10 digits");
+      toast.error("Mobile number must be 10 digits");
     }
 
     setError(newErrors);
@@ -150,8 +150,8 @@ toast.error("Mobile number must be 10 digits");
           },
         })
         .then((response) => {
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
 
           setGSTNumber("");
           setDistributorName("");
@@ -169,13 +169,13 @@ toast.success(response.data.message);
           setDurgLicence("");
           setDueDays("");
           setTimeout(() => {
-            history.push("/more/DistributorList");
+            history.push("/DistributorList");
           }, 1000);
         });
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
     }
   };
@@ -212,7 +212,7 @@ toast.error(error.response.data.message);
               </h1>
               <h1
                 className="text-xl font-bold primary cursor-pointer add_dist_dst_lst"
-                onClick={() => history.push("/more/DistributorList")}
+                onClick={() => history.push("/DistributorList")}
               >
                 <ReplyAllIcon className="mb-2 mr-2" />
                 Distributor List

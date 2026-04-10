@@ -1191,7 +1191,7 @@ const EditReturnBill = () => {
                                             Search Item Name <span className="text-red-600 ">*</span>
                                             <FaPlusCircle
                                                 className="primary cursor-pointer"
-                                                onClick={() => history.push('/itemmaster')}
+                                                onClick={() => history.push('/itemMaster')}
 
                                             />
                                         </div>

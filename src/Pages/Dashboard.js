@@ -314,7 +314,7 @@ const Dashboard = () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
-        localStorage.clear();  
+        localStorage.clear();
         history.push("/");
       }
       setIsLoading(false);
@@ -547,7 +547,7 @@ const Dashboard = () => {
                         </div>
                         <div className="mt-4 flex justify-end">
                           <Link
-                            to="/more/customer"
+                            to="/customer"
                             className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                           >
                             View all <ChevronRightIcon className="w-4 h-4" />
@@ -654,7 +654,7 @@ const Dashboard = () => {
                   {/* View All */}
                   <div className="mt-4 flex justify-end">
                     <Link
-                      to="/more/customer"
+                      to="/customer"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                     >
                       View all <ChevronRightIcon className="w-4 h-4" />
@@ -705,7 +705,7 @@ const Dashboard = () => {
                   {/* View All */}
                   <div className="flex justify-end mt-4">
                     <Link
-                      to="/more/DistributorList"
+                      to="/DistributorList"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                     >
                       View all <ChevronRightIcon className="w-4 h-4" />
@@ -932,7 +932,7 @@ const Dashboard = () => {
                   {/* Footer - pushed to bottom with mt-auto */}
                   <div className="mt-auto flex justify-end">
                     <Link
-                      to="/Staff-sessions/staff-member"
+                      to="/StaffMember"
                       className="text-green-600 flex items-center gap-1 hover:underline font-medium"
                     >
                       View all <ChevronRightIcon className="w-4 h-4" />

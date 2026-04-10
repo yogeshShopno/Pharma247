@@ -134,7 +134,7 @@ const Header = () => {
     } catch (error) {
       if (error.response.status === 401) {
 
-             history.push("/");
+        history.push("/");
         localStorage.clear();
       }
       console.error("API error:", error);
@@ -260,7 +260,7 @@ const Header = () => {
       <nav className="text-sm shadow ">
         <div className="logomenu flex h-14">
           <div className="flex-shrink-0 pr-5 pl-5  sm:flex-wrap">
-            <Link to="/admindashboard">
+            <Link to="/adminDashboard">
               <img
                 className="h-14 w-28"
                 src="../../../pharmalogo.webp"
@@ -278,7 +278,7 @@ const Header = () => {
                     {/* <TextField value={checkedper} onChange={handleCheck} /> */}
                     {hasPermission(permissions, "Item master view") && (
                       <div>
-                        <Link to="/itemmaster">
+                        <Link to="/itemMaster">
                           <button
                             className="text-white font-medium letterspace0_5 py-2 px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                             data-toggle="dropdown"
@@ -466,7 +466,7 @@ const Header = () => {
                       <ul className="dropdown-menu absolute hidden text-gray-700 pt-3 shadow-lg w-48">
                         {hasPermission(permissions, "distributor view") && (
                           <li className="block border-b-2">
-                            <Link to="/more/DistributorList">
+                            <Link to="/DistributorList">
                               <div>
                                 <span
                                   className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -480,7 +480,7 @@ const Header = () => {
                         )}
 
                         <li>
-                          <Link to="/more/company">
+                          <Link to="/company">
                             <li className="block border-b-2">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -492,7 +492,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li>
-                          <Link to="/more/drug-group">
+                          <Link to="/drug-group">
                             <li className="block border-b-2">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -504,7 +504,7 @@ const Header = () => {
                           </Link>
                         </li>
                         {hasPermission(permissions, "customer view") && (
-                          <Link to="/more/customer">
+                          <Link to="/customer">
                             <li className="block border-b-2">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -516,7 +516,7 @@ const Header = () => {
                           </Link>
                         )}
                         {hasPermission(permissions, "doctor view") && (
-                          <Link to="/more/doctors">
+                          <Link to="/doctors">
                             <li className="block border-b-2">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
@@ -530,7 +530,7 @@ const Header = () => {
 
                         {hasPermission(permissions, "adjust stock create") && (
                           <li className="block border-b-2">
-                            <Link to="/more/adjust-stock">
+                            <Link to="/adjust-stock">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
@@ -542,7 +542,7 @@ const Header = () => {
                         )}
                         {hasPermission(permissions, "bank account view") && (
                           <li className="block border-b-2">
-                            <Link to="/more/BankAccountdetails">
+                            <Link to="/BankAccountDetails">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
@@ -554,7 +554,7 @@ const Header = () => {
                         )}
                         {hasPermission(permissions, "cash management view") && (
                           <li className="block border-b-2">
-                            <Link to="/more/Cashmanagement">
+                            <Link to="/CashManagement">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                                 href=""
@@ -566,7 +566,7 @@ const Header = () => {
                         )}
 
                         <li className="block border-b-2">
-                          <Link to="/more/reconciliation">
+                          <Link to="/reconciliation">
                             <span
                               className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
@@ -576,7 +576,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li className="block border-b-2">
-                          <Link to="/more/loyaltypoints">
+                          <Link to="/loyaltyPoints">
                             <span
                               className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
@@ -586,7 +586,7 @@ const Header = () => {
                           </Link>
                         </li>
                         <li className="block border-b-2">
-                          <Link to="/more/sehatpoints">
+                          <Link to="/sehatPoints">
                             <span
                               className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black  hover:text-white flex"
                               href=""
@@ -605,7 +605,7 @@ const Header = () => {
                           </li>
                         </Link>
                         {hasPermission(permissions, "manage expense view") && (
-                          <Link to="/more/expense-manage">
+                          <Link to="/expenseManage">
                             <li className="block">
                               <span
                                 className="bg-white hover:bg-[var(--color2)]   transition-all py-2 px-4 block whitespace-no-wrap  text-black hover:text-white flex"
@@ -633,7 +633,7 @@ const Header = () => {
                 <div className="text-white mr-4 bg-transparent mr-2">
 
                   <div>
-                    <Link to="/onlinedashboard">
+                    <Link to="/onlineDashboard">
                       <span
                         href=""
                         className="text-white font-semibold py-2  primhover secondary-bg rounded-md   px-4 transition-all  hover:rounded-md inline-flex items-center"
@@ -881,7 +881,7 @@ const Header = () => {
                       className="text-white font-semibold py-2  w-full px-4 transition-all  primhover hover:rounded-md inline-flex items-center"
                       data-toggle="dropdown"
                     >
-                      <Link to="/itemmaster">
+                      <Link to="/itemMaster">
                         <span href="" className="mr-1">
                           Item master
                         </span>
@@ -1068,7 +1068,7 @@ const Header = () => {
                   <ul className="dropdown-menu hidden text-black pt-3 shadow-lg  right-0">
                     {hasPermission(permissions, "distributor view") && (
                       <li className="block border-b border-black">
-                        <Link to="/more/DistributorList">
+                        <Link to="/DistributorList">
                           <div>
                             <span
                               className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
@@ -1082,7 +1082,7 @@ const Header = () => {
                     )}
 
                     <li>
-                      <Link to="/more/company">
+                      <Link to="/company">
                         <li className="block border-b border-black">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
@@ -1094,7 +1094,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li>
-                      <Link to="/more/drug-group">
+                      <Link to="/drug-group">
                         <li className="block border-b border-black">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
@@ -1106,7 +1106,7 @@ const Header = () => {
                       </Link>
                     </li>
                     {hasPermission(permissions, "customer view") && (
-                      <Link to="/more/customer">
+                      <Link to="/customer">
                         <li className="block border-b border-black">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
@@ -1118,7 +1118,7 @@ const Header = () => {
                       </Link>
                     )}
                     {hasPermission(permissions, "doctor view") && (
-                      <Link to="/more/doctors">
+                      <Link to="/doctors">
                         <li className="block border-b border-black">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
@@ -1131,7 +1131,7 @@ const Header = () => {
                     )}
                     {hasPermission(permissions, "bank account view") && (
                       <li className="block border-b border-black">
-                        <Link to="/more/BankAccountdetails">
+                        <Link to="/BankAccountDetails">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                             href=""
@@ -1143,7 +1143,7 @@ const Header = () => {
                     )}
                     {hasPermission(permissions, "cash management view") && (
                       <li className="block border-b border-black">
-                        <Link to="/more/Cashmanagement">
+                        <Link to="/CashManagement">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                             href=""
@@ -1155,7 +1155,7 @@ const Header = () => {
                     )}
 
                     <li className="block border-b border-black">
-                      <Link to="/more/reconciliation">
+                      <Link to="/reconciliation">
                         <span
                           className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                           href=""
@@ -1165,7 +1165,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li className="block border-b border-black">
-                      <Link to="/more/loyaltypoints">
+                      <Link to="/loyaltyPoints">
                         <span
                           className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                           href=""
@@ -1174,7 +1174,7 @@ const Header = () => {
                       </Link>
                     </li>
                     <li className="block border-b border-black">
-                      <Link to="/more/sehatpoints">
+                      <Link to="/sehatPoints">
                         <span
                           className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"
                           href=""
@@ -1194,7 +1194,7 @@ const Header = () => {
                     </Link>
 
                     {hasPermission(permissions, "manage expense view") && (
-                      <Link to="/more/expense-manage">
+                      <Link to="/expenseManage">
                         <li className="block">
                           <span
                             className="bg-slate-300  py-2 px-4 pr-12 block whitespace-no-wrap  text-black flex"

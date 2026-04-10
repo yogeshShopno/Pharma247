@@ -106,7 +106,7 @@ const Reconciliation = () => {
 
           if (response.data.data.data.length == 0) {
             toast.dismiss();
-toast.error("No Record Found");
+            toast.error("No Record Found");
           }
           setIsLoading(false);
         });
@@ -119,7 +119,7 @@ toast.error("No Record Found");
   let handleSubmit = async () => {
     if (stockData.length != itemCount) {
       toast.dismiss();
-toast.error("Enter all item's stock");
+      toast.error("Enter all item's stock");
       return;
     }
     setIsLoading(true);
@@ -138,25 +138,25 @@ toast.error("Enter all item's stock");
       if (response.data.status === 200) {
         setStockData([])
         localStorage.setItem('reconciliation', "true")
-        history.push("/admindashboard")
-         toast.dismiss();
-toast.success("Data submitted successfully");
+        history.push("/adminDashboard")
+        toast.dismiss();
+        toast.success("Data submitted successfully");
       }
-     
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
 
-       toast.dismiss();
-toast.success("Data submitted successfully");
+      toast.dismiss();
+      toast.success("Data submitted successfully");
     }
   };
 
   return (
     <div >
       <Header />
-        <ToastContainer
+      <ToastContainer
 
         position="top-right"
         autoClose={5000}
@@ -234,7 +234,7 @@ toast.success("Data submitted successfully");
                             LOC:<span className="primary"> {item.location}</span>
                           </p>
                           <TextField
-                 autoComplete="off"
+                            autoComplete="off"
                             id="outlined-number"
                             placeholder="Add Stock"
                             type="number"

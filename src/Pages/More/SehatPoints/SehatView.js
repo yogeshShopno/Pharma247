@@ -275,7 +275,7 @@ const SehatView = () => {
                                         fontSize: "20px",
                                     }}
                                     onClick={() => {
-                                        history.push("/more/DistributorList");
+                                        history.push("/DistributorList");
                                     }}
                                     className="cursor-pointer cust_header_txt_main_og"
                                 >

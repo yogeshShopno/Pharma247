@@ -170,7 +170,7 @@ const DrugGroup = () => {
     if (!drugGroupName) {
       newErrors.drugGroupName = "Drug Group Name is required";
       toast.dismiss();
-toast.error(newErrors.drugGroupName);
+      toast.error(newErrors.drugGroupName);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -187,11 +187,11 @@ toast.error(newErrors.drugGroupName);
       });
       resetAddDialog();
       DrugGroupList(currentPage);
-       toast.dismiss();
-toast.success("Drug Group added!");
+      toast.dismiss();
+      toast.success("Drug Group added!");
     } catch (error) {
       toast.dismiss();
-toast.error(error?.response?.data?.message || "Error");
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -205,11 +205,11 @@ toast.error(error?.response?.data?.message || "Error");
       });
       resetAddDialog();
       DrugGroupList(currentPage);
-       toast.dismiss();
-toast.success("Drug Group updated!");
+      toast.dismiss();
+      toast.success("Drug Group updated!");
     } catch (error) {
       toast.dismiss();
-toast.error(error?.response?.data?.message || "Error");
+      toast.error(error?.response?.data?.message || "Error");
     }
   };
 
@@ -235,11 +235,11 @@ toast.error(error?.response?.data?.message || "Error");
       });
       setIsDelete(false);
       DrugGroupList(currentPage);
-       toast.dismiss();
-toast.success("Drug Group deleted!");
+      toast.dismiss();
+      toast.success("Drug Group deleted!");
     } catch (error) {
       toast.dismiss();
-toast.error("Error deleting Drug Group");
+      toast.error("Error deleting Drug Group");
     }
   };
   const deleteOpen = (id) => {
@@ -254,7 +254,7 @@ toast.error("Error deleting Drug Group");
 
   // Row click (existing logic untouched)
   const handleRowClick = (drugGroupId) => {
-    history.push(`/more/drugGroupView/${drugGroupId}`);
+    history.push(`/drugGroupView/${drugGroupId}`);
   };
 
   return (

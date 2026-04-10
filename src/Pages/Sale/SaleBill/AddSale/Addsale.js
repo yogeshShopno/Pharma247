@@ -2468,7 +2468,7 @@ const Addsale = () => {
                 </span>
 
                 <p
-                  onClick={() => history.push("/more/doctors")}
+                  onClick={() => history.push("/doctors")}
                   className="cursor-pointer self-end text-xs text-white bg-[var(--color5)] px-2 rounded-sm"
                 >
                   set default

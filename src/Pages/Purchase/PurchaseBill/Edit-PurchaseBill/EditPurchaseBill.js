@@ -1553,7 +1553,7 @@ const EditPurchaseBill = () => {
                   <span className="title mb-2 flex  items-center gap-2">Distributor<span className="text-red-600">*</span>    <FaPlusCircle
                     className="primary cursor-pointer"
                     onClick={() => {
-                      history.push('/more/addDistributer');
+                      history.push('/addDistributer');
                     }}
                   /></span>
                   <Autocomplete
@@ -1656,7 +1656,7 @@ const EditPurchaseBill = () => {
                         Search Item Name <span className="text-red-600 ">*</span>
                         <FaPlusCircle
                           className="primary cursor-pointer"
-                          onClick={() => history.push('/itemmaster')}
+                          onClick={() => history.push('/itemMaster')}
                         />
                       </div>
                     </th>

@@ -102,7 +102,7 @@ const DrugGroupView = () => {
                             }}
                             className="cursor-pointer cust_header_txt_main"
                             onClick={() => {
-                                history.push("/more/drug-group"); // Adjust path as needed
+                                history.push("/drug-group"); // Adjust path as needed
                             }}
                         >
                             Drug Groups

@@ -325,7 +325,7 @@ const EditSaleBill = () => {
           if (isSubmitting) return;
           await handleSubmit("1");
           break;
-          
+
         case "m":
           setIsEditMode(false);
           setSelectedEditItemId(null);
@@ -1603,7 +1603,7 @@ const EditSaleBill = () => {
                       Search Item Name<span className="text-red-600 ">*</span>
                       <FaPlusCircle
                         className="primary cursor-pointer"
-                        onClick={() => history.push('/itemmaster')}
+                        onClick={() => history.push('/itemMaster')}
                       />
                     </div>
                   </th>

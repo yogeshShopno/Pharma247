@@ -67,7 +67,7 @@ const CustomerView = () => {
   useEffect(() => {
     CustomerGetByID(id);
     BankList();
-  }, [page, rowsPerPage,id]);
+  }, [page, rowsPerPage, id]);
 
   const CustomerGetByID = (id) => {
     let data = new FormData();
@@ -136,7 +136,7 @@ const CustomerView = () => {
       history.push(`/SaleReturn/View/${item.sales_id}`);
     } else {
       // toast.dismiss();
-// toast.error('Route not Found')
+      // toast.error('Route not Found')
     }
   };
 
@@ -195,7 +195,7 @@ const CustomerView = () => {
                 }}
                 className="cursor-pointer cust_header_txt_main"
                 onClick={() => {
-                  history.push("/more/customer");
+                  history.push("/customer");
                 }}
               >
                 Customers
@@ -239,11 +239,11 @@ const CustomerView = () => {
                 {tableData.name}
               </span>
             </div>
-          </div> 
+          </div>
           <div className="p-3"
             style={{
               backgroundColor: "rgb(63 98 18 / 11%)",
-              borderRadius: "10px", 
+              borderRadius: "10px",
             }}
           >
             <div
@@ -317,11 +317,11 @@ const CustomerView = () => {
                     },
                   }}
                   onChange={handleChange}
-                  // style={{ marginBottom: "10px" }}
+                // style={{ marginBottom: "10px" }}
                 >
                   <Tab
                     label="Sale"
-                    sx={{ 
+                    sx={{
                       color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
                       "&.Mui-selected": {
                         color: "var(--color1)",
@@ -331,7 +331,7 @@ const CustomerView = () => {
 
                   <Tab
                     label="Sales Return"
-                    sx={{ 
+                    sx={{
                       color: tabValue === 0 ? "var(--color1)" : "var(--color1)",
                       "&.Mui-selected": {
                         color: "var(--color1)",
@@ -454,8 +454,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleColumns.length - 1 // Last column for right-side radius
-                                    ? { borderRadius: "0 10px 10px 0" }
-                                    : {}
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
                                 }
                               >
                                 {column.id === "bill_no" ? (
@@ -549,8 +549,8 @@ const CustomerView = () => {
                                   colIndex === 0 // Check if this is the first column
                                     ? { borderRadius: "10px 0 0 10px" }
                                     : colIndex === saleReturnColumns.length - 1 // Last column for right-side radius
-                                    ? { borderRadius: "0 10px 10px 0" }
-                                    : {}
+                                      ? { borderRadius: "0 10px 10px 0" }
+                                      : {}
                                 }
                               >
                                 {item[column.id]}

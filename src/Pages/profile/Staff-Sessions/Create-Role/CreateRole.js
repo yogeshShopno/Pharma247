@@ -111,7 +111,7 @@ const CreateRole = () => {
                         toast.dismiss();
                         toast.success(response.data.message, 'success')
                         setTimeout(() => {
-                            history.push('/Staff-sessions/manage-staffrole');
+                            history.push('/manageStaffRole');
                         }, 3000);
                         if (response.data.status === 401) {
                             history.push('/');
@@ -138,7 +138,7 @@ const CreateRole = () => {
                         toast.dismiss();
                         toast.success(response.data.message, 'success')
                         setTimeout(() => {
-                            history.push('/Staff-sessions/manage-staffrole');
+                            history.push('/manageStaffRole');
                         }, 3000);
                         if (response.data.status === 401) {
                             history.push('/');
@@ -193,7 +193,7 @@ const CreateRole = () => {
                             <div className="flex justify-between">
                                 <div>
                                     <h1 className="text-2xl flex items-center primary font-semibold p-2 mb-5" style={{ marginBottom: "25px" }}>
-                                        <ArrowBackIosIcon className="cursor-pointer text-black" onClick={() => history.push('/Staff-sessions/manage-staffrole')} />
+                                        <ArrowBackIosIcon className="cursor-pointer text-black" onClick={() => history.push('/manageStaffRole')} />
                                         {id ? 'Edit Role' : 'Create Role'}
                                     </h1>
                                 </div>

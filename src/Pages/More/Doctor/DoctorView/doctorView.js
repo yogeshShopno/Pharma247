@@ -98,7 +98,7 @@ const DoctorView = () => {
                 <div style={{ backgroundColor: 'rgba(153, 153, 153, 0.1)', height: 'calc(99vh - 55px)', padding: "0px 20px 0px" }} >
                     <div >
                         <div className='py-3' style={{ display: 'flex', gap: '5px', alignItems: "center" }} >
-                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => { history.push('/more/doctors') })} >Doctors</span>
+                            <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => { history.push('/doctors') })} >Doctors</span>
                             <ArrowForwardIosIcon style={{ fontSize: '20px', color: "var(--color1)" }} />
                             <div className='flex'>
                                 <div className='w-8 h-8 rounded-full flex items-center justify-center secondary-bg'>

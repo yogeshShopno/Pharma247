@@ -253,14 +253,14 @@ const DoctorList = () => {
           setClinic("");
           setAddress("");
           setDefaultDr("");
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
       }
       // console.error("API error:", error);
     }
@@ -295,13 +295,13 @@ toast.error(error.response.data.message);
           setAddress("");
           setDefaultDr("");
           setIsEditMode(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
-       toast.dismiss();
-toast.success(error.message);
+      toast.dismiss();
+      toast.success(error.message);
     }
   };
 
@@ -451,13 +451,13 @@ toast.success(error.message);
         .then((response) => {
           ListOfDoctor();
           setOpenUpload(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {
         toast.dismiss();
-toast.error("Please Select file");
+        toast.error("Please Select file");
       }
       console.error("API error:", error);
     }
@@ -678,7 +678,7 @@ toast.error("Please Select file");
                                       <td
                                         key={column.id}
                                         align={column.align}
-                                        onClick={() => history.push(`/more/doctor/${row.id}`)}
+                                        onClick={() => history.push(`/doctor/${row.id}`)}
                                       >
                                         <div className="flex items-center gap-2">
                                           <span>{value}</span>
@@ -698,7 +698,7 @@ toast.error("Please Select file");
                                       key={column.id}
                                       align={column.align}
                                       onClick={() => {
-                                        history.push(`/more/doctor/${row.id}`);
+                                        history.push(`/doctor/${row.id}`);
                                       }}
                                       style={
                                         column.id === "email"
@@ -725,7 +725,7 @@ toast.error("Please Select file");
                                     <VisibilityIcon
                                       style={{ color: "var(--color1)" }}
                                       onClick={() => {
-                                        history.push(`/more/doctor/${row.id}`);
+                                        history.push(`/doctor/${row.id}`);
                                       }}
                                     />
                                     {hasPermission(permissions, "doctor edit") && (
@@ -936,7 +936,7 @@ toast.error("Please Select file");
                           </ListItem>
                         )}
                         renderInput={(params) => (
-                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name"/>
+                          <TextField autoComplete="off" {...params} placeholder="Enter Doctor Name" />
                         )}
                         freeSolo
                       />

@@ -9,6 +9,7 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  useLocation
 } from "react-router-dom/cjs/react-router-dom.min";
 // import AddPurchaseReturn from './Pages/Purchase/AddPurchaseReturn';
 import Catagory from './Pages/More/Catagory/Catagory';
@@ -77,13 +78,11 @@ import Plans from './Pages/profile/About/Plans';
 import Password from './Pages/profile/About/Password';
 import StaffMember from './Pages/profile/Staff-Sessions/StaffMember';
 import ManageStaffRole from './Pages/profile/Staff-Sessions/ManageStaffRole';
-import Sessions from './Pages/profile/Staff-Sessions/LogActivity';
 import CreateRole from './Pages/profile/Staff-Sessions/Create-Role/CreateRole';
 import ErrorPage from './componets/ErrorPage/errorPage';
 import { ProtectedComponent, ProtectedRoute } from './componets/permission';
 import Company from './Pages/More/Company/Company';
 import DrugGroup from './Pages/More/DrugGroup/DrugGroup';
-import LogSessions from './Pages/profile/Staff-Sessions/LogActivity';
 import LogActivity from './Pages/profile/Staff-Sessions/LogActivity';
 import Gstr2 from './Pages/More/Reports/GstReport/Gstr2';
 import Reconciliation from './Pages/More/Reconciliation/reconciliation';
@@ -102,6 +101,32 @@ import DrugGroupView from './Pages/More/DrugGroup/DrugGroupView/DrugGroupView';
 import TrialEnd from './componets/Login/TrialEnd';
 import SehatMembersList from './Pages/More/SehatPoints/SehatMembersList';
 import SehatView from './Pages/More/SehatPoints/SehatView';
+
+function TitleUpdater() {
+  const location = useLocation();
+
+  useEffect(() => {
+    const pathName = location.pathname;
+    let title = "Pharma24-7";
+
+    const segments = pathName.split('/').filter(Boolean);
+    if (segments.length === 0) {
+      title = "Pharma24-7 - Login";
+    } else {
+      let targetSegment = segments.length > 1 && (segments[0] === 'more' || segments[0] === 'profile' || segments[0] === 'purchase' || segments[0] === 'Report' || segments[0] === 'Reports' || segments[0] === 'return' || segments[0] === 'salebill' || segments[0] === 'SaleReturn') && segments[1] ? segments[1] : segments[0];
+      targetSegment = targetSegment.replace(/%20|_|-/g, ' ');
+      targetSegment = decodeURIComponent(targetSegment);
+      targetSegment = targetSegment.replace(/([a-z])([A-Z])/g, '$1 $2');
+      title = targetSegment.split(' ')
+        .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1) : '')
+        .join(' ');
+      title = `${title}`;
+    }
+    document.title = title;
+  }, [location]);
+
+  return null;
+}
 
 function App() {
   const goFullScreen = () => {
@@ -421,8 +446,9 @@ function App() {
         <CssBaseline />
 
         <Router>
+          <TitleUpdater />
           <Switch>
-            <Route path='/trial-end'>
+            <Route path='/TrialEnd'>
               <TrialEnd />
             </Route>
             {/* <Route path='/trial-ends'>
@@ -444,19 +470,19 @@ function App() {
             <Route path='/login'>
               <LoginSignup />
             </Route>
-            <Route path='/admindashboard'>
+            <Route path='/adminDashboard'>
               <Protected>
                 <Dashboard />
               </Protected>
               <Adminprotected />
             </Route>
-            <Route path='/onlinedashboard'>
+            <Route path='/onlineDashboard'>
               <Protected>
                 <OnlineDashboard />
               </Protected>
               <Adminprotected />
             </Route>
-            <Route path='/itemmaster'>
+            <Route path='/itemMaster'>
               <Protected>
                 <Itemmaster />
               </Protected>
@@ -471,67 +497,63 @@ function App() {
                 <InventoryView />
               </Protected>
             </Route>
-            <Route path='/more/catagory'>
+            <Route path='/catagory'>
               <Protected>
                 <Catagory />
               </Protected>
             </Route>
-            <Route path='/more/package'>
+            <Route path='/package'>
               <Protected>
                 <Package />
               </Protected>
             </Route>
-            <Route path='/more/customer'>
+            <Route path='/customer'>
               <Protected>
                 <CustomerList />
               </Protected>
             </Route>
-            <Route path='/more/customerView/:id'>
+            <Route path='/customerView/:id'>
               <Protected>
                 <CustomerView />
               </Protected>
             </Route>
-            <Route path='/more/doctors'>
+            <Route path='/doctors'>
               <Protected>
                 <DoctorList />
               </Protected>
             </Route>
-            <Route path='/more/doctor/:id'>
+            <Route path='/doctor/:id'>
               <Protected>
                 <DoctorView />
               </Protected>
             </Route>
-            <Route path='/more/addDistributer'>
+            <Route path='/addDistributer'>
               <Protected>
                 <AddDistributer />
               </Protected>
             </Route>
-            <Route path='/more/DistributorList'>
+            <Route path='/DistributorList'>
               <Protected>
                 <DistributerList />
               </Protected>
             </Route>
-            <Route path='/more/reconciliation'>
+            <Route path='/reconciliation'>
               <Protected>
                 <Reconciliation />
               </Protected>
             </Route>
-            <Route path='/more/sehatpoints'>
+            <Route path='/sehatPoints'>
               <Protected>
                 <SehatMembersList />
               </Protected>
             </Route>
-            <Route path='/more/sehatmemberslist'>
-              <Protected>
-                <SehatMembersList />
-              </Protected>
-            </Route>
-            <Route path='/more/SehatView'>
+
+            <Route path='/SehatView'>
               <Protected>
                 <SehatView />
               </Protected>
             </Route>
-            <Route path='/more/loyaltypoints'>
+            <Route path='/loyaltyPoints'>
               <Protected>
                 <LoyaltyPoint />
               </Protected>
@@ -630,16 +652,16 @@ function App() {
             <Route path='/OrderList'>
               <OrderList />
             </Route>
-            <Route path='/more/Cashmanagement'>
+            <Route path='/CashManagement'>
               <CashManage />
             </Route>
 
-            <Route path='/more/expense-manage'>
+            <Route path='/expenseManage'>
               <Protected>
                 <ManageExpense />
               </Protected>
             </Route>
-            <Route path='/more/BankAccountdetails'>
+            <Route path='/BankAccountDetails'>
               <Protected>
                 <BankAccount />
               </Protected>
@@ -785,7 +807,7 @@ function App() {
                 <Plans />
               </Protected>
             </Route>
-            <Route path='/refer&earn'>
+            <Route path='/referEarn'>
               <Protected>
                 <ReferEarn />
               </Protected>
@@ -795,27 +817,22 @@ function App() {
                 <Password />
               </Protected>
             </Route>
-            <Route path='/Staff-sessions/staff-member'>
+            <Route path='/StaffMember'>
               <Protected>
                 <StaffMember />
               </Protected>
             </Route>
-            <Route path='/Staff-sessions/manage-staffrole'>
+            <Route path='/manageStaffRole'>
               <Protected>
                 <ManageStaffRole />
               </Protected>
             </Route>
-            <Route path='/Staff-sessions/reconciliation-manage'>
+            <Route path='/reconciliationManage'>
               <Protected>
                 <ReconciliationManage />
               </Protected>
             </Route>
-            <Route path='/Staff-sessions/sessions'>
-              <Protected>
-                <Sessions />
-              </Protected>
-            </Route>
-            <Route path='/settings/online-orders'>
+            <Route path='/onlineOrders'>
               <Protected>
                 <OnlineOrders />
               </Protected>
@@ -833,21 +850,21 @@ function App() {
             <Route path='/errorPage'>
               <ErrorPage />
             </Route>
-            <Route path='/more/company'>
+            <Route path='/company'>
               <Company />
             </Route>
-            <Route path='/more/drug-group'>
+            <Route path='/drug-group'>
               <DrugGroup />
             </Route>
-            <Route path='/more/drugGroupView/:id'>
+            <Route path='/drugGroupView/:id'>
               <DrugGroupView />
             </Route>
-            <Route path='/more/adjust-stock'>
+            <Route path='/adjust-stock'>
               <Protected>
                 <AdjustStock />
               </Protected>
             </Route>
-            <Route path='/Staff-sessions/sessions'>
+            <Route path='/StaffSessions'>
               <LogActivity />
             </Route>
             <Route path='*'>

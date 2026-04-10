@@ -48,7 +48,7 @@ const Search = ({ searchPage, setSearchPage }) => {
         { id: "name", label: "Drug Group", minWidth: 100 },
         { id: "count", label: "Count", minWidth: 100 },
       ],
-      navigationPath: (id) => `/more/drugGroupView/${id}`
+      navigationPath: (id) => `/drugGroupView/${id}`
     },
     "3": {
       label: "Distributor",
@@ -71,7 +71,7 @@ const Search = ({ searchPage, setSearchPage }) => {
         { id: "roylti_point", label: "Loyalty Points", minWidth: 100 },
         { id: "total_amount", label: "Total Amount", minWidth: 100 },
       ],
-      navigationPath: (id) => `/more/customerView/${id}`
+      navigationPath: (id) => `/customerView/${id}`
     },
   };
 

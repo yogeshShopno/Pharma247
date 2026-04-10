@@ -262,13 +262,13 @@ const DistributerList = () => {
           setDistributorDrugLicenseNo("");
           setCreditDuedays("");
           // setIsEditMode(false)
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
       toast.dismiss();
-toast.error(error.message);
+      toast.error(error.message);
     }
   };
 
@@ -280,7 +280,7 @@ toast.error(error.message);
         setFile(selectedFile);
       } else {
         toast.dismiss();
-toast.error("Please select an Excel or CSV file.");
+        toast.error("Please select an Excel or CSV file.");
       }
     }
   };
@@ -307,13 +307,13 @@ toast.error("Please select an Excel or CSV file.");
         .then((response) => {
           DistList(currentPage);
           setOpenUpload(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       if (error.response && error.response.status === 500) {
         toast.dismiss();
-toast.error("Please Select file");
+        toast.error("Please Select file");
       }
       console.error("API error:", error);
     }
@@ -520,7 +520,7 @@ toast.error("Please Select file");
                         variant="contained"
                         style={{ background: "var(--color1)", display: "flex" }}
                         onClick={() => {
-                          history.push("/more/addDistributer");
+                          history.push("/addDistributer");
                         }}
                         className="gap-2"
                       >
@@ -688,7 +688,7 @@ toast.error("Please Select file");
               </div>
             </div>
           </div>
-          
+
           {/*<====================================================================== pagination  =====================================================================> */}
 
           <div

@@ -1056,7 +1056,7 @@ const Itemmaster = () => {
                       <label className="label">Suppliers </label>
                       <FaPlusCircle
                         className="mt-1.5 cursor-pointer"
-                        onClick={() => history.push("/more/addDistributer")}
+                        onClick={() => history.push("/addDistributer")}
                       />
                     </div>
                     {/* <label className="label"></label> */}

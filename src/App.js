@@ -660,128 +660,128 @@ function App() {
                 <BankAccount />
               </Protected>
             </Route>
-            <Route path='/Report/margin-report/item-wise'>
+            <Route path='/margin-report/item-wise'>
               <Protected>
                 <ItemWiseMargin />
               </Protected>
             </Route>
-            <Route path='/Report/margin-report/bill-item-wise-margin'>
+            <Route path='/margin-report/bill-item-wise-margin'>
               <Protected>
                 <BillItemWiseMargin />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-purchase-register'>
+            <Route path='/gst-purchase-register'>
               <Protected>
                 <PurchaseRegister />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-purchase-bills'>
+            <Route path='/gst-purchase-bills'>
               <Protected>
                 <PurchaseBillReport />
               </Protected>
             </Route>
 
-            <Route path='/Reports/gst-sales-register'>
+            <Route path='/gst-sales-register'>
               <Protected>
                 <SalesRegister />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-sales-bills'>
+            <Route path='/gst-sales-bills'>
               <Protected>
                 <SalesBill />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-hsn-wise'>
+            <Route path='/gst-hsn-wise'>
               <Protected>
                 <HsnWiseGst />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-GSTR1'>
+            <Route path='/gst-GSTR1'>
               <Protected>
                 <Gstr1 />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-GSTR2'>
+            <Route path='/gst-GSTR2'>
               <Protected>
                 <Gstr2 />
               </Protected>
             </Route>
-            <Route path='/Reports/gst-GSTR-3B'>
+            <Route path='/gst-GSTR-3B'>
               <Protected>
                 <Gstr_3B />
               </Protected>
             </Route>
-            <Route path='/Reports/day-wise-summary'>
+            <Route path='/day-wise-summary'>
               <Protected>
                 <DayWiseSummary />
               </Protected>
             </Route>
-            <Route path='/Reports/account-purchase-payment-summary'>
+            <Route path='/account-purchase-payment-summary'>
               <Protected>
                 <PurchasePaymentSummary />
               </Protected>
             </Route>
-            <Route path='/Reports/others-item-doctor-wise'>
+            <Route path='/others-item-doctor-wise'>
               <Protected>
                 <DoctorItemWise />
               </Protected>
             </Route>
-            <Route path='/Reports/others-company-items-analysis'>
+            <Route path='/others-company-items-analysis'>
               <Protected>
                 <CompanyItemWise />
               </Protected>
             </Route>
-            <Route path='/Reports/others-staff-wise-activity-summary'>
+            <Route path='/others-staff-wise-activity-summary'>
               <Protected>
                 <StaffWiseActivity />
               </Protected>
             </Route>
-            <Route path='/Reports/others-sales-summary-report'>
+            <Route path='/others-sales-summary-report'>
               <Protected>
                 <SaleSummary />
               </Protected>
             </Route>
-            <Route path='/Reports/stock-purchase-return-report'>
+            <Route path='/stock-purchase-return-report'>
               <Protected>
                 <Purchase_Return_Report />
               </Protected>
             </Route>
-            <Route path='/Reports/stock-inventory-reconciliation'>
+            <Route path='/stock-inventory-reconciliation'>
               <Protected>
                 <Inventory_Reconciliation />
               </Protected>
             </Route>
-            <Route path='/Reports/stock-item-batchwise'>
+            <Route path='/stock-item-batchwise'>
               <Protected>
                 <Item_Batch_wiseStock />
               </Protected>
             </Route>
-            <Route path='/Reports/stock-non-moving'>
+            <Route path='/stock-non-moving'>
               <Protected>
                 <Non_Moving_items />
               </Protected>
             </Route>
-            <Route path='/Reports/stock-stock-adjustment'>
+            <Route path='/stock-stock-adjustment'>
               <Protected>
                 <Stock_AdjustMent_Report />
               </Protected>
             </Route>
-            <Route path='/Reports/monthly-sales-overview'>
+            <Route path='/monthly-sales-overview'>
               <Protected>
                 <Monthly_sales_Overview />
               </Protected>
             </Route>
-            <Route path='/Reports/top-selling-items'>
+            <Route path='/top-selling-items'>
               <Protected>
                 <Top_Selling_Items />
               </Protected>
             </Route>
-            <Route path='/Reports/top-customers'>
+            <Route path='/top-customers'>
               <Protected>
                 <Top_Customers />
               </Protected>
             </Route>
-            <Route path='/Reports/top-distributors'>
+            <Route path='/top-distributors'>
               <Protected>
                 <Top_Distributor />
               </Protected>

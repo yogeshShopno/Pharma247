@@ -35,50 +35,50 @@ const ReportsMain = () => {
   const [favorites, setFavorites] = useState([]);
 
   const gstReports = [
-    // { name: 'Purchase Register', path: '/Reports/gst-purchase-register', icon: GSTIcon },
+    // { name: 'Purchase Register', path: '/gst-purchase-register', icon: GSTIcon },
     {
       name: "Purchase Bills",
-      path: "/Reports/gst-purchase-bills",
+      path: "/gst-purchase-bills",
       icon: GSTIcon,
     },
-    // { name: 'Sales Register', path: '/Reports/gst-sales-register', icon: GSTIcon },
-    { name: "Sales Bill", path: "/Reports/gst-sales-bills", icon: GSTIcon },
+    // { name: 'Sales Register', path: '/gst-sales-register', icon: GSTIcon },
+    { name: "Sales Bill", path: "/gst-sales-bills", icon: GSTIcon },
     {
       name: "Day wise Summary",
-      path: "/Reports/day-wise-summary",
+      path: "/day-wise-summary",
       icon: GSTIcon,
     },
-    { name: "GSTR-1", path: "/Reports/gst-GSTR1", icon: GSTIcon },
-    { name: "GSTR-2", path: "/Reports/gst-GSTR2", icon: GSTIcon },
-    { name: "GSTR-3B", path: "/Reports/gst-GSTR-3B", icon: GSTIcon },
+    { name: "GSTR-1", path: "/gst-GSTR1", icon: GSTIcon },
+    { name: "GSTR-2", path: "/gst-GSTR2", icon: GSTIcon },
+    { name: "GSTR-3B", path: "/gst-GSTR-3B", icon: GSTIcon },
 
-    { name: "HSN wise GST", path: "/Reports/gst-hsn-wise", icon: GSTIcon },
-    // { name: 'Composition GST Report', path: '/Report/margin-report/item-wise', icon: GSTIcon },
+    { name: "HSN wise GST", path: "/gst-hsn-wise", icon: GSTIcon },
+    // { name: 'Composition GST Report', path: '/margin-report/item-wise', icon: GSTIcon },
   ];
   const stockReports = [
     {
       name: "Purchase Return Report",
-      path: "/Reports/stock-purchase-return-report",
+      path: "/stock-purchase-return-report",
       icon: StockIcon,
     },
     {
       name: "Non-Moving Items",
-      path: "/Reports/stock-non-moving",
+      path: "/stock-non-moving",
       icon: StockIcon,
     },
     {
       name: "Item-Batch wise Stock",
-      path: "/Reports/stock-item-batchwise",
+      path: "/stock-item-batchwise",
       icon: StockIcon,
     },
     {
       name: "Stock Adjustment",
-      path: "/Reports/stock-stock-adjustment",
+      path: "/stock-stock-adjustment",
       icon: StockIcon,
     },
     {
       name: "Inventory Reconciliation",
-      path: "/Reports/stock-inventory-reconciliation",
+      path: "/stock-inventory-reconciliation",
       icon: StockIcon,
     },
   ];
@@ -86,22 +86,22 @@ const ReportsMain = () => {
   const othersReports = [
     {
       name: "Doctor - Item Summary",
-      path: "/Reports/others-item-doctor-wise",
+      path: "/others-item-doctor-wise",
       icon: OtherIcon,
     },
     {
       name: "Company Items Analysis",
-      path: "/Reports/others-company-items-analysis",
+      path: "/others-company-items-analysis",
       icon: OtherIcon,
     },
     {
       name: "Staff Wise Activity Summary",
-      path: "/Reports/others-staff-wise-activity-summary",
+      path: "/others-staff-wise-activity-summary",
       icon: OtherIcon,
     },
     {
       name: "Sales Summary Report",
-      path: "/Reports/others-sales-summary-report",
+      path: "/others-sales-summary-report",
       icon: OtherIcon,
     },
   ];
@@ -109,22 +109,22 @@ const ReportsMain = () => {
   const eNtelligentReports = [
     {
       name: "Monthly Sales Overview",
-      path: "/Reports/monthly-sales-overview",
+      path: "/monthly-sales-overview",
       icon: ENtelligentIcon,
     },
     {
       name: "Top Selling Items",
-      path: "/Reports/top-selling-items",
+      path: "/top-selling-items",
       icon: ENtelligentIcon,
     },
     {
       name: "Top Customers",
-      path: "/Reports/top-customers",
+      path: "/top-customers",
       icon: ENtelligentIcon,
     },
     {
       name: "Top Distributors",
-      path: "/Reports/top-distributors",
+      path: "/top-distributors",
       icon: ENtelligentIcon,
     },
   ];
@@ -132,7 +132,7 @@ const ReportsMain = () => {
   const accountingReport = [
     {
       name: "Purchase Payment Summary",
-      path: "/Reports/account-purchase-payment-summary",
+      path: "/account-purchase-payment-summary",
       icon: AccouaccountingIcon,
     },
   ];
@@ -140,12 +140,12 @@ const ReportsMain = () => {
   const marginReports = [
     {
       name: "Item wise Margin",
-      path: "/Report/margin-report/item-wise",
+      path: "margin-report/item-wise",
       icon: MarginIcon,
     },
     {
       name: "Bill-Item wise Margin",
-      path: "/Report/margin-report/bill-item-wise-margin",
+      path: "margin-report/bill-item-wise-margin",
       icon: MarginIcon,
     },
   ];

@@ -295,7 +295,7 @@ const AddPurchaseBill = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [distributor, billNo, ItemPurchaseList,isSubmitting]);
+  }, [distributor, billNo, ItemPurchaseList, isSubmitting]);
 
   const handleKeyDown = (event, index) => {
     if (event.key === "Enter") {
@@ -1658,7 +1658,7 @@ const AddPurchaseBill = () => {
     if (selectedEditItem) {
       setUnitEditID(selectedEditItem.unit_id);
       setItemEditID(selectedEditItem.item_id);
-      setSearchItem(selectedEditItem.iteam_name);
+      setSearchItem(selectedEditItem.iteam_name.toUpperCase());
       setUnit(selectedEditItem.weightage);
       setBatch(selectedEditItem.batch_number);
       setHSN(selectedEditItem.hsn_code);
@@ -1753,7 +1753,7 @@ const AddPurchaseBill = () => {
     setSelectedOption(newValue);
 
     const itemName = newValue ? newValue.iteam_name : "";
-    setSearchItem(itemName);
+    setSearchItem(itemName.toUpperCase());
 
     setId(newValue?.id);
     handleSearch(itemName);
@@ -2446,6 +2446,7 @@ const AddPurchaseBill = () => {
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
+                                  textTransform: 'uppercase',
                                 },
                               }}
 
@@ -2567,6 +2568,8 @@ const AddPurchaseBill = () => {
                           width: "100%",
                           '& .MuiInputBase-input': {
                             textAlign: 'center',
+                     
+
                           },
                         }}
                         onChange={(e) => {

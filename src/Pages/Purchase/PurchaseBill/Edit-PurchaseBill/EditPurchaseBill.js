@@ -1733,6 +1733,7 @@ const EditPurchaseBill = () => {
                                 width: "100%",
                                 '& .MuiInputBase-input': {
                                   // textAlign: 'center',
+                                  textTransform: 'uppercase',
                                 },
                               }}
 

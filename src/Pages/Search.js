@@ -184,7 +184,7 @@ const Search = ({ searchPage, setSearchPage }) => {
       }
     }
   };
-  
+
 
   // Pagination handlers
   const handleChangePage = (event, newPage) => {
@@ -337,7 +337,7 @@ const Search = ({ searchPage, setSearchPage }) => {
             </div>
             {tableData.length > 0 && (
               <TablePagination
-                rowsPerPageOptions={[5, 10, 25]}
+                rowsPerPageOptions={[5, 10]}
                 component="div"
                 count={tableData.length}
                 rowsPerPage={rowsPerPage}

@@ -1229,7 +1229,7 @@ const EditReturnBill = () => {
                                                     minWidth: 400,
                                                     width: "100%",
                                                 }}
-                                                value={searchQuery}
+                                                value={searchQuery.toUpperCase()}
                                                 onChange={handleInputChange}
                                                 variant="outlined"
                                                 placeholder="Please search any items.."

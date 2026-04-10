@@ -1167,8 +1167,10 @@ const AddReturnbill = () => {
                           sx={{
                             minWidth: 400,
                             width: "100%",
+                            textTransform: 'uppercase',
+
                           }}
-                          value={searchQuery}
+                          value={searchQuery.toUpperCase()}
                           onChange={handleInputChange}
                           variant="outlined"
                           placeholder="Please search any items.."

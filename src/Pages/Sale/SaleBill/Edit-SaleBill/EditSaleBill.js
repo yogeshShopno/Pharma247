@@ -764,7 +764,7 @@ const EditSaleBill = () => {
   };
 
   const handleEditClick = (item) => {
-    console.log(item)
+
 
     if (!item) return;
 
@@ -793,7 +793,7 @@ const EditSaleBill = () => {
   };
 
   useEffect(() => {
-    console.log(selectedEditItem)
+
     if (selectedEditItem) {
       setUnit(selectedEditItem.unit);
       setBatch(selectedEditItem.batch);

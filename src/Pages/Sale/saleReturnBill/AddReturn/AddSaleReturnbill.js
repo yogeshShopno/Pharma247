@@ -607,7 +607,7 @@ const Salereturn = () => {
             return;
         }
         if (!tableData || !Array.isArray(tableData.sales_item) || tableData.sales_item.length === 0) {
-            console.log(tableData, "tableData")
+        
             newErrors.sales_item = 'Please add at least one item';
             toast.dismiss();
             toast.error('Please add at least one item');

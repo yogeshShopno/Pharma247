@@ -110,19 +110,20 @@ function TitleUpdater() {
     let title = "Pharma24-7";
 
     const segments = pathName.split('/').filter(Boolean);
+
     if (segments.length === 0) {
       title = "Pharma24-7 - Login";
     } else {
-      let targetSegment = segments.length > 1 && (segments[0] === 'more' || segments[0] === 'profile' || segments[0] === 'purchase' || segments[0] === 'Report' || segments[0] === 'Reports' || segments[0] === 'return' || segments[0] === 'salebill' || segments[0] === 'SaleReturn') && segments[1] ? segments[1] : segments[0];
+      let targetSegment = segments.length > 1 ? segments[1] : segments[0];
       targetSegment = targetSegment.replace(/%20|_|-/g, ' ');
       targetSegment = decodeURIComponent(targetSegment);
       targetSegment = targetSegment.replace(/([a-z])([A-Z])/g, '$1 $2');
-      title = targetSegment.split(' ')
-        .map(word => word ? word.charAt(0).toUpperCase() + word.slice(1) : '')
-        .join(' ');
+      title = targetSegment.split(' ').map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '').join(' ');
       title = `${title}`;
     }
+    
     document.title = title;
+
   }, [location]);
 
   return null;
@@ -623,7 +624,7 @@ function App() {
               <Salelist />
             </Route>
             <Route path='/saleAdd'>
-              <addSale />
+              <Addsale />
             </Route>
             <Route path='/saleView/:id'>
               <SaleView />

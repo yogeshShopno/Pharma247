@@ -111,8 +111,7 @@ function TitleUpdater() {
 
     const segments = pathName.split('/').filter(Boolean);
 
-
-    let targetSegment = segments.length > 1 ? segments[1] : segments[0];
+    let targetSegment = segments.length > 0 ? segments[0] : "Login";
     targetSegment = targetSegment.replace(/%20|_|-/g, ' ');
     targetSegment = decodeURIComponent(targetSegment);
     targetSegment = targetSegment.replace(/([a-z])([A-Z])/g, '$1 $2');

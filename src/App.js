@@ -107,23 +107,18 @@ function TitleUpdater() {
 
   useEffect(() => {
     const pathName = location.pathname;
-    let title = "Pharma24-7";
+    let title = "";
 
     const segments = pathName.split('/').filter(Boolean);
 
-    if (segments.length === 0) {
-      title = "Pharma24-7 - Login";
-    } else {
-      let targetSegment = segments.length > 1 ? segments[1] : segments[0];
-      targetSegment = targetSegment.replace(/%20|_|-/g, ' ');
-      targetSegment = decodeURIComponent(targetSegment);
-      targetSegment = targetSegment.replace(/([a-z])([A-Z])/g, '$1 $2');
-      title = targetSegment.split(' ').map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '').join(' ');
-      title = `${title}`;
-    }
-    
-    document.title = title;
 
+    let targetSegment = segments.length > 1 ? segments[1] : segments[0];
+    targetSegment = targetSegment.replace(/%20|_|-/g, ' ');
+    targetSegment = decodeURIComponent(targetSegment);
+    targetSegment = targetSegment.replace(/([a-z])([A-Z])/g, '$1 $2');
+    title = targetSegment.split(' ').map(word => word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : '').join(' ');
+
+    document.title = `${title}`;
   }, [location]);
 
   return null;

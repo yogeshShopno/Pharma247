@@ -143,7 +143,7 @@ const DrugGroupView = () => {
                                 fontSize: "20px",
                             }}
                         >
-                            {drugGroupData}
+                            {drugGroupData.toString().slice(0, 100) + (drugGroupData.toString().length > 100 ? "..." : "")}
                         </span>
                     </div>
 
@@ -161,7 +161,7 @@ const DrugGroupView = () => {
                             <div className="detail_main_bg_CV">
                                 <span className="heading_othr">Drug Group Name</span>
                                 <span className="data_bg">
-                                    {drugGroupData ? drugGroupData : "____"}
+                                    {drugGroupData ? drugGroupData.toString().slice(0, 100) + (drugGroupData.toString().length > 100 ? "..." : "") : "____"}
                                 </span>
                             </div>
                             <div className="detail_main_bg_CV">

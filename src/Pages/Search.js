@@ -314,7 +314,9 @@ const Search = ({ searchPage, setSearchPage }) => {
                               className="cursor-pointer"
                               key={column.id}
                             >
-                              {row[column.id] || "-"}
+                              {row[column.id]
+                                ? row[column.id].toString().slice(0, 50) + (row[column.id].toString().length > 50 ? "…" : "")
+                                : "-"}
                             </td>
                           ))}
                           <td style={{ borderRadius: "0 10px 10px 0" }}>

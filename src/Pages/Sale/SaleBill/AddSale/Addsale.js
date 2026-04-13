@@ -1230,12 +1230,14 @@ const addSale = () => {
   /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
+    console.log(item.qty,item.total_stock)
     if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId();
+
     setSelectedOption(item);
-    setMaxQty(item.total_stock);
+    setMaxQty(Number(item.total_stock)+Number(item.qty));
 
     // const found = uniqueItems.find(u => u.id === item.id);
     // if (found) {

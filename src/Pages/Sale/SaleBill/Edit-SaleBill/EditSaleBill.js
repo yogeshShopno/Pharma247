@@ -231,7 +231,7 @@ const EditSaleBill = () => {
     const handleKeyPress = (e) => {
       const key = e.key;
       const ae = document.activeElement; // Get the currently active element
-      const trimmedSearchItem = searchItem.trim(); // Remove spaces from searchItem to check if it's empty
+      const trimmedSearchItem = searchItem?.trim(); // Remove spaces from searchItem to check if it's empty
 
       // If not ArrowDown, ArrowUp, or Enter, return early
       if (key !== 'ArrowDown' && key !== 'ArrowUp' && key !== 'Enter') return;
@@ -327,6 +327,7 @@ const EditSaleBill = () => {
           break;
 
         case "m":
+          setHighlightedRowId(null)
           setIsEditMode(false);
           setSelectedEditItemId(null);
           setSearchItem("");
@@ -337,6 +338,24 @@ const EditSaleBill = () => {
           setSelectedOption(null);
           tableRef1.current?.blur();
           focusItem();   // ← go to Item name
+
+          saleBillGetBySaleID();
+          setSearchItem(null);
+          setUnit("");
+          setBatch("");
+          setExpiryDate("");
+          setMRP("");
+          setQty("");
+          setBase("");
+          setGst("");
+          setBatch("");
+          setLoc("");
+          setOrder("");
+          setBarcode("");
+          setIsVisible(false);
+
+
+          setTimeout(focusItem, 0);  // ← back to Item
           break;
 
         default:
@@ -1007,7 +1026,7 @@ const EditSaleBill = () => {
       setItemId(response?.data?.data[0]?.batch_list[0]?.item_id);
 
       setSelectedEditItemId(response?.data?.data[0]?.id);
-      setItemEditID(response.data.data[0]?.id);
+
 
     } catch (error) {
       if (error.response?.status === 400) {
@@ -2134,6 +2153,7 @@ const EditSaleBill = () => {
                         {item.iteam_name}
                       </span>
                     </td>
+                    {console.log(item)}
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp}</td>

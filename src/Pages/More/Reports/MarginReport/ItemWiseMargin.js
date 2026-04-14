@@ -53,7 +53,7 @@ const ItemWiseMargin = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -94,7 +94,7 @@ toast.error(newErrors.reportType);
   const exportToCSV = () => {
     if (itemMarginData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const saleamt = itemMarginData.total_sales;
       const total_purchase = itemMarginData.total_purches;
@@ -210,7 +210,7 @@ toast.error("Apply filter and then after download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -335,7 +335,7 @@ toast.error("Apply filter and then after download records.");
                         }}
                       />
                     </div>
-                  </div>  
+                  </div>
                   <div className="purch_report_hdr detail_report detail_report_sss detailrep_100">
                     <Button
                       style={{
@@ -444,19 +444,19 @@ toast.error("Apply filter and then after download records.");
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           ItemWiseColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                   >
                                     {item[column.id] &&
                                       item[column.id].charAt(0).toUpperCase() +
-                                        item[column.id].slice(1)}
+                                      item[column.id].slice(1)}
                                   </td>
                                 ))}
                               </tr>

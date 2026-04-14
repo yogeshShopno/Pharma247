@@ -49,7 +49,7 @@ const StaffWiseActivity = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -89,7 +89,7 @@ toast.error(newErrors.reportType);
   const exportToCSV = () => {
     if (staffActivityData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter, then download records.");
+      toast.error("Apply filter, then download records.");
     } else {
       const filteredData = staffActivityData?.bil_list?.map(
         ({
@@ -183,7 +183,7 @@ toast.error("Apply filter, then download records.");
                         fontSize: "20px",
                         cursor: "pointer",
                       }}
-                      onClick={() => history.push("/Resports")}
+                      onClick={() => history.push("/reports")}
                     >
                       {" "}
                       Reports
@@ -236,7 +236,7 @@ toast.error("Apply filter, then download records.");
               ></div>
               <div className="mt-4 ">
                 <div
-                  className="manageExpenseRow" 
+                  className="manageExpenseRow"
                 >
                   <div
                     className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row pb-2 csrtureddididid"
@@ -319,7 +319,7 @@ toast.error("Apply filter, then download records.");
                           <span className="secondary font-bold text-xl ">
                             Rs.{staffActivityData?.bil_total}
                           </span>
-                        </h2> 
+                        </h2>
                       </div>
                     </div>
                   </div>
@@ -347,7 +347,7 @@ toast.error("Apply filter, then download records.");
                                 <td key={column.id}>
                                   {item[column.id] &&
                                     item[column.id].charAt(0).toUpperCase() +
-                                      item[column.id].slice(1)}
+                                    item[column.id].slice(1)}
                                 </td>
                               ))}
                             </tr>

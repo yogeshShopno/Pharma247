@@ -78,11 +78,11 @@ const SalesBill = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     } else if (reportType && !paymentMode) {
       newErrors.paymentMode = "Select any Purchase Type.";
       toast.dismiss();
-toast.error(newErrors.paymentMode);
+      toast.error(newErrors.paymentMode);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -128,7 +128,7 @@ toast.error(newErrors.paymentMode);
   const exportToCSV = () => {
     if (saleGSTData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter, then download records.");
+      toast.error("Apply filter, then download records.");
     } else {
       const filteredData = saleGSTData?.sales?.map(
         ({
@@ -217,7 +217,7 @@ toast.error("Apply filter, then download records.");
                   fontSize: "20px",
                   cursor: "pointer",
                 }}
-                onClick={() => history.push("/Resports")}
+                onClick={() => history.push("/reports")}
               >
                 {" "}
                 Reports
@@ -405,13 +405,13 @@ toast.error("Apply filter, then download records.");
                               style={
                                 colIndex === 0
                                   ? {
-                                      borderRadius: "10px 0 0 10px",
-                                    }
+                                    borderRadius: "10px 0 0 10px",
+                                  }
                                   : colIndex === GstSaleBillColumns.length - 1
-                                  ? {
+                                    ? {
                                       borderRadius: "0 10px 10px 0",
                                     }
-                                  : {}
+                                    : {}
                               }
                             >
                               {item[column.id]}
@@ -432,11 +432,10 @@ toast.error("Apply filter, then download records.");
                 >
                   <button
                     onClick={handlePrevious}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === 1
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                         ? "bg-gray-200 text-gray-700"
                         : "secondary-bg text-white"
-                    }`}
+                      }`}
                     disabled={currentPage === 1}
                   >
                     Previous
@@ -445,22 +444,20 @@ toast.error("Apply filter, then download records.");
                     <button
                       key={i}
                       onClick={() => handleClick(i + 1)}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === i + 1
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                           ? "secondary-bg text-white"
                           : "bg-gray-200 text-gray-700"
-                      }`}
+                        }`}
                     >
                       {i + 1}
                     </button>
                   ))}
                   <button
                     onClick={handleNext}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === rowsPerPage
+                    className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                         ? "bg-gray-200 text-gray-700"
                         : "secondary-bg text-white"
-                    }`}
+                      }`}
                     disabled={currentPage === totalPages}
                   >
                     Next

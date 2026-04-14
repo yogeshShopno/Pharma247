@@ -32,7 +32,7 @@ const Non_Moving_items = () => {
     if (!nonMovingDate) {
       newErrors.nonMovingDate = "Select any Time Duration.";
       toast.dismiss();
-toast.error(newErrors.nonMovingDate);
+      toast.error(newErrors.nonMovingDate);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -125,7 +125,7 @@ toast.error(newErrors.nonMovingDate);
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports

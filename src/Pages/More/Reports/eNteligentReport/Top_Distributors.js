@@ -71,7 +71,7 @@ const Top_Distributor = () => {
   const exportToCSV = () => {
     if (topDistributorData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = topDistributorData?.map(
         ({ distributor_name, gst_in, total, count }) => ({
@@ -143,7 +143,7 @@ toast.error("Apply filter and then after download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -279,7 +279,7 @@ toast.error("Apply filter and then after download records.");
                                 const formattedValue =
                                   typeof value === "string" && value.length > 0
                                     ? value.charAt(0).toUpperCase() +
-                                      value.slice(1)
+                                    value.slice(1)
                                     : value;
 
                                 return (
@@ -288,7 +288,7 @@ toast.error("Apply filter and then after download records.");
                                     align={column.align}
                                     style={
                                       colIndex ===
-                                      TopDistributorColumns.length - 1
+                                        TopDistributorColumns.length - 1
                                         ? { borderRadius: "0 10px 10px 0" }
                                         : {}
                                     }

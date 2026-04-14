@@ -32,7 +32,7 @@ const Gstr2 = () => {
     const downloadCSV = async () => {
         if (!reportType) {
             toast.dismiss();
-toast.error("Please select a report type.");
+            toast.error("Please select a report type.");
             return;
         }
 
@@ -58,25 +58,25 @@ toast.error("Please select a report type.");
                     setReportData([parsedData.data]);
                 } else {
                     toast.dismiss();
-toast.error('No data available for the selected criteria.');
+                    toast.error('No data available for the selected criteria.');
                 }
             }
             else {
                 toast.dismiss();
-toast.error('Failed to download records. Please try again.');
+                toast.error('Failed to download records. Please try again.');
             }
         } catch (error) {
             console.error("API error:", error);
 
             toast.dismiss();
-toast.error('An error occurred while downloading the CSV.');
+            toast.error('An error occurred while downloading the CSV.');
         }
     };
 
     const exportToCSV = () => {
         if (!Array.isArray(reportData) || reportData.length === 0) {
             toast.dismiss();
-toast.error('Apply filter and then after download records.');
+            toast.error('Apply filter and then after download records.');
             return;
         }
 
@@ -146,7 +146,7 @@ toast.error('Apply filter and then after download records.');
     return (
         <>
             <Header />
-              <ToastContainer
+            <ToastContainer
 
                 position="top-right"
                 autoClose={5000}
@@ -165,7 +165,7 @@ toast.error('Apply filter and then after download records.');
                     <div className="p-6">
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', marginBottom: '15px' }}>
-                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+                                <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '20px', cursor: "pointer" }} onClick={(() => history.push('/reports'))} > Reports
                                 </span>
                                 <ArrowForwardIosIcon style={{ fontSize: '18px', color: "var(--color1)" }} />
                                 <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '20px', minWidth: "120px" }}> GSTR-2 Report

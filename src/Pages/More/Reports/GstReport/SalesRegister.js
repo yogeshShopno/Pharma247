@@ -200,7 +200,7 @@
 //                     <div style={{ background: "rgba(153, 153, 153, 0.1)", height: 'calc(99vh - 55px)', padding: '20px 20px 0px' }}>
 //                         <div style={{ display: 'flex', gap: '4px' }}>
 //                             <div style={{ display: 'flex', gap: '7px', alignItems: 'center', }}>
-//                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/Resports'))} > Reports
+//                                 <span style={{ color: 'var(--color2)', display: 'flex', fontWeight: 700, fontSize: '17px', cursor: "pointer" }} onClick={(() => history.push('/reports'))} > Reports
 //                                 </span>
 //                                 <ArrowForwardIosIcon style={{ fontSize: '17px', color: "var(--color1)" }} />
 //                                 <span style={{ color: 'var(--color1)', display: 'flex', fontWeight: 700, fontSize: '17px', minWidth: "160px" }}>  GST Sales Register

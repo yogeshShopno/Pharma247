@@ -120,7 +120,7 @@ const Top_Selling_Items = () => {
   const exportToCSV = () => {
     if (topSaleData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = topSaleData?.map(
         ({ iteam_name, company_name, qty, amt }) => ({
@@ -197,7 +197,7 @@ toast.error("Apply filter and then after download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -352,7 +352,7 @@ toast.error("Apply filter and then after download records.");
                                 const formattedValue =
                                   typeof value === "string" && value.length > 0
                                     ? value.charAt(0).toUpperCase() +
-                                      value.slice(1)
+                                    value.slice(1)
                                     : value;
                                 return (
                                   <td
@@ -386,11 +386,10 @@ toast.error("Apply filter and then after download records.");
                   >
                     <button
                       onClick={handlePrevious}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === 1
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={currentPage === 1}
                     >
                       Previous
@@ -399,22 +398,20 @@ toast.error("Apply filter and then after download records.");
                       <button
                         key={i}
                         onClick={() => handleClick(i + 1)}
-                        className={`mx-1 px-3 py-1 rounded ${
-                          currentPage === i + 1
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                             ? "secondary-bg text-white"
                             : "bg-gray-200 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {i + 1}
                       </button>
                     ))}
                     <button
                       onClick={handleNext}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === rowsPerPage
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={currentPage != totalPages}
                     >
                       Next

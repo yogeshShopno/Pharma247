@@ -507,7 +507,7 @@ const addSale = () => {
       updateTodayPoints()
     }
 
-  }, [netAmount])
+  }, [netAmount,customer])
 
   const updateTodayPoints = async () => {
     let data = new FormData();

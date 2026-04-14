@@ -80,11 +80,11 @@ const PurchaseBillReport = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     } else if (reportType && !purchaseType) {
       newErrors.purchaseType = "Select any Purchase Type.";
       toast.dismiss();
-toast.error(newErrors.purchaseType);
+      toast.error(newErrors.purchaseType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -187,7 +187,7 @@ toast.error(newErrors.purchaseType);
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -330,7 +330,7 @@ toast.error(newErrors.purchaseType);
                         <span className="secondary font-bold text-xl ">
                           Rs.{total}
                         </span>
-                      </h2> 
+                      </h2>
                     </div>
                   </div>
                 </div>
@@ -368,13 +368,13 @@ toast.error(newErrors.purchaseType);
                               style={
                                 colIndex === 0
                                   ? {
-                                      borderRadius: "10px 0 0 10px",
-                                    }
+                                    borderRadius: "10px 0 0 10px",
+                                  }
                                   : colIndex === GSTPurchaseColumns.length - 1
-                                  ? {
+                                    ? {
                                       borderRadius: "0 10px 10px 0",
                                     }
-                                  : {}
+                                    : {}
                               }
                             >
                               {item[column.id]}

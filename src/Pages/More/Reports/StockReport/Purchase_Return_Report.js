@@ -58,7 +58,7 @@ const Purchase_Return_Report = () => {
   const exportToCSV = () => {
     if (purchaseReturnData?.purches_return?.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const total = purchaseReturnData?.purches_return_total;
 
@@ -200,7 +200,7 @@ toast.error("Apply filter and then after download records.");
                       fontSize: "20px",
                       cursor: "pointer",
                     }}
-                    onClick={() => history.push("/Resports")}
+                    onClick={() => history.push("/reports")}
                   >
                     {" "}
                     Reports
@@ -252,11 +252,11 @@ toast.error("Apply filter and then after download records.");
             ></div>
             <div className="mt-4 "  >
               <div
-                className="manageExpenseRow" 
+                className="manageExpenseRow"
               >
                 <div
                   className="oreder_list_fld_rp flex flex-col gap-2 md:flex-row pb-2 csrtureddididid"
-                  style={{ width: "100%", alignItems: "end" }} 
+                  style={{ width: "100%", alignItems: "end" }}
                 >
                   <div className="grid grid-cols-1 sm:grid-cols-2  md:grid-cols-4 w-full gap-3 ttl_dldld">
                     <div className="detail_report detailrep_100 flex flex-col">
@@ -314,7 +314,7 @@ toast.error("Apply filter and then after download records.");
                       <Button
                         className="go_btn_divv"
                         style={{
-                          background: "var(--color1)", 
+                          background: "var(--color1)",
                           width: "fit-content",
                           height: "40px",
                         }}
@@ -324,7 +324,7 @@ toast.error("Apply filter and then after download records.");
                         Go
                       </Button>
                     </div>
-                  </div> 
+                  </div>
                   <div className="flex gap-2 ttl_dldld">
                     <div
                       className="total_mng_expn  detail_report_totl"
@@ -335,14 +335,14 @@ toast.error("Apply filter and then after download records.");
                         whiteSpace: "nowrap",
                       }}
                     >
-                          <h2 className="primary font-medium text-xl ">
-                            Total{" "} <span className="secondary font-bold text-xl">
-                                Rs.
-                                {!purchaseReturnData?.purches_return_total
-                                  ? 0
-                                  : purchaseReturnData?.purches_return_total}
-                            </span>
-                          </h2> 
+                      <h2 className="primary font-medium text-xl ">
+                        Total{" "} <span className="secondary font-bold text-xl">
+                          Rs.
+                          {!purchaseReturnData?.purches_return_total
+                            ? 0
+                            : purchaseReturnData?.purches_return_total}
+                        </span>
+                      </h2>
                     </div>
                   </div>
                 </div>
@@ -381,14 +381,14 @@ toast.error("Apply filter and then after download records.");
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           GstSaleRegisterColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                   >
                                     {item[column.id]}
@@ -411,11 +411,10 @@ toast.error("Apply filter and then after download records.");
                   >
                     <button
                       onClick={handlePrevious}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === 1
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={currentPage === 1}
                     >
                       Previous
@@ -424,22 +423,20 @@ toast.error("Apply filter and then after download records.");
                       <button
                         key={i}
                         onClick={() => handleClick(i + 1)}
-                        className={`mx-1 px-3 py-1 rounded ${
-                          currentPage === i + 1
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                             ? "secondary-bg text-white"
                             : "bg-gray-200 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {i + 1}
                       </button>
                     ))}
                     <button
                       onClick={handleNext}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        nextButtonDisabled
+                      className={`mx-1 px-3 py-1 rounded ${nextButtonDisabled
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={nextButtonDisabled}
                     >
                       Next

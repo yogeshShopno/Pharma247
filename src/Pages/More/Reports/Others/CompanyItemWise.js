@@ -44,7 +44,7 @@ const CompanyItemWise = () => {
     if (!searchManu) {
       newErrors.searchManu = "Search Any Company Name";
       toast.dismiss();
-toast.error(newErrors.searchManu);
+      toast.error(newErrors.searchManu);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -85,7 +85,7 @@ toast.error(newErrors.searchManu);
   const exportToCSV = () => {
     if (companyData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const total_amount = companyData.total;
       const filteredData = companyData?.item_list?.map(
@@ -195,7 +195,7 @@ toast.error("Apply filter and then after download records.");
                         fontSize: "20px",
                         cursor: "pointer",
                       }}
-                      onClick={() => history.push("/Resports")}
+                      onClick={() => history.push("/reports")}
                     >
                       {" "}
                       Reports
@@ -365,19 +365,19 @@ toast.error("Apply filter and then after download records.");
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           GstSaleRegisterColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                   >
                                     {item[column.id] &&
                                       item[column.id].charAt(0).toUpperCase() +
-                                        item[column.id].slice(1)}
+                                      item[column.id].slice(1)}
                                   </td>
                                 )
                               )}

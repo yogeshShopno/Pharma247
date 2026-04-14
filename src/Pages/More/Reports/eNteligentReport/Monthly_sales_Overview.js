@@ -68,7 +68,7 @@ const Monthly_sales_Overview = () => {
   const exportToCSV = () => {
     if (monthlySaleData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       // const filteredData = companyData?.item_list?.map(({ iteam_name, unit, bill_no, bill_date, batch, free_qty, net_rate, qty, exp_dt }) => ({
       //     ItemName: iteam_name,
@@ -162,7 +162,7 @@ toast.error("Apply filter and then after download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -241,7 +241,7 @@ toast.error("Apply filter and then after download records.");
                     >
                       Go
                     </Button>
-                  </div> 
+                  </div>
                 </div>
               </div>
               {!monthlySaleData?.duration ? (

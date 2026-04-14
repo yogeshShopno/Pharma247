@@ -58,7 +58,7 @@ const BillItemWiseMargin = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,7 +99,7 @@ toast.error(newErrors.reportType);
   const exportToCSV = () => {
     if (billMarginData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const saleamt = billMarginData.total_sales;
       const total_purchase = billMarginData.total_purches;
@@ -229,7 +229,7 @@ toast.error("Apply filter and then after download records.");
                       fontSize: "20px",
                       cursor: "pointer",
                     }}
-                    onClick={() => history.push("/Resports")}
+                    onClick={() => history.push("/reports")}
                   >
                     {" "}
                     Reports
@@ -472,21 +472,21 @@ toast.error("Apply filter and then after download records.");
                                         style={
                                           colIndex === 0
                                             ? {
-                                                borderRadius: "10px 0 0 10px",
-                                              }
+                                              borderRadius: "10px 0 0 10px",
+                                            }
                                             : colIndex ===
                                               BillItemWiseColumns.length - 1
-                                            ? {
+                                              ? {
                                                 borderRadius: "0 10px 10px 0",
                                               }
-                                            : {}
+                                              : {}
                                         }
                                       >
                                         {item[column.id] &&
                                           item[column.id]
                                             .charAt(0)
                                             .toUpperCase() +
-                                            item[column.id].slice(1)}
+                                          item[column.id].slice(1)}
                                       </td>
                                     )
                                   )}

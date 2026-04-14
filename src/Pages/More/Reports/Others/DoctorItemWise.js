@@ -60,7 +60,7 @@ const DoctorItemWise = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -106,7 +106,7 @@ toast.error(newErrors.reportType);
   const exportToCSV = () => {
     if (doctorItemWiseData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const total_amount = doctorItemWiseData.total_amount;
       const total_net_profite = doctorItemWiseData.total_net_profite;
@@ -247,7 +247,7 @@ toast.error("Apply filter and then after download records.");
                       fontSize: "20px",
                       cursor: "pointer",
                     }}
-                    onClick={() => history.push("/Resports")}
+                    onClick={() => history.push("/reports")}
                   >
                     {" "}
                     Reports
@@ -400,7 +400,7 @@ toast.error("Apply filter and then after download records.");
                       Go
                     </Button>
                   </div>
-                </div> 
+                </div>
                 <div className="flex gap-2  ttl_dldld">
                   <div
                     className="total_mng_expn doc_summary_ttl  detail_report_totl"
@@ -474,14 +474,14 @@ toast.error("Apply filter and then after download records.");
                                   style={
                                     colIndex === 0
                                       ? {
-                                          borderRadius: "10px 0 0 10px",
-                                        }
+                                        borderRadius: "10px 0 0 10px",
+                                      }
                                       : colIndex ===
                                         DoctorItemWiseColumns.length - 1
-                                      ? {
+                                        ? {
                                           borderRadius: "0 10px 10px 0",
                                         }
-                                      : {}
+                                        : {}
                                   }
                                 >
                                   {fieldsWithCurrency.includes(column.id)
@@ -526,11 +526,10 @@ toast.error("Apply filter and then after download records.");
                   >
                     <button
                       onClick={handlePrevious}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === 1
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={currentPage === 1}
                     >
                       Previous
@@ -539,22 +538,20 @@ toast.error("Apply filter and then after download records.");
                       <button
                         key={i}
                         onClick={() => handleClick(i + 1)}
-                        className={`mx-1 px-3 py-1 rounded ${
-                          currentPage === i + 1
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                             ? "secondary-bg text-white"
                             : "bg-gray-200 text-gray-700"
-                        }`}
+                          }`}
                       >
                         {i + 1}
                       </button>
                     ))}
                     <button
                       onClick={handleNext}
-                      className={`mx-1 px-3 py-1 rounded ${
-                        currentPage === rowsPerPage
+                      className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                           ? "bg-gray-200 text-gray-700"
                           : "secondary-bg text-white"
-                      }`}
+                        }`}
                       disabled={currentPage === totalPages}
                     >
                       Next

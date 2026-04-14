@@ -188,19 +188,19 @@ const Inventory_Reconciliation = () => {
     if (!batchListData.iteam_name) {
       newErrors.selectedItem = "select any Item Name.";
       toast.dismiss();
-toast.error(newErrors.selectedItem);
+      toast.error(newErrors.selectedItem);
     } else if (!batchListData.batch_number) {
       newErrors.batch = "Batch Number is required";
       toast.dismiss();
-toast.error(newErrors.batch);
+      toast.error(newErrors.batch);
     } else if (!batchListData.company_name) {
       newErrors.selectedCompany = "select any Company Name";
       toast.dismiss();
-toast.error(newErrors.selectedCompany);
+      toast.error(newErrors.selectedCompany);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
       toast.dismiss();
-toast.error(newErrors.stockAdjust);
+      toast.error(newErrors.stockAdjust);
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length === 0) {
@@ -236,8 +236,8 @@ toast.error(newErrors.stockAdjust);
         })
         .then((response) => {
           setIsLoading(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setOpenAddPopUp(false);
           setBatch();
           setSelectedCompany();
@@ -302,17 +302,17 @@ toast.success(response.data.message);
         if (parsedData?.data) {
           setReportData(parsedData.data);
           //  toast.dismiss();
-toast.success("please wait ...downloading is in progress!")
+          toast.success("please wait ...downloading is in progress!")
         } else {
           toast.dismiss();
-toast.error("No data available for the selected criteria.");
+          toast.error("No data available for the selected criteria.");
         }
       }
     } catch (error) {
       console.error("API error:", error);
 
       toast.dismiss();
-toast.error("An error occurred while downloading the CSV.");
+      toast.error("An error occurred while downloading the CSV.");
     } finally {
       setIsDownload(false);
     }
@@ -320,7 +320,7 @@ toast.error("An error occurred while downloading the CSV.");
   const exportToCSV = () => {
     if (!reportData || reportData.length === 0) {
       toast.dismiss();
-toast.error("No data available for download.");
+      toast.error("No data available for download.");
       return;
     }
 
@@ -350,8 +350,8 @@ toast.error("No data available for download.");
     link.click();
     document.body.removeChild(link);
 
-     toast.dismiss();
-toast.success("CSV downloaded successfully!");
+    toast.dismiss();
+    toast.success("CSV downloaded successfully!");
   };
 
   const handelAddOpen = (item) => {
@@ -410,7 +410,7 @@ toast.success("CSV downloaded successfully!");
                         alignItems: "center",
                         cursor: "pointer",
                       }}
-                      onClick={() => history.push("/Resports")}
+                      onClick={() => history.push("/reports")}
                     >
                       {" "}
                       Reports
@@ -560,64 +560,64 @@ toast.success("CSV downloaded successfully!");
                                       style={
                                         colIndex === 0
                                           ? {
-                                              borderRadius: "10px 0 0 10px",
-                                            }
+                                            borderRadius: "10px 0 0 10px",
+                                          }
                                           : colIndex ===
                                             GstSaleRegisterColumns.length - 1
-                                          ? {
+                                            ? {
                                               borderRadius: "0 10px 10px 0",
                                             }
-                                          : {}
+                                            : {}
                                       }
                                     >
                                       {column.id === "rsImpact"
                                         ? (() => {
-                                            const rsImpact = (
-                                              parseFloat(row.mrp || 0) *
-                                                parseFloat(
-                                                  row.physical_stock || 0
-                                                ) -
-                                              parseFloat(row.mrp || 0) *
-                                                parseFloat(
-                                                  row.current_stock || 0
-                                                )
-                                            ).toFixed(2);
+                                          const rsImpact = (
+                                            parseFloat(row.mrp || 0) *
+                                            parseFloat(
+                                              row.physical_stock || 0
+                                            ) -
+                                            parseFloat(row.mrp || 0) *
+                                            parseFloat(
+                                              row.current_stock || 0
+                                            )
+                                          ).toFixed(2);
 
-                                            return (
-                                              <Tooltip
-                                                title="click to adjust"
-                                                placement="left-start"
-                                                arrow
+                                          return (
+                                            <Tooltip
+                                              title="click to adjust"
+                                              placement="left-start"
+                                              arrow
+                                            >
+                                              <span
+                                                onClick={(e) => {
+                                                  e.stopPropagation();
+                                                  handelAddOpen(row);
+                                                }}
+                                                style={{
+                                                  color:
+                                                    rsImpact >= 0
+                                                      ? "var(--color1)"
+                                                      : "var(--color6)",
+                                                }}
                                               >
-                                                <span
-                                                  onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handelAddOpen(row);
-                                                  }}
-                                                  style={{
-                                                    color:
-                                                      rsImpact >= 0
-                                                        ? "var(--color1)"
-                                                        : "var(--color6)",
-                                                  }}
-                                                >
-                                                  <img
-                                                    src="/approve.png"
-                                                    className="report-icon inline mr-2"
-                                                    alt="csv"
-                                                  />
+                                                <img
+                                                  src="/approve.png"
+                                                  className="report-icon inline mr-2"
+                                                  alt="csv"
+                                                />
 
-                                                  {rsImpact}
-                                                </span>
-                                              </Tooltip>
-                                            );
-                                          })()
+                                                {rsImpact}
+                                              </span>
+                                            </Tooltip>
+                                          );
+                                        })()
                                         : row[column.id]
-                                        ? row[column.id]
+                                          ? row[column.id]
                                             .charAt(0)
                                             .toUpperCase() +
                                           row[column.id].slice(1)
-                                        : "-"}
+                                          : "-"}
                                     </td>
                                   )
                                 )}
@@ -647,11 +647,10 @@ toast.success("CSV downloaded successfully!");
               <div className="flex justify-center mt-4">
                 <button
                   onClick={handlePrevious}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === 1
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                       ? "bg-gray-200 text-gray-700"
                       : "secondary-bg text-white"
-                  }`}
+                    }`}
                   disabled={currentPage === 1}
                 >
                   Previous
@@ -688,12 +687,11 @@ toast.success("CSV downloaded successfully!");
                 )}
                 <button
                   onClick={handleNext}
-                  className={`mx-1 px-3 py-1 rounded ${
-                    currentPage === rowsPerPage
+                  className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                       ? "bg-gray-200 text-gray-700"
                       : "secondary-bg text-white"
-                  }`}
-                  //    disabled={filteredList.length === 0}
+                    }`}
+                //    disabled={filteredList.length === 0}
                 >
                   Next
                 </button>

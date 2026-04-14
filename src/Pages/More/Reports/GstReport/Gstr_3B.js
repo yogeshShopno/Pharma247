@@ -62,22 +62,22 @@ const Gstr_3B = () => {
         const parsedData = response.data;
         if (parsedData?.data) {
           setReportData(parsedData.data);
-           toast.dismiss();
-toast.success("please wait ...downloading is in progress!");
+          toast.dismiss();
+          toast.success("please wait ...downloading is in progress!");
           exportToCSV();
         } else {
           toast.dismiss();
-toast.error("No data available for the selected criteria.");
+          toast.error("No data available for the selected criteria.");
         }
       } else {
         toast.dismiss();
-toast.error("Failed to download records. Please try again.");
+        toast.error("Failed to download records. Please try again.");
       }
     } catch (error) {
       console.error("API error:", error);
 
       toast.dismiss();
-toast.error("An error occurred while downloading the CSV.");
+      toast.error("An error occurred while downloading the CSV.");
     } finally {
       setIsDownload(false);
     }
@@ -86,7 +86,7 @@ toast.error("An error occurred while downloading the CSV.");
   const exportToCSV = () => {
     if (!reportData || typeof reportData !== "object") {
       toast.dismiss();
-toast.error("No data available for download.");
+      toast.error("No data available for download.");
       return;
     }
 
@@ -220,7 +220,7 @@ toast.error("No data available for download.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports

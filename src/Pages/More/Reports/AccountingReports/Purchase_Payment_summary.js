@@ -57,7 +57,7 @@ const PurchasePaymentSummary = () => {
     if (!paymentStatus) {
       newErrors.paymentStatus = "Select Any Payment Status";
       toast.dismiss();
-toast.error(newErrors.paymentStatus);
+      toast.error(newErrors.paymentStatus);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -102,7 +102,7 @@ toast.error(newErrors.paymentStatus);
   const exportToCSV = () => {
     if (purchasePaymentData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = purchasePaymentData?.map(
         ({
@@ -197,7 +197,7 @@ toast.error("Apply filter and then after download records.");
                       fontSize: "20px",
                       cursor: "pointer",
                     }}
-                    onClick={() => history.push("/Resports")}
+                    onClick={() => history.push("/reports")}
                   >
                     {" "}
                     Reports
@@ -252,9 +252,9 @@ toast.error("Apply filter and then after download records.");
               <div className="mt-4 ">
                 <div
                   className="manageExpenseRow"
-                  //   style={{
-                  //     borderBottom: "2px solid rgb(0 0 0 / 0.1)",
-                  //   }}
+                //   style={{
+                //     borderBottom: "2px solid rgb(0 0 0 / 0.1)",
+                //   }}
                 >
                   <div
                     className="oreder_list_fld_rp  grid grid-cols-1 sm:grid-cols-3  lg:grid-cols-5 gap-3 pb-3"
@@ -267,7 +267,7 @@ toast.error("Apply filter and then after download records.");
                           className="custom-datepicker "
                           selected={startDate}
                           onChange={(newDate) => setStartDate(newDate)}
-                          dateFormat="dd/MM/yyyy" 
+                          dateFormat="dd/MM/yyyy"
                         />
                       </div>
                     </div>
@@ -335,7 +335,7 @@ toast.error("Apply filter and then after download records.");
                         // className="go_btn_divv"
                         style={{
                           background: "var(--color1)",
-                          height: "40px", 
+                          height: "40px",
                           width: "fit-content",
                         }}
                         variant="contained"
@@ -379,22 +379,22 @@ toast.error("Apply filter and then after download records.");
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           GstSaleRegisterColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                   >
                                     {column.id === "total"
                                       ? parseFloat(item[column.id]).toFixed(2)
                                       : item[column.id]
-                                          ?.charAt(0)
-                                          .toUpperCase() +
-                                        item[column.id]?.slice(1)}
+                                        ?.charAt(0)
+                                        .toUpperCase() +
+                                      item[column.id]?.slice(1)}
                                   </td>
                                 )
                               )}

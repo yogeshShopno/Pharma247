@@ -82,12 +82,12 @@ const SaleSummary = () => {
     if (!paymentMode) {
       newErrors.paymentMode = "Select any Payment Mode Type.";
       toast.dismiss();
-toast.error(newErrors.paymentMode);
+      toast.error(newErrors.paymentMode);
     }
     if (!selectData) {
       newErrors.selectData = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.selectData);
+      toast.error(newErrors.selectData);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -213,7 +213,7 @@ toast.error(newErrors.selectData);
                         fontSize: "20px",
                         cursor: "pointer",
                       }}
-                      onClick={() => history.push("/Resports")}
+                      onClick={() => history.push("/reports")}
                     >
                       {" "}
                       Reports
@@ -428,7 +428,7 @@ toast.error(newErrors.selectData);
                           Go
                         </Button>
                       </div>
-                    </div> 
+                    </div>
                     <div className="flex gap-2  ttl_dldld ">
                       <div
                         className="total_mng_expn  detail_report_totl sale_summary_ttl"
@@ -494,8 +494,8 @@ toast.error(newErrors.selectData);
                                     colIndex === 0
                                       ? { borderRadius: "10px 0 0 10px" }
                                       : colIndex === array.length - 1
-                                      ? { borderRadius: "0 10px 10px 0" }
-                                      : {}
+                                        ? { borderRadius: "0 10px 10px 0" }
+                                        : {}
                                   }
                                 >
                                   {item[key]}

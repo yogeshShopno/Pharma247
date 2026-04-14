@@ -69,12 +69,12 @@ const Stock_AdjustMent_Report = () => {
         .then((response) => {
           setAdjustStockListData(response.data.data.data);
           setTotal(response.data.data.total_amount);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
-       toast.dismiss();
-toast.success(error.data.message);
+      toast.dismiss();
+      toast.success(error.data.message);
     }
   };
 
@@ -100,7 +100,7 @@ toast.success(error.data.message);
   const exportToCSV = () => {
     if (adjustStockListData?.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       // const total = adjustStockListData?.purches_return_total;
 
@@ -215,7 +215,7 @@ toast.error("Apply filter and then after download records.");
                         fontSize: "20px",
                         cursor: "pointer",
                       }}
-                      onClick={() => history.push("/Resports")}
+                      onClick={() => history.push("/reports")}
                     >
                       {" "}
                       Reports
@@ -346,11 +346,11 @@ toast.error("Apply filter and then after download records.");
                         }}
                       >
                         <h2 className="primary font-medium text-xl ">
-                              Total{" "}
-                              <span className="secondary font-bold text-xl ">
-                                Rs.{total}
-                              </span>
-                            </h2> 
+                          Total{" "}
+                          <span className="secondary font-bold text-xl ">
+                            Rs.{total}
+                          </span>
+                        </h2>
                       </div>
                     </div>
                   </div>
@@ -389,19 +389,19 @@ toast.error("Apply filter and then after download records.");
                                     style={
                                       colIndex === 0
                                         ? {
-                                            borderRadius: "10px 0 0 10px",
-                                          }
+                                          borderRadius: "10px 0 0 10px",
+                                        }
                                         : colIndex ===
                                           GstSaleRegisterColumns.length - 1
-                                        ? {
+                                          ? {
                                             borderRadius: "0 10px 10px 0",
                                           }
-                                        : {}
+                                          : {}
                                     }
                                   >
                                     {item[column.id] &&
                                       item[column.id].charAt(0).toUpperCase() +
-                                        item[column.id].slice(1)}
+                                      item[column.id].slice(1)}
                                   </td>
                                 )
                               )}
@@ -420,11 +420,10 @@ toast.error("Apply filter and then after download records.");
                     >
                       <button
                         onClick={handlePrevious}
-                        className={`mx-1 px-3 py-1 rounded ${
-                          currentPage === 1
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                             ? "bg-gray-200 text-gray-700"
                             : "secondary-bg text-white"
-                        }`}
+                          }`}
                         disabled={currentPage === 1}
                       >
                         Previous
@@ -433,23 +432,21 @@ toast.error("Apply filter and then after download records.");
                         <button
                           key={i}
                           onClick={() => handleClick(i + 1)}
-                          className={`mx-1 px-3 py-1 rounded ${
-                            currentPage === i + 1
+                          className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                               ? "secondary-bg text-white"
                               : "bg-gray-200 text-gray-700"
-                          }`}
+                            }`}
                         >
                           {i + 1}
                         </button>
                       ))}
                       <button
                         onClick={handleNext}
-                        className={`mx-1 px-3 py-1 rounded ${
-                          currentPage === rowsPerPage
+                        className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                             ? "bg-gray-200 text-gray-700"
                             : "secondary-bg text-white"
-                        }`}
-                        // disabled={currentPage === totalPages}
+                          }`}
+                      // disabled={currentPage === totalPages}
                       >
                         Next
                       </button>

@@ -47,7 +47,7 @@ const DayWiseSummary = () => {
     if (!reportType) {
       newErrors.reportType = "Select any Report Type.";
       toast.dismiss();
-toast.error(newErrors.reportType);
+      toast.error(newErrors.reportType);
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -87,7 +87,7 @@ toast.error(newErrors.reportType);
   const exportToCSV = async () => {
     if (dayWiseSummaryData?.length == 0) {
       toast.dismiss();
-toast.error("Apply filter, then download records.");
+      toast.error("Apply filter, then download records.");
     } else {
       let data = new FormData();
       const params = {
@@ -184,7 +184,7 @@ toast.error("Apply filter, then download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports
@@ -300,7 +300,7 @@ toast.error("Apply filter, then download records.");
                         Go
                       </Button>
                     </div>
-                  </div> 
+                  </div>
                   <div className="flex gap-2  ttl_dldld">
                     <div
                       className="total_mng_expn  detail_report_totl"
@@ -312,8 +312,8 @@ toast.error("Apply filter, then download records.");
                       }}
                     >
                       <h2 className="primary font-medium text-xl ">Total  <span className="secondary font-bold text-xl ">
-                            Rs.{total}
-                          </span></h2> 
+                        Rs.{total}
+                      </span></h2>
                     </div>
                   </div>
                 </div>
@@ -352,14 +352,14 @@ toast.error("Apply filter, then download records.");
                               style={
                                 colIndex === 0
                                   ? {
-                                      borderRadius: "10px 0 0 10px",
-                                    }
+                                    borderRadius: "10px 0 0 10px",
+                                  }
                                   : colIndex ===
                                     DayWiseSummaryColumns.length - 1
-                                  ? {
+                                    ? {
                                       borderRadius: "0 10px 10px 0",
                                     }
-                                  : {}
+                                    : {}
                               }
                             >
                               {item[column.id]}

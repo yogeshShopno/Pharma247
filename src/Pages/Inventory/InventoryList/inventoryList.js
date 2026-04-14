@@ -798,10 +798,10 @@ const InventoryList = () => {
       newErrors.batch = "Batch Number is required";
       toast.dismiss();
       toast.error(newErrors.batch);
-    // } else if (!selectedCompany) {
-    //   newErrors.selectedCompany = "select any Company Name";
-    //   toast.dismiss();
-    //   toast.error(newErrors.selectedCompany);
+      // } else if (!selectedCompany) {
+      //   newErrors.selectedCompany = "select any Company Name";
+      //   toast.dismiss();
+      //   toast.error(newErrors.selectedCompany);
     } else if (!stockAdjust) {
       newErrors.stockAdjust = "please Enter any Adjust Stock Number";
       toast.dismiss();
@@ -1661,10 +1661,10 @@ const InventoryList = () => {
               autoComplete="off"
               className="inventory_search"
               id="outlined-basic"
-              value={searchItem}
+              value={searchItem.toUpperCase()}
               size="small"
               autoFocus
-              sx={{ width: "50%", marginTop: "5px" }}
+              sx={{ width: "50%", marginTop: "5px" , }}
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyDown={handleKeyPress}
               variant="outlined"

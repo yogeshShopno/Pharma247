@@ -553,7 +553,7 @@ function App() {
                 <LoyaltyPoint />
               </Protected>
             </Route>
-            <Route path='/Resports'>
+            <Route path='/reports'>
               <ReportsMain />
             </Route>
             <Route path='/DistributerView/:id'>

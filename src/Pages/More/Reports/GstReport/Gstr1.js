@@ -41,7 +41,7 @@ const Gstr1 = () => {
   const downloadCSV = async () => {
     if (!reportType) {
       toast.dismiss();
-toast.error("Please select a report type.");
+      toast.error("Please select a report type.");
       return;
     }
 
@@ -68,24 +68,24 @@ toast.error("Please select a report type.");
           setReportData([parsedData.data]); // Update state with parsed data
         } else {
           toast.dismiss();
-toast.error("No data available for the selected criteria.");
+          toast.error("No data available for the selected criteria.");
         }
       } else {
         toast.dismiss();
-toast.error("Failed to download records. Please try again.");
+        toast.error("Failed to download records. Please try again.");
       }
     } catch (error) {
       console.error("API error:", error);
 
       toast.dismiss();
-toast.error("An error occurred while downloading the CSV.");
+      toast.error("An error occurred while downloading the CSV.");
     }
   };
 
   const exportToCSV = () => {
     if (!Array.isArray(reportData) || reportData.length === 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
       return;
     }
 
@@ -194,7 +194,7 @@ toast.error("Apply filter and then after download records.");
                     fontSize: "20px",
                     cursor: "pointer",
                   }}
-                  onClick={() => history.push("/Resports")}
+                  onClick={() => history.push("/reports")}
                 >
                   {" "}
                   Reports

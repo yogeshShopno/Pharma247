@@ -94,7 +94,7 @@ const Item_Batch_wiseStock = () => {
   const exportToCSV = () => {
     if (itemWiseBatchData.length == 0) {
       toast.dismiss();
-toast.error("Apply filter and then after download records.");
+      toast.error("Apply filter and then after download records.");
     } else {
       const filteredData = itemWiseBatchData?.map(
         ({
@@ -230,7 +230,7 @@ toast.error("Apply filter and then after download records.");
                           fontSize: "20px",
                           cursor: "pointer",
                         }}
-                        onClick={() => history.push("/Resports")}
+                        onClick={() => history.push("/reports")}
                       >
                         {" "}
                         Reports
@@ -440,21 +440,21 @@ toast.error("Apply filter and then after download records.");
                                       style={
                                         colIndex === 0
                                           ? {
-                                              borderRadius: "10px 0 0 10px",
-                                            }
+                                            borderRadius: "10px 0 0 10px",
+                                          }
                                           : colIndex ===
                                             ItemBatchWiseStockColumns.length - 1
-                                          ? {
+                                            ? {
                                               borderRadius: "0 10px 10px 0",
                                             }
-                                          : {}
+                                            : {}
                                       }
                                     >
                                       {item[column.id] &&
                                         item[column.id]
                                           .charAt(0)
                                           .toUpperCase() +
-                                          item[column.id].slice(1)}
+                                        item[column.id].slice(1)}
                                     </td>
                                   )
                                 )}
@@ -473,11 +473,10 @@ toast.error("Apply filter and then after download records.");
                       >
                         <button
                           onClick={handlePrevious}
-                          className={`mx-1 px-3 py-1 rounded ${
-                            currentPage === 1
+                          className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                               ? "bg-gray-200 text-gray-700"
                               : "secondary-bg text-white"
-                          }`}
+                            }`}
                           disabled={currentPage === 1}
                         >
                           Previous
@@ -486,23 +485,21 @@ toast.error("Apply filter and then after download records.");
                           <button
                             key={i}
                             onClick={() => handleClick(i + 1)}
-                            className={`mx-1 px-3 py-1 rounded ${
-                              currentPage === i + 1
+                            className={`mx-1 px-3 py-1 rounded ${currentPage === i + 1
                                 ? "secondary-bg text-white"
                                 : "bg-gray-200 text-gray-700"
-                            }`}
+                              }`}
                           >
                             {i + 1}
                           </button>
                         ))}
                         <button
                           onClick={handleNext}
-                          className={`mx-1 px-3 py-1 rounded ${
-                            currentPage === rowsPerPage
+                          className={`mx-1 px-3 py-1 rounded ${currentPage === rowsPerPage
                               ? "bg-gray-200 text-gray-700"
                               : "secondary-bg text-white"
-                          }`}
-                          // disabled={currentPage === totalPages}
+                            }`}
+                        // disabled={currentPage === totalPages}
                         >
                           Next
                         </button>

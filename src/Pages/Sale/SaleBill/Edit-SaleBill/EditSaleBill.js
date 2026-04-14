@@ -581,7 +581,6 @@ const EditSaleBill = () => {
       setTotalgst(record.total_gst);
       setTotalAmount(record.sales_amount);
       setOtherAmt(record.other_amount);
-      setTodayLoyaltyPoint(record.today_loylti_point);
       setRoundOff(record.round_off);
       if (!finalDiscount) {
         setFinalDiscount(record.total_discount);

@@ -88,7 +88,6 @@ const EditSaleBill = () => {
   const [marginNetProfit, setMarginNetProfit] = useState(0);
   const [todayLoyltyPoint, setTodayLoyaltyPoint] = useState("");
   const [previousLoyaltyPoints, setPreviousLoyaltyPoints] = useState("");
-  const [maxLoyaltyPoints, setMaxLoyaltyPoints] = useState(0);
 
   const [order, setOrder] = useState("");
   const [gst, setGst] = useState("");

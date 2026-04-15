@@ -88,7 +88,7 @@ const AddPurchaseBill = () => {
   const [margin, setMargin] = useState("");
   const [disc, setDisc] = useState("");
   const [base, setBase] = useState("");
-  const [gst, setGst] = useState();
+  const [gst, setGst] = useState("");
   const [batch, setBatch] = useState("");
   const [HSN, setHSN] = useState("");
   const [otherAmt, setOtherAmt] = useState("");
@@ -1151,10 +1151,10 @@ const AddPurchaseBill = () => {
     //   toast.dismiss();
     // toast.error("PTR must be less than or equal to MRP");
     // }
-    if (!gst) {
+    if (gst === undefined || gst === null || gst === "") {
       newErrors.gst = "GST is required";
       toast.dismiss();
-      toast.error("GST is required");
+      toast.error(newErrors.gst);
     }
     if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
       newErrors.gst = "Enter valid GST";
@@ -2971,7 +2971,7 @@ const AddPurchaseBill = () => {
                             if (gst === "" || gst === null || gst === undefined) {
                               e.preventDefault();
                               toast.dismiss();
-                              toast.error("GST is required");
+                              toast.error("GST is required !");
                               return;
                             }
 

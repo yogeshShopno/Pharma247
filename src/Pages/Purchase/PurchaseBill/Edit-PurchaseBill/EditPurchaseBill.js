@@ -753,7 +753,7 @@ const EditPurchaseBill = () => {
     // toast.error("PTR must be less than or equal to MRP");
     // }
 
-    if (!gst) {
+    if (gst === undefined || gst === null || gst === "") {
       newErrors.gst = "GST is required";
       toast.dismiss();
       toast.error(newErrors.gst);

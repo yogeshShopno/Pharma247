@@ -355,7 +355,10 @@ const DrugGroup = () => {
                             style={{ cursor: "pointer" }}
                             onClick={() => handleRowClick(item.id)}
                           >
-                            {item[column.id]}
+                            
+                            {item[column.id]
+                              ? item[column.id].toString().slice(0, 50) + (item[column.id].toString().length > 50 ? "…" : "")
+                              : "-"}
                           </td>
                         ))}
                         <td style={{ borderRadius: "0 10px 10px 0" }}>

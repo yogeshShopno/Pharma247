@@ -316,7 +316,7 @@ const Search = ({ searchPage, setSearchPage }) => {
                             >
                               {row[column.id]
                                 ? row[column.id].toString().slice(0, 50) + (row[column.id].toString().length > 50 ? "…" : "")
-                                : "-"}
+                                :row[column.id]===0? "0" : "-"}
                             </td>
                           ))}
                           <td style={{ borderRadius: "0 10px 10px 0" }}>

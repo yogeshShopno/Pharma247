@@ -585,7 +585,9 @@ const AddPurchaseBill = () => {
       toast.error("No file selected");
       return;
     }
+
     let apiEndpoint = "";
+
     if (dialogMode === "csv") {
       apiEndpoint = optionForCsv[importConpany];
     } else if (dialogMode === "stock") {
@@ -596,16 +598,19 @@ const AddPurchaseBill = () => {
       toast.error("Invalid option selected");
       return;
     }
+
     let data = new FormData();
     data.append("file", file);
     data.append("random_number", localStorage.getItem("RandomNumber"));
     data.append("distributor_id", distributor ? distributor.id : "");
     setIsLoading(true);
     setOpenFile(false);
+
     try {
       const response = await axios.post(apiEndpoint, data, {
         headers: { Authorization: `Bearer ${token}` },
       });
+
       if (response?.data?.status === 200) {
         toast.dismiss();
         toast.success(response?.data?.message);
@@ -619,7 +624,14 @@ const AddPurchaseBill = () => {
       console.error("API error:", error);
       if (error.response?.data?.status === 400) {
         toast.dismiss();
-        toast.error(error.response.data.message);
+        const messages = error.response.data.message;
+
+        if (Array.isArray(messages)) {
+          messages.forEach(msg => toast.error(msg));
+        } else {
+          toast.error(messages);
+        }
+
       } else {
         toast.dismiss();
         toast.error(error?.message || "Something went wrong. Please try again.");

@@ -782,7 +782,7 @@ const AddReturnbill = () => {
     // if (!disc) newErrors.disc = 'Discount is required';
     if (!gst) newErrors.gst = "GST is required";
     // if (!loc) newErrors.loc = 'Location is required';
-    if (gst != 12 && gst != 18 && gst != 5 && gst != 28) {
+    if (gst != 12 && gst != 18 && gst != 5 && gst != 28 && gst != 0) {
       newErrors.gst = "Enter valid GST";
       toast.dismiss();
       toast.error("Enter valid GST");

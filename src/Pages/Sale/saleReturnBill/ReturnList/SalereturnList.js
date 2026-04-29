@@ -106,7 +106,7 @@ const SalereturnList = () => {
 
   const saleReturnBillList = async (page = 1, isSearch = false) => {
     setIsSearchLoading(isSearch);
-
+    setIsLoading(true)
     let data = new FormData();
     data.append("page", page);
     data.append("per_page", rowsPerPage);
@@ -134,6 +134,9 @@ const SalereturnList = () => {
       setIsSearchLoading(false);
       setTableData([]);
       setTotalRecords(0);
+    } finally {
+      setIsLoading(false)
+
     }
   };
 
@@ -372,127 +375,132 @@ const SalereturnList = () => {
               ></div>
               <div className="firstrow ">
                 <div className="overflow-x-auto">
-                  <table
-                    className="w-full border-collapse custom-table"
-                    style={{
-                      whiteSpace: "nowrap",
-                      borderCollapse: "separate",
-                      borderSpacing: "0 6px",
-                    }}
-                  >
-                    <thead>
-                      <tr>
-                        <th>SR. No</th>
-                        {columns.map((column, index) => (
-                          <th key={column.id} style={{ minWidth: column.minWidth }}>
-                            <div className="headerStyle">
-                              <span>{column.label}</span>
-                              <SwapVertIcon
-                                style={{ cursor: "pointer" }}
-                                onClick={() => sortByColumn(column.id)}
-                              />
-                              {/* Only show search for searchable columns */}
-                              {searchKeys[column.id] && (
-                                <TextField
-                                  autoComplete="off"
-                                  label="Type Here"
-                                  id="filled-basic"
-                                  size="small"
-                                  sx={{ width: "150px" }}
-                                  value={searchTerms[index]}
-                                  onChange={(e) =>
-                                    handleSearchChange(index, e.target.value)
-                                  }
-                                />
-                              )}
-                            </div>
-                          </th>
-                        ))}
-                        <th>Action</th>
-                      </tr>
-                    </thead>
-
-                    <tbody style={{ background: "#3f621217" }}>
-                      {isSearchLoading ? (
+                  {isLoading ? (
+                    <div className="loader-container ">
+                      <Loader />
+                    </div>
+                  ) : (
+                    <table
+                      className="w-full border-collapse custom-table"
+                      style={{
+                        whiteSpace: "nowrap",
+                        borderCollapse: "separate",
+                        borderSpacing: "0 6px",
+                      }}
+                    >
+                      <thead>
                         <tr>
-                          <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '20px' }}>
-                            <Loader />
-                          </td>
-                        </tr>
-                      ) : tableData.length === 0 ? (
-                        <tr>
-                          <td colSpan={columns.length + 2} style={{ textAlign: "center", color: "gray" }}>
-                            No data found
-                          </td>
-                        </tr>
-                      ) : (
-                        tableData.map((row, index) => (
-                          <tr
-                            hover
-                            role="checkbox"
-                            tabIndex={-1}
-                            key={row.code}
-                          >
-                            <td style={{ borderRadius: "10px 0 0 10px" }}>
-                              {startIndex + index}
-                            </td>
-                            {columns.map((column) => {
-                              if (column.id === "customer_info") {
-                                const name = row.customer_name
-                                  ? row.customer_name
-                                  : "";
-                                const mobileNumber = row.phone_number
-                                  ? row.phone_number
-                                  : "";
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push(
-                                        "/SaleReturnView/" + row.id
-                                      );
-                                    }}
-                                  >
-                                    {name && mobileNumber
-                                      ? `${name} / ${mobileNumber}`
-                                      : name || mobileNumber || "-"}
-                                  </td>
-                                );
-                              } else {
-                                return (
-                                  <td
-                                    key={column.id}
-                                    onClick={() => {
-                                      history.push(
-                                        "/SaleReturnView/" + row.id
-                                      );
-                                    }}
-                                  >
-                                    {row[column.id]}
-                                  </td>
-                                );
-                              }
-                            })}
-                            <td style={{ borderRadius: "0 10px 10px 0" }}>
-                              <div className="flex gap-5 justify-center">
-                                <VisibilityIcon
-                                  className="cursor-pointer primary"
-                                  onClick={() => {
-                                    history.push(`/purchaseView/${row.id}`);
-                                  }}
+                          <th>SR. No</th>
+                          {columns.map((column, index) => (
+                            <th key={column.id} style={{ minWidth: column.minWidth }}>
+                              <div className="headerStyle">
+                                <span>{column.label}</span>
+                                <SwapVertIcon
+                                  style={{ cursor: "pointer" }}
+                                  onClick={() => sortByColumn(column.id)}
                                 />
-                                <FaFilePdf
-                                  className="w-5 h-5 primary"
-                                  onClick={() => pdfGenerator(row.id)}
-                                />
+                                {/* Only show search for searchable columns */}
+                                {searchKeys[column.id] && (
+                                  <TextField
+                                    autoComplete="off"
+                                    label="Type Here"
+                                    id="filled-basic"
+                                    size="small"
+                                    sx={{ width: "150px" }}
+                                    value={searchTerms[index]}
+                                    onChange={(e) =>
+                                      handleSearchChange(index, e.target.value)
+                                    }
+                                  />
+                                )}
                               </div>
+                            </th>
+                          ))}
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+
+                      <tbody style={{ background: "#3f621217" }}>
+                        {isSearchLoading ? (
+                          <tr>
+                            <td colSpan={columns.length + 2} style={{ textAlign: 'center', padding: '20px' }}>
+                              <Loader />
                             </td>
                           </tr>
-                        ))
-                      )}
+                        ) : tableData.length === 0 ? (
+                          <tr>
+                            <td colSpan={columns.length + 2} style={{ textAlign: "center", color: "gray" }}>
+                              No data found
+                            </td>
+                          </tr>
+                        ) : (
+                          tableData.map((row, index) => (
+                            <tr
+                              hover
+                              role="checkbox"
+                              tabIndex={-1}
+                              key={row.code}
+                            >
+                              <td style={{ borderRadius: "10px 0 0 10px" }}>
+                                {startIndex + index}
+                              </td>
+                              {columns.map((column) => {
+                                if (column.id === "customer_info") {
+                                  const name = row.customer_name
+                                    ? row.customer_name
+                                    : "";
+                                  const mobileNumber = row.phone_number
+                                    ? row.phone_number
+                                    : "";
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      onClick={() => {
+                                        history.push(
+                                          "/SaleReturnView/" + row.id
+                                        );
+                                      }}
+                                    >
+                                      {name && mobileNumber
+                                        ? `${name} / ${mobileNumber}`
+                                        : name || mobileNumber || "-"}
+                                    </td>
+                                  );
+                                } else {
+                                  return (
+                                    <td
+                                      key={column.id}
+                                      onClick={() => {
+                                        history.push(
+                                          "/SaleReturnView/" + row.id
+                                        );
+                                      }}
+                                    >
+                                      {row[column.id]}
+                                    </td>
+                                  );
+                                }
+                              })}
+                              <td style={{ borderRadius: "0 10px 10px 0" }}>
+                                <div className="flex gap-5 justify-center">
+                                  <VisibilityIcon
+                                    className="cursor-pointer primary"
+                                    onClick={() => {
+                                      history.push(`/purchaseView/${row.id}`);
+                                    }}
+                                  />
+                                  <FaFilePdf
+                                    className="w-5 h-5 primary"
+                                    onClick={() => pdfGenerator(row.id)}
+                                  />
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
 
-                    </tbody>
-                  </table>
+                      </tbody>
+                    </table>)}
                 </div>
               </div>
             </div>

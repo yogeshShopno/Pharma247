@@ -138,6 +138,8 @@ const Salelist = () => {
 
 
   const AllPDFGenerate = async () => {
+                setOpenAddPopUp(false);
+
     let data = new FormData();
     data.append(
       "start_date",
@@ -406,127 +408,135 @@ const Salelist = () => {
               </div>
             </div>
 
-            <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
-              <table
-                className="w-full border-collapse custom-table"
-                style={{
-                  whiteSpace: "nowrap",
-                  borderCollapse: "separate",
-                  borderSpacing: "0 6px",
-                }}
-              >
-                <thead>
-                  <tr>
-                    <th>SR. No</th>
-                    {columns.map((column, index) => (
-                      <th
-                        key={column.id}
-                        style={{ minWidth: column.minWidth }}
-                      >
-                        <div className="headerStyle">
-                          <span>{column.label}</span>
-                          <SwapVertIcon
-                            style={{ cursor: "pointer" }}
-                            onClick={() => sortByColumn(column.id)}
-                          />
-                          <TextField
-                            autoComplete="off"
-                            // label={`Search ${column.label}`}
-                            label="Type Here"
-                            id="filled-basic"
-                            size="small"
-                            sx={{ width: "150px" }}
-                            value={searchTerms[index]}
-                            onChange={(e) =>
-                              handleSearchChange(index, e.target.value)
-                            }
-                          />
-                        </div>
-                      </th>
-                    ))}
-                    <th> Action</th>
-                  </tr>
-                </thead>
-
-                <tbody style={{ background: "#3f621217" }}>
-                  {paginatedData.length === 0 ? (
+            {isLoading ? (
+              <div className="loader-container ">
+                <Loader />
+              </div>
+            ) : (
+              <div className="overflow-x-auto mt-4 px-4 py-3" style={{ overflowX: 'auto', width: '100%' }}>
+                <table
+                  className="w-full border-collapse custom-table"
+                  style={{
+                    whiteSpace: "nowrap",
+                    borderCollapse: "separate",
+                    borderSpacing: "0 6px",
+                  }}
+                >
+                  <thead>
                     <tr>
-                      <td
-                        colSpan={columns.length + 2}
-                        style={{
-                          textAlign: "center",
-                          color: "gray",
-                          borderRadius: "10px 10px 10px 10px",
-                        }}
-                      >
-                        No data found
-                      </td>
+                      <th>SR. No</th>
+                      {columns.map((column, index) => (
+                        <th
+                          key={column.id}
+                          style={{ minWidth: column.minWidth }}
+                        >
+                          <div className="headerStyle">
+                            <span>{column.label}</span>
+                            <SwapVertIcon
+                              style={{ cursor: "pointer" }}
+                              onClick={() => sortByColumn(column.id)}
+                            />
+                            <TextField
+                              autoComplete="off"
+                              // label={`Search ${column.label}`}
+                              label="Type Here"
+                              id="filled-basic"
+                              size="small"
+                              sx={{ width: "150px" }}
+                              value={searchTerms[index]}
+                              onChange={(e) =>
+                                handleSearchChange(index, e.target.value)
+                              }
+                            />
+                          </div>
+                        </th>
+                      ))}
+                      <th> Action</th>
                     </tr>
-                  ) : (
-                    paginatedData.map((row, index) => {
-                      return (
-                        <tr key={row.id}>
-                          <td style={{ borderRadius: "10px 0 0 10px" }}>
-                            {startIndex + index}
-                          </td>
-                          {columns.map((column) => {
-                            if (column.id === "customer_info") {
-                              const name = row.name ? row.name : "";
-                              const mobileNumber = row.mobile_numbr
-                                ? row.mobile_numbr
-                                : "";
-                              return (
-                                <td
-                                  key={column.id}
+                  </thead>
+
+                  <tbody style={{ background: "#3f621217" }}>
+                    {paginatedData.length === 0 ? (
+                      <tr>
+                        <td
+                          colSpan={columns.length + 2}
+                          style={{
+                            textAlign: "center",
+                            color: "gray",
+                            borderRadius: "10px 10px 10px 10px",
+                          }}
+                        >
+                          No data found
+                        </td>
+                      </tr>
+                    ) : (
+                      paginatedData.map((row, index) => {
+                        return (
+                          <tr key={row.id}>
+                            <td style={{ borderRadius: "10px 0 0 10px" }}>
+                              {startIndex + index}
+                            </td>
+                            {columns.map((column) => {
+                              if (column.id === "customer_info") {
+                                const name = row.name ? row.name : "";
+                                const mobileNumber = row.mobile_numbr
+                                  ? row.mobile_numbr
+                                  : "";
+                                return (
+                                  <td
+                                    key={column.id}
+                                    onClick={() => {
+                                      history.push("/saleView/" + row.id);
+                                    }}
+                                  >
+                                    {name && mobileNumber
+                                      ? `${name} / ${mobileNumber}`
+                                      : name || mobileNumber || "-"}
+                                  </td>
+                                );
+                              } else {
+                                return (
+                                  <td
+                                    key={column.id}
+                                    onClick={() => {
+                                      history.push("/saleView/" + row.id);
+                                    }}
+                                  >
+                                    {row[column.id]}
+                                  </td>
+                                );
+                              }
+                            })}
+                            <td style={{ borderRadius: "0 10px 10px 0" }}>
+                              <div className="flex gap-4">
+                                <VisibilityIcon
+                                  className="cursor-pointer primary hover:secondary"
                                   onClick={() => {
-                                    history.push("/saleView/" + row.id);
+                                    history.push(`/saleView/${row.id}`);
                                   }}
-                                >
-                                  {name && mobileNumber
-                                    ? `${name} / ${mobileNumber}`
-                                    : name || mobileNumber || "-"}
-                                </td>
-                              );
-                            } else {
-                              return (
-                                <td
-                                  key={column.id}
-                                  onClick={() => {
-                                    history.push("/saleView/" + row.id);
-                                  }}
-                                >
-                                  {row[column.id]}
-                                </td>
-                              );
-                            }
-                          })}
-                          <td style={{ borderRadius: "0 10px 10px 0" }}>
-                            <div className="flex gap-4">
-                              <VisibilityIcon
-                                className="cursor-pointer primary hover:secondary"
-                                onClick={() => {
-                                  history.push(`/saleView/${row.id}`);
-                                }}
-                              />
-                              <FaFilePdf
-                                className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                onClick={() => pdfGenerator(row.id)}
-                              />
-                              {hasPermission(permissions, "sale whatsapp bill status check") && (
-                                <IoLogoWhatsapp
-                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
-                                  onClick={() => handleWhatsAppmsg(row)}
                                 />
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  )}
-                </tbody>
-              </table>
-            </div>
+                                <FaFilePdf
+                                  className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                  onClick={() => pdfGenerator(row.id)}
+                                />
+                                {hasPermission(permissions, "sale whatsapp bill status check") && (
+                                  <IoLogoWhatsapp
+                                    className="w-5 h-5 primary hover:text-secondary cursor-pointer"
+                                    onClick={() => handleWhatsAppmsg(row)}
+                                  />
+                                )}
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+
           </div>
 
           <div

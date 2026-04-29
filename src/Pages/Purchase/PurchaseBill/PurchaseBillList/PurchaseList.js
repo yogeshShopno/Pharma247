@@ -337,6 +337,9 @@ const Purchasebill = () => {
   };
 
   const AllPDFGenerate = async () => {
+
+    setOpenAddPopUp(false);
+
     let data = new FormData();
     data.append(
       "start_date",

@@ -7,11 +7,13 @@ import axios from 'axios';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 axios.defaults.baseURL = 'https://testadmin.pharma247.in/api';
+// axios.defaults.baseURL = 'https://demotestadmin.pharma247.in/api/';
+
 const token = localStorage.getItem("token");
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 root.render(
-//  <React.StrictMode>
-    <App />
+  //  <React.StrictMode>
+  <App />
   //</React.StrictMode>
 );
 

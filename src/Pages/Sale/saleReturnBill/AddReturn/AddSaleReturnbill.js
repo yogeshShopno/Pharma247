@@ -231,42 +231,56 @@ const Salereturn = () => {
         customerRef.current = customer;
     }, [customer]);
 
-    useEffect(() => {
-        const handleKeyDown = (event) => {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+        const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+        if (!isAltCombo || event.repeat) return;
 
-            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
-            if (!isAltCombo || event.repeat) return;
+        const key = event.key.toLowerCase();
+        if (key !== "s" && key !== "m") return;
 
-            const key = event.key.toLowerCase();
-            event.preventDefault();
+        event.preventDefault();
 
-            if (key === "s") {
-                if (isSubmitting) return;
+        if (key === "s") {
+            if (isSubmitting) return;
 
-                if (!customer || !customer.id) {
-                    toast.dismiss();
-                    toast.error('Please select customer');
-                    setError({ customer: "Please select customer" });
-                    return;
-                }
-                setTimeout(() => {
-                    handleSubmit();
-
-                }, 100);
-            } else if (key === "m") {
-                removeItem();
-                setSelectedEditItemId(null);
-                setSelectedIndex(-1);
-                setSearchItem("");
+            if (!customer || !customer.id) {
+                toast.dismiss();
+                toast.error('Please select customer');
+                setError({ customer: "Please select customer" });
+                return;
             }
-        };
 
+            handleSubmit(); // direct call
+        }
 
-        document.addEventListener("keydown", handleKeyDown);
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-        };
-    }, [customer, tableData, isSubmitting]);
+        if (key === "m") {
+            removeItem();
+            setSelectedEditItemId(null);
+            setSelectedIndex(-1);
+            setSearchItem("");
+        }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+
+}, [
+    customer,
+    tableData,
+    isSubmitting,
+
+    netAmount,
+    totalAmount,
+    totalBase,
+    totalGst,
+    roundOff,
+    totalMargin,
+    totalNetRate,
+    marginNetProfit,
+    otherAmt,
+    finalDiscount
+]);
 
 
     useEffect(() => {

@@ -252,6 +252,7 @@ const EditSaleReturn = () => {
     const initializeData = async () => {
       const doctorData = await ListOfDoctor();
       const customerData = await customerAllData();
+      await handleClearHistory()
       await saleBillGetBySaleID(doctorData, customerData);
     };
     initializeData();
@@ -763,6 +764,42 @@ const EditSaleReturn = () => {
   const handleNavigation = (path) => {
     setOpenModal(true);
     setNextPath(path);
+  };
+
+
+
+  const handleClearHistory = async () => {
+    let data = new FormData();
+    data.append("id", id); // Append `id` to the FormData object
+    data.append("random_number", randomNum);
+    setUnsavedItems(false);
+    localStorage.removeItem("unsavedItems");
+
+    try {
+      // Wait for the response from the server
+      const response = await axios.post("sales-return-edit-history", data, {
+        // params, // Uncomment if `random_number` is required in the request
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      // Check for a successful response
+      if (response.status === 200) {
+
+        setUnsavedItems(false); // Mark items as saved
+
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        setUnsavedItems(false);
+        localStorage.setItem("unsavedItems", unsavedItems.toString());
+
+      } else {
+        console.error("Error deleting items:", error);
+
+        // Optional: Provide user feedback if there's an error
+        alert("Failed to save changes. Please try again.");
+      }
+    }
   };
 
   const handleLeavePage = async () => {

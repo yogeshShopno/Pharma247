@@ -231,56 +231,56 @@ const Salereturn = () => {
         customerRef.current = customer;
     }, [customer]);
 
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-        const isAltCombo = event.altKey || event.getModifierState("AltGraph");
-        if (!isAltCombo || event.repeat) return;
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            const isAltCombo = event.altKey || event.getModifierState("AltGraph");
+            if (!isAltCombo || event.repeat) return;
 
-        const key = event.key.toLowerCase();
-        if (key !== "s" && key !== "m") return;
+            const key = event.key.toLowerCase();
+            if (key !== "s" && key !== "m") return;
 
-        event.preventDefault();
+            event.preventDefault();
 
-        if (key === "s") {
-            if (isSubmitting) return;
+            if (key === "s") {
+                if (isSubmitting) return;
 
-            if (!customer || !customer.id) {
-                toast.dismiss();
-                toast.error('Please select customer');
-                setError({ customer: "Please select customer" });
-                return;
+                if (!customer || !customer.id) {
+                    toast.dismiss();
+                    toast.error('Please select customer');
+                    setError({ customer: "Please select customer" });
+                    return;
+                }
+
+                handleSubmit(); // direct call
             }
 
-            handleSubmit(); // direct call
-        }
+            if (key === "m") {
+                removeItem();
+                setSelectedEditItemId(null);
+                setSelectedIndex(-1);
+                setSearchItem("");
+            }
+        };
 
-        if (key === "m") {
-            removeItem();
-            setSelectedEditItemId(null);
-            setSelectedIndex(-1);
-            setSearchItem("");
-        }
-    };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    }, [
+        customer,
+        tableData,
+        isSubmitting,
 
-}, [
-    customer,
-    tableData,
-    isSubmitting,
-
-    netAmount,
-    totalAmount,
-    totalBase,
-    totalGst,
-    roundOff,
-    totalMargin,
-    totalNetRate,
-    marginNetProfit,
-    otherAmt,
-    finalDiscount
-]);
+        netAmount,
+        totalAmount,
+        totalBase,
+        totalGst,
+        roundOff,
+        totalMargin,
+        totalNetRate,
+        marginNetProfit,
+        otherAmt,
+        finalDiscount
+    ]);
 
 
     useEffect(() => {
@@ -466,7 +466,7 @@ const Salereturn = () => {
         // setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-            getSaleItemList();
+            handleClearHistory()
         }
     }
 
@@ -621,7 +621,7 @@ const Salereturn = () => {
             return;
         }
         if (!tableData || !Array.isArray(tableData.sales_item) || tableData.sales_item.length === 0) {
-        
+
             newErrors.sales_item = 'Please add at least one item';
             toast.dismiss();
             toast.error('Please add at least one item');
@@ -803,6 +803,43 @@ const Salereturn = () => {
     const handleNavigation = (path) => {
         setOpenModal(true);
         setNextPath(path);
+    };
+
+    const handleClearHistory = async () => {
+        const randomNumber = Number(localStorage.getItem("RandomNumber"));
+        let data = new FormData();
+        data.append('customer_id', (customer && customer.id) ? customer.id : '');
+        data.append('start_date', startDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+        data.append('end_date', endDate.format('YYYY-MM-DD') ? endDate.format('YYYY-MM-DD') : '');
+
+        try {
+            const response = await axios.post("sales-return-delete-history", data, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.status === 200) {
+                setUnsavedItems(false);
+                localStorage.setItem("unsavedItems", unsavedItems.toString());
+                getSaleItemList();
+
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                setUnsavedItems(false);
+                localStorage.setItem("unsavedItems", unsavedItems.toString());
+
+            } else {
+                if (error.response && error.response.status === 401) {
+                    setUnsavedItems(false);
+                    localStorage.setItem("unsavedItems", unsavedItems.toString());
+
+                } else {
+                    console.error("Error deleting items:", error);
+                }
+            }
+        }
     };
 
     const handleLeavePage = async () => {

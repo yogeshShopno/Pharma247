@@ -77,6 +77,13 @@ const AddDistributer = () => {
         })
         .catch((error) => {
           console.error("Search failed", error);
+             if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         });
     } else {
       axios
@@ -88,6 +95,13 @@ const AddDistributer = () => {
         })
         .catch((error) => {
           console.error("Fetch failed", error);
+             if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         });
     }
   };
@@ -176,6 +190,13 @@ const AddDistributer = () => {
       if (error.response.data.status == 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
     }
   };

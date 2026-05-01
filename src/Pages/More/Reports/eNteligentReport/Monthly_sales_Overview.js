@@ -62,6 +62,13 @@ const Monthly_sales_Overview = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

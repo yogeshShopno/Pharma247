@@ -142,6 +142,13 @@ const Company = () => {
         setIsSearching(false);
         setCompanyData([]);
         setTotalRecords(0);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -194,6 +201,13 @@ toast.success("Company added!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   const EditCompany = async () => {
@@ -211,6 +225,13 @@ toast.success("Company updated!");
     } catch (error) {
       toast.dismiss();
 toast.error(error?.response?.data?.message || "Error");
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -241,6 +262,13 @@ toast.success("Company deleted!");
     } catch (error) {
       toast.dismiss();
 toast.error("Error deleting company");
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   const deleteOpen = (id) => {

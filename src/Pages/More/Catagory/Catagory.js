@@ -88,6 +88,13 @@ const Catagory = () => {
         console.error("API error:", error);
 
         setIsLoading(false);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -151,6 +158,13 @@ toast.success(response.data.message);
         toast.dismiss();
 toast.error(error.response.data.message)
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   }
   const EditCategory = async () => {
@@ -185,6 +199,13 @@ toast.success(response.data.message);
 toast.error(error.response.data.message)
       }
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
     }
   }
@@ -219,6 +240,13 @@ toast.success(response.data.message);
     } catch (error) {
       // alert("404 error");
       console.error("Error deleting item:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

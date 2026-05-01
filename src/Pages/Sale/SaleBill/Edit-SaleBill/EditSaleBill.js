@@ -501,6 +501,13 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -555,6 +562,13 @@ const EditSaleBill = () => {
       }
     } catch (error) {
       console.error("Error updating today points:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -616,6 +630,13 @@ const EditSaleBill = () => {
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -642,7 +663,13 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       return [];
     }
   };
@@ -675,6 +702,13 @@ const EditSaleBill = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
       return [];
     }
@@ -700,6 +734,13 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -774,6 +815,13 @@ const EditSaleBill = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       } else {
         console.error("Error fetching sales history:", error);
       }
@@ -939,6 +987,13 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsFetchingMore(false);
     }
@@ -973,6 +1028,13 @@ const EditSaleBill = () => {
       console.error("Error during delete:", error);
       toast.dismiss();
       toast.error("Failed to delete the item.");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -1029,6 +1091,13 @@ const EditSaleBill = () => {
     } catch (error) {
       if (error.response?.status === 400) {
         toast.error(error.response?.data?.message || "This barcode has no items");
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       }
       console.error("API error:", error);
     }
@@ -1098,7 +1167,15 @@ const EditSaleBill = () => {
 
       setTimeout(focusItem, 0);  // ← back to Item
 
-    } catch (e) { }
+    } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+     }
   };
 
   const resetValue = () => {
@@ -1151,6 +1228,13 @@ const EditSaleBill = () => {
       const response = await axios.post(url, payload);
     } catch (error) {
       console.error("Error sending message:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   {/*<====================================================================== Handle PDF download   =====================================================================> */ }
@@ -1175,6 +1259,13 @@ const EditSaleBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -1288,6 +1379,13 @@ const EditSaleBill = () => {
       setIsSubmitting(false);
 
       toast.error("Failed to save the bill");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

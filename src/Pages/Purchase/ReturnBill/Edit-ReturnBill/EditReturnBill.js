@@ -123,7 +123,15 @@ const EditReturnBill = () => {
         try {
             const try3 = parseISO(String(value));
             if (isValid(try3)) return try3;
-        } catch (_) { }
+        } catch (error) { 
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+        }
 
         return null; // fallback
     };
@@ -229,6 +237,13 @@ const EditReturnBill = () => {
                 try {
                     nextElement.focus();
                 } catch (error) {
+                       if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
                     console.warn(`Could not focus element at index ${nextIndex}:`, error);
                 }
             }, 10);
@@ -434,6 +449,13 @@ const EditReturnBill = () => {
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
+                  
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      
             } else {
                 console.error("Error deleting items:", error);
             }
@@ -479,6 +501,13 @@ const EditReturnBill = () => {
         } catch (error) {
             console.error("API Error fetching distributors:", error);
             return [];
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
     /*<================================================================ get batch data  ======================================================================> */
@@ -503,7 +532,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -531,7 +566,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -554,7 +595,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
     /*<================================================================ get gst data  ======================================================================> */
@@ -571,7 +618,13 @@ const EditReturnBill = () => {
             })
             .catch((error) => {
                 console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
             });
     }
     /*<================================================================ handle search  ======================================================================> */
@@ -631,6 +684,13 @@ const EditReturnBill = () => {
             }
         } catch (error) {
             console.error("API error:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
         } finally {
             isFetching = false;
@@ -837,9 +897,15 @@ const EditReturnBill = () => {
                 localStorage.clear();
             }
         }
-        catch (e) {
+        catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -937,6 +1003,13 @@ const EditReturnBill = () => {
             console.error("API error:", error);
 
             setIsSubmitting(false);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
 
         }
@@ -972,6 +1045,13 @@ const EditReturnBill = () => {
             })
         } catch (error) {
             console.error("API error:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
         }
     }
@@ -1017,6 +1097,13 @@ const EditReturnBill = () => {
 
         } catch (error) {
             console.error("API error:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
         }
     };

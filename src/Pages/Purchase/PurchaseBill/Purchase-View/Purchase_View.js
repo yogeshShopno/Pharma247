@@ -113,6 +113,13 @@ const PurchaseView = () => {
         purchaseBillGetByID(response.data.data[index].id);
       }
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     } finally {
       setIsLoading(false);
@@ -146,6 +153,13 @@ const PurchaseView = () => {
           }
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };
@@ -183,6 +197,13 @@ const PurchaseView = () => {
           setIsLoading(false);
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };

@@ -269,6 +269,13 @@ const DistributerList = () => {
       setIsLoading(false);
       toast.dismiss();
       toast.error(error.message);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -316,6 +323,13 @@ const DistributerList = () => {
         toast.error("Please Select file");
       }
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -361,6 +375,13 @@ const DistributerList = () => {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsSearchLoading(false);
 
@@ -399,6 +420,13 @@ const DistributerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

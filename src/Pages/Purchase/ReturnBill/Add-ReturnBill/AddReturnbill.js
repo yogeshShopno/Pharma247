@@ -328,6 +328,13 @@ const AddReturnbill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -343,6 +350,13 @@ const AddReturnbill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -363,6 +377,13 @@ const AddReturnbill = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
   /*<============================================================================ handle leave page fuction  ===================================================================> */
@@ -373,6 +394,13 @@ const AddReturnbill = () => {
         await handleLeavePage();
       } catch (error) {
         console.error("Error during initialization:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       }
     };
 
@@ -405,6 +433,13 @@ const AddReturnbill = () => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
+         
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      
         setIsOpenBox(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
         setTimeout(() => {
@@ -488,6 +523,13 @@ const AddReturnbill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -564,6 +606,13 @@ const AddReturnbill = () => {
       localStorage.setItem("DistributorId", distributor.id);
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -711,7 +760,13 @@ const AddReturnbill = () => {
           });
       } catch (error) {
         console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         setIsSubmitting(false);
 
       }
@@ -823,6 +878,13 @@ const AddReturnbill = () => {
         .then((response) => { });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -850,6 +912,13 @@ const AddReturnbill = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   const handleSelectAll = async (checked) => {
@@ -919,6 +988,13 @@ const AddReturnbill = () => {
       }
     } catch (e) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

@@ -104,6 +104,13 @@ const SehatView = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -130,6 +137,13 @@ const SehatView = () => {
                 });
         } catch (error) {
             console.error("API error:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -165,6 +179,13 @@ const SehatView = () => {
             downloadPDF(distributorData);
         } catch (error) {
             console.error("Error fetching distributor data:", error);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
     /*<========================================================================== get list of company  ==========================================================================> */
@@ -189,6 +210,13 @@ const SehatView = () => {
                 toast.error(error.response.data.message);
             } else {
             }
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
     /*<============================================================================ download pdf  ============================================================================> */

@@ -527,6 +527,13 @@ const addSale = () => {
       }
     } catch (error) {
       console.error("Error updating today points:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -552,6 +559,13 @@ const addSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -768,6 +782,13 @@ const addSale = () => {
       if (error.name !== "AbortError") {
         console.error("API error:", error);
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsFetchingMore(false);
     }
@@ -921,6 +942,13 @@ const addSale = () => {
         localStorage.clear();
       }
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       if (error.response && error.response.status === 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
@@ -954,6 +982,13 @@ const addSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -979,6 +1014,13 @@ const addSale = () => {
       }
     } catch (error) {
       console.error("Error fetching item-drug-group:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -1024,8 +1066,15 @@ const addSale = () => {
         localStorage.clear();
         history.push("/");
       }
-    } catch (err) {
+    } catch (error) {
       console.error("API error:", err);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -1084,6 +1133,13 @@ const addSale = () => {
 
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -1117,6 +1173,13 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       CleanOldData();
 
@@ -1137,6 +1200,13 @@ const addSale = () => {
         ])
       } catch (error) {
         console.error(error)
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       }
     }
 
@@ -1188,6 +1258,13 @@ const addSale = () => {
         toast.dismiss();
         toast.error("An unexpected error occurred");
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -1223,6 +1300,13 @@ const addSale = () => {
       } else {
         toast.dismiss();
         toast.error("An unexpected error occurred");
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
     }
   };
@@ -1290,10 +1374,24 @@ const addSale = () => {
           if (response.data.status == 401) {
             history.push("/");
             localStorage.clear();
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
           }
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -1446,10 +1544,24 @@ const addSale = () => {
           if (addResponse.data.status === 401) {
             history.push("/");
             localStorage.clear();
+         
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      
           }
         } catch (error) {
           console.error("Sales item add error:", error);
           setUnsavedItems(false);
+             if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
       };
 
@@ -1457,6 +1569,13 @@ const addSale = () => {
       console.error("Barcode API error:", error);
       if (error.response?.status === 400) {
         toast.error(error.response?.data?.message || "This barcode has no items");
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
       setUnsavedItems(false);
     }
@@ -1636,6 +1755,13 @@ const addSale = () => {
       }, 1000);
       setSubmitTimeout(timeout);
 
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       if (error.response && error.response.status === 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
@@ -1692,6 +1818,13 @@ const addSale = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       } else {
         console.error("Error deleting items:", error);
       }
@@ -1739,6 +1872,13 @@ const addSale = () => {
         return;
       }
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -1896,6 +2036,13 @@ const addSale = () => {
     } catch (error) {
       console.error("API error:", error);
       toast.error(error.response.data.message)
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -1945,6 +2092,13 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -2037,6 +2191,13 @@ const addSale = () => {
           toast.dismiss();
           toast.error("Error setting reminder. Please try again later.");
         }
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       }
     }
   };
@@ -2076,6 +2237,13 @@ const addSale = () => {
       const response = await axios.post(url, payload);
     } catch (error) {
       console.error("Error sending message:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   {/*<====================================================================== Handle PDF download   =====================================================================> */ }
@@ -2100,6 +2268,13 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsLoading(false);
     }

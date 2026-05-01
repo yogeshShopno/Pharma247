@@ -112,7 +112,13 @@ const Reconciliation = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -150,6 +156,13 @@ const Reconciliation = () => {
 
       toast.dismiss();
       toast.success("Data submitted successfully");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

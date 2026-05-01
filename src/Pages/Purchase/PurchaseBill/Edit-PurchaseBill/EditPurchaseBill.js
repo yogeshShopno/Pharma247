@@ -277,6 +277,13 @@ const EditPurchaseBill = () => {
       try {
         await handleLeavePage();
       } catch (error) {
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         console.error("Error during initialization:", error);
       }
     };
@@ -319,6 +326,13 @@ const EditPurchaseBill = () => {
           itemPurchaseList();
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };
@@ -374,6 +388,13 @@ const EditPurchaseBill = () => {
 
       return distributors;
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API Error fetching distributors:", error);
       return [];
     }
@@ -398,6 +419,13 @@ const EditPurchaseBill = () => {
           }
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };
@@ -462,6 +490,13 @@ const EditPurchaseBill = () => {
       setIsLoading(false);
       return purchaseData;
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
     }
@@ -597,6 +632,13 @@ const EditPurchaseBill = () => {
           toast.success(response.data.message);
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       // setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
@@ -620,6 +662,13 @@ const EditPurchaseBill = () => {
       .catch((error) => {
         console.error("API error:", error);
         setUnsavedItems(false);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -644,6 +693,13 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -698,6 +754,13 @@ const EditPurchaseBill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -882,9 +945,16 @@ const EditPurchaseBill = () => {
       setSelectedEditItemId(null);
 
 
-    } catch (e) {
+    } catch (error) {
       console.error("API error:", error);
       setUnsavedItems(false);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
     } finally {
       setIsSubmitting(false);
@@ -925,6 +995,13 @@ const EditPurchaseBill = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       } else {
         console.error("Error deleting items:", error);
         setUnsavedItems(false);
@@ -987,6 +1064,13 @@ const EditPurchaseBill = () => {
 
 
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
       setUnsavedItems(false);
       if (error.response?.status === 400) {
@@ -1069,6 +1153,13 @@ const EditPurchaseBill = () => {
         setHasMore(false);
       }
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     } finally {
       setIsFetchingMore(false);
@@ -1101,6 +1192,13 @@ const EditPurchaseBill = () => {
           removeItem()
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };
@@ -1193,6 +1291,13 @@ const EditPurchaseBill = () => {
           }
         })
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       toast.dismiss();
       toast.error(error.data.message);
       console.error("API error:", error);

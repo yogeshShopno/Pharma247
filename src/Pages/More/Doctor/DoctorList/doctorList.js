@@ -180,6 +180,13 @@ const DoctorList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -262,6 +269,13 @@ const DoctorList = () => {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       // console.error("API error:", error);
     }
   };
@@ -302,6 +316,13 @@ const DoctorList = () => {
       setIsLoading(false);
       toast.dismiss();
       toast.success(error.message);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -432,6 +453,13 @@ const DoctorList = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsSearchLoading(false);
 
@@ -460,6 +488,13 @@ const DoctorList = () => {
         toast.error("Please Select file");
       }
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

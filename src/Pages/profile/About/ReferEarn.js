@@ -63,6 +63,13 @@ const ReferEarn = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         setIsLoading(false);
       });
   };
@@ -81,6 +88,13 @@ const ReferEarn = () => {
       })
       .catch((error) => {
         console.error("API Error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
   {/*<============================================================================= ui  ============================================================================> */ }

@@ -86,6 +86,13 @@ const ConfirmedOrder = ({ orderid }) => {
         setRolelist(response.data.data);
       })
       .catch((error) => {
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         console.error("API error:", error);
       });
   };

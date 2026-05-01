@@ -166,6 +166,13 @@ const Search = ({ searchPage, setSearchPage }) => {
       toast.dismiss();
       toast.error(errorMessage);
       setTableData([]);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsLoading(false);
     }

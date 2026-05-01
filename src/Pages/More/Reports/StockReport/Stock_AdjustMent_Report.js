@@ -75,6 +75,13 @@ const Stock_AdjustMent_Report = () => {
     } catch (error) {
       toast.dismiss();
       toast.success(error.data.message);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

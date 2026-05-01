@@ -90,8 +90,13 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-            if (error?.response?.status === 401) {
-            }
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -114,8 +119,13 @@ const SehatMembersList = () => {
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-            if (error?.response?.status === 401) {
-            }
+              if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
     /*<======================================================================== fetch plan list ====================================================================> */
@@ -241,6 +251,13 @@ const SehatMembersList = () => {
         console.error("API error:", error);
         setTableData([]);
         setTotalRecords(0);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
         setIsSearchLoading(false);
     }

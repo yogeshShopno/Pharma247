@@ -54,6 +54,13 @@ const DrugGroupView = () => {
             console.error("API error:", error);
             toast.dismiss();
             toast.error("Failed to fetch drug group items");
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         } finally {
             setIsLoading(false);
         }

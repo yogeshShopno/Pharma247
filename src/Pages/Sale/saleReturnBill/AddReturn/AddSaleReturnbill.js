@@ -194,7 +194,13 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
                 }
             };
 
@@ -330,7 +336,13 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -350,7 +362,13 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -396,7 +414,13 @@ const Salereturn = () => {
                 } catch (error) {
                     setIsLoading(false);
                     console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
                 }
             };
 
@@ -443,7 +467,13 @@ const Salereturn = () => {
             }
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -509,7 +539,13 @@ const Salereturn = () => {
         } catch (error) {
             setIsLoading(false);
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -567,6 +603,13 @@ const Salereturn = () => {
                 })
             }
             catch (e) {
+                   if (e?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
             }
         }
     }
@@ -694,7 +737,13 @@ const Salereturn = () => {
             } catch (error) {
                 console.error("API error:", error);
                 setIsSubmitting(false);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
             }
         }
 
@@ -732,7 +781,13 @@ const Salereturn = () => {
             })
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     }
 
@@ -874,6 +929,7 @@ const Salereturn = () => {
                 setTimeout(() => {
                     history.push(nextPath);
                 }, 0);
+
             } else {
                 if (error.response && error.response.status === 401) {
                     setUnsavedItems(false);

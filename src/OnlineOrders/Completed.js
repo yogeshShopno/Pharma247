@@ -86,6 +86,13 @@ const Completed = ({ orderid }) => {
         setRolelist(response.data.data);
       })
       .catch((error) => {
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         console.error("API error:", error);
       });
   };
@@ -115,6 +122,13 @@ const Completed = ({ orderid }) => {
           setImageUrls(response.data.data.prescrption_list)
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
     } finally {
       setIsLoading(false);

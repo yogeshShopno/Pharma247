@@ -134,7 +134,13 @@ const Itemmaster = () => {
       } catch (error) {
         setIsLoading(false);
         console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       }
     } else {
       toast.dismiss();
@@ -166,7 +172,13 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -217,7 +229,13 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -235,6 +253,13 @@ const Itemmaster = () => {
       .catch((error) => {
 
         console.error("API error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
       });
   };
@@ -254,7 +279,13 @@ const Itemmaster = () => {
       .catch((error) => {
         console.error("API error:", error);
 
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -271,7 +302,13 @@ const Itemmaster = () => {
       })
       .catch((error) => {
         console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
       });
   };
@@ -291,7 +328,13 @@ const Itemmaster = () => {
 
         console.error("API error:", error);
 
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       });
   };
 
@@ -316,7 +359,13 @@ const Itemmaster = () => {
 
     } catch (error) {
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -342,7 +391,13 @@ const Itemmaster = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error(error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -369,7 +424,13 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -496,6 +557,14 @@ const Itemmaster = () => {
         toast.dismiss();
         toast.error("Please try again later");
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+      
     }
   };
 
@@ -586,6 +655,13 @@ const Itemmaster = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsFetchingMore(false);
     }
@@ -609,6 +685,13 @@ const Itemmaster = () => {
       setDrugGroupList(response.data.data);
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -679,6 +762,14 @@ const Itemmaster = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
     }
   };

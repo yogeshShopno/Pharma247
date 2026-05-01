@@ -68,6 +68,13 @@ const Package = () => {
       .catch((error) => {
         setIsLoading(false);
         console.error("API error:", error);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
       });
   };
@@ -148,6 +155,13 @@ const Package = () => {
     } catch (error) {
       alert("404 error");
       console.error("Error deleting item:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -245,8 +259,16 @@ toast.success(response.data.message);
 
         toast.dismiss();
 toast.error(error.response.data.message)
+
       }
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
     }
   }
@@ -283,6 +305,13 @@ toast.success(response.data.message);
       if (error.response.data.status == 400) {
         toast.dismiss();
 toast.error(error.response.data.message)
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
     }
   }

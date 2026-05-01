@@ -324,6 +324,13 @@ toast.error(newErrors.distributorValue);
           }
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
     }
   };
@@ -415,6 +422,13 @@ toast.success(response.data.meassage);
             }
           });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
       console.error("API error:", error);
     }
@@ -438,6 +452,13 @@ toast.success(response.data.meassage);
           setPurchaseBill(response?.data?.data);
         });
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
       console.error("API error:", error);
     }
@@ -459,8 +480,16 @@ toast.success(response.data.meassage);
       setDistributorList(distributors);
       return distributors;
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API Error fetching distributors:", error);
       return [];
+      
     }
   };
 
@@ -509,6 +538,13 @@ toast.success(response.data.meassage);
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       setIsSearchLoading(false);
     }

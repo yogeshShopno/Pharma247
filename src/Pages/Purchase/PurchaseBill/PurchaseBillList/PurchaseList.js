@@ -256,6 +256,13 @@ const Purchasebill = () => {
       console.error("API error:", error);
       setTableData([]);
       setTotalRecords(0);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     } finally {
       if (isSearch) {
         if (page !== 1) return setCurrentPage(1); // 👈 Ensure `setCurrentPage(1)` happens outside the render cycle
@@ -294,6 +301,13 @@ const Purchasebill = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -324,6 +338,13 @@ const Purchasebill = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -369,6 +390,13 @@ const Purchasebill = () => {
     } catch (error) {
       console.error("API error:", error);
       setIsLoading(false);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 

@@ -80,8 +80,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-            if (error?.response?.status === 401) {
-            }
+              if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -103,8 +108,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-            if (error?.response?.status === 401) {
-            }
+              if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -125,8 +135,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
                 });
         } catch (error) {
             console.error("API error:", error?.response?.status);
-            if (error?.response?.status === 401) {
-            }
+              if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -328,6 +343,13 @@ export default function AddMemberDialog({ addMember, setAddMember, customerId })
             console.error("API error:", error);
             toast.dismiss();
             toast.error(error.response.data.message);
+               if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
         }
 

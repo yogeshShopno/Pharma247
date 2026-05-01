@@ -50,7 +50,6 @@ import ItemWiseMargin from './Pages/More/Reports/MarginReport/ItemWiseMargin';
 import BillItemWiseMargin from './Pages/More/Reports/MarginReport/BillItemWiseMargin';
 import PurchaseRegister from './Pages/More/Reports/GstReport/PurchaseRegister';
 import AdjustStock from './Pages/More/AdjustStock/AdjustStock';
-import SalesRegister from './Pages/More/Reports/GstReport/SalesRegister';
 import SalesBill from './Pages/More/Reports/GstReport/SalesBill';
 import PurchaseBillReport from './Pages/More/Reports/GstReport/PurchaseBill_Report';
 import DayWiseSummary from './Pages/More/Reports/GstReport/DayWiseSummary';
@@ -676,11 +675,7 @@ function App() {
               </Protected>
             </Route>
 
-            <Route path='/gst-sales-register'>
-              <Protected>
-                <SalesRegister />
-              </Protected>
-            </Route>
+      
             <Route path='/gst-sales-bills'>
               <Protected>
                 <SalesBill />

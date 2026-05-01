@@ -145,6 +145,13 @@ const CustomerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -282,6 +289,13 @@ const CustomerList = () => {
         toast.dismiss();
         toast.error(error.response.data.message);
       }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       // console.error("API error:", error);
     }
   };
@@ -306,6 +320,13 @@ const CustomerList = () => {
       if (error.response && error.response.status === 500) {
         toast.dismiss();
         toast.error("Please Select file");
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
       toast.dismiss();
       toast.error(error.data.message)
@@ -351,6 +372,13 @@ const CustomerList = () => {
       if (error.response.data.status == 400) {
         toast.dismiss();
         toast.error(error.response.data.message);
+      }
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
       console.error("API error:", error);
     }
@@ -506,7 +534,15 @@ const CustomerList = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
+
   };
 
 

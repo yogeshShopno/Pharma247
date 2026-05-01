@@ -50,6 +50,13 @@ const Plans = () => {
       }
       getPurchaseHistory()
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       console.error("API error:", error);
       setIsLoading(false);
 
@@ -111,6 +118,13 @@ const Plans = () => {
       // Append the Razorpay script to the document body
       document.body.appendChild(script);
     } catch (error) {
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       toast.dismiss();
       toast.error(
         error.response?.data?.message || "Failed to fetch payment key"
@@ -146,6 +160,13 @@ const Plans = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
     }
   };
@@ -169,6 +190,13 @@ const Plans = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
     }
   };

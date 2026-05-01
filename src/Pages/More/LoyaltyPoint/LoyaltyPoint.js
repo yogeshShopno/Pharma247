@@ -96,7 +96,7 @@ const LoyaltyPoint = () => {
   }, [currentPage]);
 
 
-  
+
   const LoyaltyPointList = () => {
     let data = new FormData();
 
@@ -115,7 +115,7 @@ const LoyaltyPoint = () => {
         })
         .then((response) => {
           const responseData = response.data.data;
-          
+
           if (response.data.status === 401) {
             history.push("/");
             localStorage.clear();
@@ -124,11 +124,11 @@ const LoyaltyPoint = () => {
 
           // Set the loyalty point data
           setLoyaltyPointData(responseData || []);
-          
+
           // Extract and set total count for pagination
           const totalCount = response.data.total_records || responseData?.length || 0;
           setTotalRecords(totalCount);
-          
+
           setIsLoading(false);
         });
     } catch (error) {
@@ -136,6 +136,13 @@ const LoyaltyPoint = () => {
       setLoyaltyPointData([]);
       setTotalRecords(0);
       setIsLoading(false);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -154,7 +161,7 @@ const LoyaltyPoint = () => {
             Number(maximumAmount) <= Number(item.maximum))
         ) {
           toast.dismiss();
-toast.error("Range overlaps. Choose different values.");
+          toast.error("Range overlaps. Choose different values.");
           return false; // Prevent form submission if this condition fails
         }
       }
@@ -163,26 +170,26 @@ toast.error("Range overlaps. Choose different values.");
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
         toast.dismiss();
-toast.error(newErrors.maximumAmount);
+        toast.error(newErrors.maximumAmount);
       }
 
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
         toast.dismiss();
-toast.error(newErrors.minimumAmount);
+        toast.error(newErrors.minimumAmount);
       }
-      
+
 
       if (Number(maximumAmount) <= Number(minimumAmount)) {
-        newErrors.amountMismatch ="Maximum amount must be greater than minimum amount";
+        newErrors.amountMismatch = "Maximum amount must be greater than minimum amount";
         toast.dismiss();
-toast.error(newErrors.amountMismatch);
+        toast.error(newErrors.amountMismatch);
       }
 
-       if (!percentage) {
-        newErrors.percentage ="Percentage is required";
+      if (!percentage) {
+        newErrors.percentage = "Percentage is required";
         toast.dismiss();
-toast.error(newErrors.percentage);
+        toast.error(newErrors.percentage);
       }
 
       setErrors(newErrors);
@@ -197,12 +204,12 @@ toast.error(newErrors.percentage);
       if (!maximumAmount) {
         newErrors.maximumAmount = "Maximum amount is required";
         toast.dismiss();
-toast.error(newErrors.maximumAmount);
+        toast.error(newErrors.maximumAmount);
       }
       if (!minimumAmount) {
         newErrors.minimumAmount = "Minimum amount is required";
         toast.dismiss();
-toast.error(newErrors.minimumAmount);
+        toast.error(newErrors.minimumAmount);
       }
       setErrors(newErrors);
       const isValid = Object.keys(newErrors).length === 0;
@@ -232,15 +239,23 @@ toast.error(newErrors.minimumAmount);
           setMinimumAmount("");
           setMaximumAmount("");
           setPercentage("");
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
         });
     } catch (error) {
       setIsLoading(false);
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
+
     }
   };
 
@@ -261,8 +276,8 @@ toast.error(error.response.data.message);
         .then((response) => {
           LoyaltyPointList();
           setOpenAddPopUp(false);
-           toast.dismiss();
-toast.success(response.data.message);
+          toast.dismiss();
+          toast.success(response.data.message);
           setMaximumAmount("");
           setMinimumAmount("");
           setPercentage("");
@@ -271,7 +286,14 @@ toast.success(response.data.message);
     } catch (error) {
       if (error.response.data.status == 400) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
       console.error("API error:", error);
     }
@@ -290,8 +312,8 @@ toast.error(error.response.data.message);
       });
       setIsLoading(true);
       LoyaltyPointList(); // Refresh the list
-       toast.dismiss();
-toast.success(response.data.message);
+      toast.dismiss();
+      toast.success(response.data.message);
     } catch (error) {
       console.error("Error deleting item:", error);
       if (
@@ -300,7 +322,14 @@ toast.success(response.data.message);
         error.response.data.message
       ) {
         toast.dismiss();
-toast.error(error.response.data.message);
+        toast.error(error.response.data.message);
+      }
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
       }
     }
   };
@@ -442,7 +471,7 @@ toast.error(error.response.data.message);
                           <th style={{ padding: '8px' }}>Action</th>
                         </tr>
                       </thead>
-                     
+
                       <tbody style={{ backgroundColor: "#3f621217" }}>
                         {loyaltypointData.length === 0 ? (
                           <tr>
@@ -510,11 +539,10 @@ toast.error(error.response.data.message);
             >
               <button
                 onClick={handlePrevious}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage === 1
+                className={`mx-1 px-3 py-1 rounded ${currentPage === 1
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage === 1}
               >
                 Previous
@@ -551,11 +579,10 @@ toast.error(error.response.data.message);
               )}
               <button
                 onClick={handleNext}
-                className={`mx-1 px-3 py-1 rounded ${
-                  currentPage >= totalPages
+                className={`mx-1 px-3 py-1 rounded ${currentPage >= totalPages
                     ? "bg-gray-200 text-gray-700"
                     : "secondary-bg text-white"
-                }`}
+                  }`}
                 disabled={currentPage >= totalPages}
               >
                 Next
@@ -567,14 +594,14 @@ toast.error(error.response.data.message);
         <Dialog
           open={openAddPopUp}
           className="order_list_ml custom-dialog"
-          // sx={{
-          //     "& .MuiDialog-container": {
-          //         "& .MuiPaper-root": {
-          //             width: "50%",
-          //             maxWidth: "500px",  // Set your width here
-          //         },
-          //     },
-          // }}
+        // sx={{
+        //     "& .MuiDialog-container": {
+        //         "& .MuiPaper-root": {
+        //             width: "50%",
+        //             maxWidth: "500px",  // Set your width here
+        //         },
+        //     },
+        // }}
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
             {header}
@@ -725,9 +752,8 @@ toast.error(error.response.data.message);
       <div
         id="modal"
         value={IsDelete}
-        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${
-          IsDelete ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 p-4 flex flex-wrap justify-center items-center w-full h-full z-[1000] before:fixed before:inset-0 before:w-full before:h-full before:bg-[rgba(0,0,0,0.5)] overflow-auto font-[sans-serif] ${IsDelete ? "block" : "hidden"
+          }`}
       >
         <div />
         <div className="w-full max-w-md bg-white shadow-lg rounded-md p-4 relative">

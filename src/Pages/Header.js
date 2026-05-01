@@ -57,9 +57,12 @@ const Header = () => {
         });
     } catch (error) {
       console.error("API error:", error?.response?.status);
-      if (error?.response?.status == 401) {
-        history.push("/");
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         localStorage.clear();
+        history.push("/");
       }
     }
   };
@@ -132,10 +135,12 @@ const Header = () => {
         });
 
     } catch (error) {
-      if (error.response.status === 401) {
-
-        history.push("/");
+       if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         localStorage.clear();
+        history.push("/");
       }
       console.error("API error:", error);
       setIsClear(true);

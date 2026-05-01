@@ -81,6 +81,17 @@ const AssignedPharmacy = ({ orderid }) => {
       })
       .catch((error) => {
         console.error("API error:", error);
+         {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
+      setIsLoading(false);
+    }
       });
   };
 
@@ -109,7 +120,18 @@ const AssignedPharmacy = ({ orderid }) => {
           setImageUrls(response.data.data.prescrption_list)
         });
     } catch (error) {
+
+       {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
+    }
     } finally {
       setIsLoading(false);
     }
@@ -143,7 +165,17 @@ const AssignedPharmacy = ({ orderid }) => {
 
         });
     } catch (error) {
+       {
+      console.error("API error:", error?.response?.status);
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       setIsLoading(false);
+    }
     } finally {
       setIsLoading(false);
     }

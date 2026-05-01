@@ -65,7 +65,13 @@ const CreateRole = () => {
 
         } catch (error) {
             console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
         }
     };
 
@@ -84,7 +90,13 @@ const CreateRole = () => {
             .catch((error) => {
                 setIsLoading(false);
                 console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
             });
     };
 
@@ -120,7 +132,13 @@ const CreateRole = () => {
                     });
                 } catch (error) {
                     console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
                 }
             }
         } else {
@@ -146,6 +164,13 @@ const CreateRole = () => {
                         }
                     });
                 } catch (error) {
+                       if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
                     console.error("API error:", error);
 
                 }

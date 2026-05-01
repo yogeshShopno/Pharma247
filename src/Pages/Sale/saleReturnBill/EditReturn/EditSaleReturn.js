@@ -277,6 +277,13 @@ const EditSaleReturn = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
   const saleBillGetBySaleID = async (doctorData, customerData, searchValue = "") => {
@@ -341,6 +348,13 @@ const EditSaleReturn = () => {
     } catch (error) {
       console.error("API error fetching purchase data:", error);
       setIsLoading(false);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -362,7 +376,13 @@ const EditSaleReturn = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       return [];
     }
   };
@@ -391,7 +411,13 @@ const EditSaleReturn = () => {
     } catch (error) {
       setIsLoading(false);
       console.error("API error:", error);
-
+   if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
       return [];
     }
   };
@@ -459,6 +485,13 @@ const EditSaleReturn = () => {
       } catch (error) {
         console.error("API error:", error);
         setIsSubmitting(false);
+           if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
 
       }
     }
@@ -544,6 +577,13 @@ const EditSaleReturn = () => {
       }
     } catch (e) {
       console.error(e);
+         if (e?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -664,6 +704,13 @@ const EditSaleReturn = () => {
         });
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -703,6 +750,13 @@ const EditSaleReturn = () => {
       }
     } catch (error) {
       console.error("API error:", error);
+         if (error?.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      }
     }
   };
 
@@ -792,7 +846,13 @@ const EditSaleReturn = () => {
       if (error.response && error.response.status === 401) {
         setUnsavedItems(false);
         localStorage.setItem("unsavedItems", unsavedItems.toString());
-
+   
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      
       } else {
         console.error("Error deleting items:", error);
 
@@ -831,6 +891,13 @@ const EditSaleReturn = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
+        
+        localStorage.removeItem("token");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
+        localStorage.clear();
+        history.push("/");
+      
       } else {
         console.error("Error deleting items:", error);
 

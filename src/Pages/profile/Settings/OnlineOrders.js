@@ -12,6 +12,24 @@ import { BsLightbulbFill } from "react-icons/bs";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 
+const ONLINE_ORDER_SETTING_KEYS = [
+  "accept_online_orders",
+  "delivery_online_orders",
+  "pickup_online_orders",
+  "minimum_order_amount",
+  "order_shipping_price",
+  "delivery_estimated_time",
+  "order_manager",
+  "google_location_link",
+  "delivery_start_time",
+  "delivery_end_time",
+  "delivery_executive",
+  "pharmacist_number",
+  "pharmacy_whatsapp",
+  "email",
+];
+
+const normalizeSwitchValue = (value) => (String(value) === "1" ? 1 : 0);
 
 const OnlineOrders = () => {
   const token = localStorage.getItem("token");
@@ -41,14 +59,19 @@ const OnlineOrders = () => {
   const getSettingData = async () => {
     try {
       setIsLoading(true);
-      const { data } = await axios.post("about-get", {
+      const { data } = await axios.post("about-get", {}, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (data?.data) {
         setSettings((prev) => ({
-          ...prev,
-          ...data.data,
+          ...ONLINE_ORDER_SETTING_KEYS.reduce((updatedSettings, key) => {
+            updatedSettings[key] = data.data[key] ?? prev[key];
+            return updatedSettings;
+          }, {}),
+          accept_online_orders: normalizeSwitchValue(data.data.accept_online_orders),
+          delivery_online_orders: normalizeSwitchValue(data.data.delivery_online_orders),
+          pickup_online_orders: normalizeSwitchValue(data.data.pickup_online_orders),
         }));
       }
     } catch (error) {
@@ -60,8 +83,8 @@ const OnlineOrders = () => {
 
   const updateSettings = async () => {
     const formData = new FormData();
-    Object.entries(settings).forEach(([key, value]) => {
-      formData.append(key, value || "");
+    ONLINE_ORDER_SETTING_KEYS.forEach((key) => {
+      formData.append(key, settings[key] ?? "");
     });
 
     try {

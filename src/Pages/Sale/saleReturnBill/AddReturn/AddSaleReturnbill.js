@@ -466,11 +466,13 @@ const Salereturn = () => {
         // setErrors(newErrors);
         const isValid = Object.keys(newErrors).length === 0;
         if (isValid) {
-            handleClearHistory()
+            getSaleItemList();
+
         }
     }
 
     const getSaleItemList = async (value) => {
+
         let data = new FormData();
         data.append('customer_id', (customer && customer.id) ? customer.id : '');
         data.append('start_date', startDate.format('YYYY-MM-DD') ? startDate.format('YYYY-MM-DD') : '');
@@ -1140,9 +1142,15 @@ const Salereturn = () => {
                                     background: "var(--color1)"
                                 }}
                                 ref={el => inputRefs.current[4] = el}
-                                onKeyDown={validfilter}
+                                onKeyDown={()=>{
+                                     handleClearHistory();
+                                    validfilter();
+                                }}
 
-                                onClick={validfilter}
+                                onClick={() => {
+                                    handleClearHistory();
+                                    validfilter();
+                                }}
                             >
                                 <FilterAltIcon size='large' style={{ color: "white", fontSize: '20px' }} /> Filter
                             </Button>

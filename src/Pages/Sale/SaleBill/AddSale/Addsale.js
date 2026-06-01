@@ -4467,7 +4467,7 @@ const addSale = () => {
           }}
         >
           <DialogTitle id="alert-dialog-title" className="secondary">
-            Customer Sales History - {customerHistoryData?.name}
+            Customer Sales History - {customerHistoryData?.customerHistoryData?.[0]?.customer_name || ""}
           </DialogTitle>
           <IconButton
             aria-label="close"

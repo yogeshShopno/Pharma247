@@ -507,7 +507,7 @@ const addSale = () => {
       updateTodayPoints()
     }
 
-  }, [netAmount,customer])
+  }, [netAmount, customer])
 
   const updateTodayPoints = async () => {
     let data = new FormData();
@@ -527,7 +527,7 @@ const addSale = () => {
       }
     } catch (error) {
       console.error("Error updating today points:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -559,7 +559,7 @@ const addSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -782,7 +782,7 @@ const addSale = () => {
       if (error.name !== "AbortError") {
         console.error("API error:", error);
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -942,7 +942,7 @@ const addSale = () => {
         localStorage.clear();
       }
     } catch (error) {
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -964,9 +964,16 @@ const addSale = () => {
   const fetchCustomerHistory = async (customerId) => {
     let data = new FormData();
     data.append("id", customerId);
+
+
     // setIsLoading(true);
     try {
-      const response = await axios.post("customer-view", data, {
+      const response = await axios.get("/customer-sale-item-history?", {
+        params: {
+          // id: id,
+          customer_id: customerId,
+        },
+
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -982,7 +989,7 @@ const addSale = () => {
       console.error("API error:", error);
       toast.dismiss();
       toast.error("Failed to fetch customer history");
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1014,7 +1021,7 @@ const addSale = () => {
       }
     } catch (error) {
       console.error("Error fetching item-drug-group:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1068,7 +1075,7 @@ const addSale = () => {
       }
     } catch (error) {
       console.error("API error:", err);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1133,7 +1140,7 @@ const addSale = () => {
 
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1173,7 +1180,7 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1200,13 +1207,13 @@ const addSale = () => {
         ])
       } catch (error) {
         console.error(error)
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
 
@@ -1258,7 +1265,7 @@ const addSale = () => {
         toast.dismiss();
         toast.error("An unexpected error occurred");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1301,7 +1308,7 @@ const addSale = () => {
         toast.dismiss();
         toast.error("An unexpected error occurred");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1314,14 +1321,14 @@ const addSale = () => {
   /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
-    console.log(item.qty,item.total_stock)
+    console.log(item.qty, item.total_stock)
     if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
     setSelectedEditItemId();
 
     setSelectedOption(item);
-    setMaxQty(Number(item.total_stock)+Number(item.qty));
+    setMaxQty(Number(item.total_stock) + Number(item.qty));
 
     // const found = uniqueItems.find(u => u.id === item.id);
     // if (found) {
@@ -1374,18 +1381,18 @@ const addSale = () => {
           if (response.data.status == 401) {
             history.push("/");
             localStorage.clear();
-               if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+            if (error?.response?.status === 401) {
+              localStorage.removeItem("token");
+              localStorage.removeItem("userId");
+              localStorage.removeItem("role");
+              localStorage.clear();
+              history.push("/");
+            }
           }
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1544,24 +1551,24 @@ const addSale = () => {
           if (addResponse.data.status === 401) {
             history.push("/");
             localStorage.clear();
-         
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      
+
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+
           }
         } catch (error) {
           console.error("Sales item add error:", error);
           setUnsavedItems(false);
-             if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+          if (error?.response?.status === 401) {
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+            localStorage.removeItem("role");
+            localStorage.clear();
+            history.push("/");
+          }
         }
       };
 
@@ -1570,7 +1577,7 @@ const addSale = () => {
       if (error.response?.status === 400) {
         toast.error(error.response?.data?.message || "This barcode has no items");
       }
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1755,7 +1762,7 @@ const addSale = () => {
       }, 1000);
       setSubmitTimeout(timeout);
 
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -1818,13 +1825,13 @@ const addSale = () => {
         setTimeout(() => {
           history.push(nextPath);
         }, 0);
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       } else {
         console.error("Error deleting items:", error);
       }
@@ -1872,7 +1879,7 @@ const addSale = () => {
         return;
       }
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2036,7 +2043,7 @@ const addSale = () => {
     } catch (error) {
       console.error("API error:", error);
       toast.error(error.response.data.message)
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2092,7 +2099,7 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2191,13 +2198,13 @@ const addSale = () => {
           toast.dismiss();
           toast.error("Error setting reminder. Please try again later.");
         }
-           if (error?.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userId");
-        localStorage.removeItem("role");
-        localStorage.clear();
-        history.push("/");
-      }
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          localStorage.removeItem("role");
+          localStorage.clear();
+          history.push("/");
+        }
       }
     }
   };
@@ -2237,7 +2244,7 @@ const addSale = () => {
       const response = await axios.post(url, payload);
     } catch (error) {
       console.error("Error sending message:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -2268,7 +2275,7 @@ const addSale = () => {
         });
     } catch (error) {
       console.error("API error:", error);
-         if (error?.response?.status === 401) {
+      if (error?.response?.status === 401) {
         localStorage.removeItem("token");
         localStorage.removeItem("userId");
         localStorage.removeItem("role");
@@ -4491,18 +4498,9 @@ const addSale = () => {
                         <tr className="customtable">
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Customer Name</span>
+                              <span>Date</span>
                             </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Area</span>
-                            </div>
-                          </th>
-                          <th>
-                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Doctor</span>
-                            </div>
+
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
@@ -4511,39 +4509,50 @@ const addSale = () => {
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Date</span>
+                              <span>Customer Name</span>
+                            </div>
+                          </th>
+
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Mobile Number</span>
                             </div>
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Type</span>
+                              <span>Item Name</span>
+                            </div>
+                          </th>
+
+
+                          <th>
+                            <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
+                              <span>Quanity</span>
                             </div>
                           </th>
                           <th>
                             <div className="headerStyle" style={{ color: 'black', fontWeight: 600 }}>
-                              <span>Amount</span>
+                              <span>MRP</span>
                             </div>
                           </th>
                         </tr>
                       </thead>
                       <tbody>
-                        {customerHistoryData?.sales && customerHistoryData.sales.length > 0 ? (
-                          customerHistoryData.sales.map((sale) => (
+                        {customerHistoryData && customerHistoryData.length > 0 ? (
+                          customerHistoryData.map((item) => (
                             <tr
                               hover
                               tabIndex={-1}
-                              key={sale.id}
-                              onClick={() => {
-                                history.push(`/saleView/${sale.id}`)
-                              }}
+                              key={item.id}
+                              onClick={() => window.open(`/saleView/${item.sale_id}`, '_blank')}
                             >
-                              <td>{customerHistoryData.name}</td>
-                              <td>{sale.area}</td>
-                              <td>{sale.doctor}</td>
-                              <td>{sale.bill_no}</td>
-                              <td>{sale.bill_date}</td>
-                              <td>{sale.payment_mode}</td>
-                              <td>&#8377;{sale.amt}</td>
+                              <td>{item.bill_date}</td>
+                              <td>{item.bill_no}</td>
+                              <td>{item.customer_name}</td>
+                              <td>{item.mobile_number}</td>
+                              <td>{item.item_name}</td>
+                              <td>{item.qty}</td>
+                              <td>&#8377;{item.mrp}</td>
                             </tr>
                           ))
                         ) : (

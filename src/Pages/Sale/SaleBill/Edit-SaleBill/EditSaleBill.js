@@ -2249,7 +2249,7 @@ const EditSaleBill = () => {
                         {item.iteam_name}
                       </span>
                     </td>
-                    {console.log(item)}
+                  
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.unit}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.batch}</td>
                     <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.exp}</td>

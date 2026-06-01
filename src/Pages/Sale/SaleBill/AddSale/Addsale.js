@@ -1321,7 +1321,6 @@ const addSale = () => {
   /*<========================================================================= handle edit item  ====================================================================> */
 
   const handleEditClick = (item) => {
-    console.log(item.qty, item.total_stock)
     if (!item) return;
     setSelectedEditItem(item);
     setIsEditMode(true);
